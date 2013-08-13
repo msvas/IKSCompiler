@@ -67,6 +67,8 @@ NODO* excluiNodo(NODO* nodoExcluido, NODO* inicioLista)
 			auxProx->anterior = auxAnt;
 		}
 	}
+
+	free(nodoExcluido);
 	return inicioLista;
 }
 

@@ -1,3 +1,8 @@
+/*
+ * @file   comp_graph.c
+ * @brief  Graph manipulation functions.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -60,15 +65,33 @@ int ligaNodos(NODO* nodoUm, NODO* nodoDois)
 	return sucesso;
 }
 
-#if 0
+int limpaAresta(NODO* nodoOrigem, NODO* nodoDestino)
+{
+	int i = 0;
+
+	for(i = 0; i<ARESTAS; i++) {
+		if(nodoOrigem->nodos[i]==nodoDestino) {
+			nodoOrigem->nodos[i] = NULL;
+		}
+	}
+	return 1;
+}
+
 int excluiNodo(NODO* nodoVitima)
 {
 	int i = 0;
 	NODO* aux;
 	
-	while(nodoVitima->nodos[i]!=NULL && i<ARESTAS) {
-		aux = nodoVitima->nodos[i];		
+	for(i=0; i<ARESTAS; i++) {
+		if(nodoVitima->nodos[i]!=NULL) {
+			aux = nodoVitima->nodos[i];
+			limpaAresta(aux, nodoVitima);
+		}
+	}
 
+	free(nodoVitima);	
+
+#if 0
 int main()
 {
 	NODO* nodoUm;
