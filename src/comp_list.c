@@ -1,11 +1,11 @@
+/*
+ * @file   comp_list.c
+ * @brief  List manipulation functions.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct comp_list_t {
-	struct comp_list_t *proximo;
-	int chave;
-	struct comp_list_t *anterior;
-} NODO;
+#include "comp_list.h"
 
 NODO* criaLista()
 {
@@ -82,6 +82,12 @@ void imprimeLista(NODO* inicioLista)
 	}
 }
 
+/* 
+ * TODO: it was not compiling. A C program supports only
+ * one main() function.
+ * Maybe we can move this to a tests subdir.
+ */
+#if 0
 int main()
 {
 	NODO* inicioLista;
@@ -98,5 +104,5 @@ int main()
 
 	imprimeLista(inicioLista);
 }
-
+#endif
 
