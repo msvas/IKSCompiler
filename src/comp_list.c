@@ -70,6 +70,26 @@ NODO* excluiNodo(NODO* nodoExcluido, NODO* inicioLista)
 	return inicioLista;
 }
 
+NODO* concatenaListas(NODO* primeiraLista, NODO* segundaLista)
+{
+	NODO* aux;
+	
+	aux = primeiraLista;
+
+	if(aux==NULL) {
+		return segundaLista;
+	}
+	else {
+		while(aux->proximo!=NULL && aux!=NULL) {
+			aux = aux->proximo;
+		}
+		aux->proximo = segundaLista;
+		segundaLista->anterior = aux;
+	}
+
+	return primeiraLista;
+}
+
 void imprimeLista(NODO* inicioLista)
 {
 	NODO* aux;

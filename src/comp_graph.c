@@ -67,8 +67,7 @@ int excluiNodo(NODO* nodoVitima)
 	NODO* aux;
 	
 	while(nodoVitima->nodos[i]!=NULL && i<ARESTAS) {
-		aux = nodoVitima->nodos[i];
-#endif		
+		aux = nodoVitima->nodos[i];		
 
 int main()
 {
@@ -76,4 +75,4 @@ int main()
 
 	criaNodo(1);
 }
-	
+#endif
