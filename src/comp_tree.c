@@ -1,55 +1,81 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define NUMERO_FILHOS 2
 
-typedef struct comp_tree_t {
-	comp_tree_ t *right;
-	comp_tree_t *left;
-	int data;
+typedef struct comp_tree {
+	struct comp_tree *filhos[NUMERO_FILHOS];
+	int chave;
 }NODO;
 
-NODO* cria_arvore();
-{
-	return NULL;
-}
 
-NODO* cria_nodo(int chave)
+
+NODO* criaNodo(int chave)
 {
-	NODO *novoNodo;
-	
+	NODO* novoNodo;
+	int indice;
 	novoNodo = malloc(sizeof(NODO));
 	novoNodo->chave = chave;
-	novoNodo->right = NULL;
-	novoNodo->left = NULL;
-
+	for(indice = 0; indice < NUMERO_FILHOS; indice++)
+		novoNodo->filhos[indice] = NULL;
 	return novoNodo;
 }
 
-NODO* insereNodo(NODO* novoNodo, NODO* raiz)
+
+void insereNodo(NODO* novoNodo, NODO* raiz)
 {
-	
-	if(novoNodo->chave >= raiz->chave)
-	{
-		if(raiz->right == NULL)
+	int indice;
+	for(indice=0;indice<NUMERO_FILHOS;indice++)
+		if(raiz->filhos[indice] == NULL)
 		{
-			raiz->right = novoNodo;
+			raiz->filhos[indice] = novoNodo;
+			return; 	
 		}
+	indice = 0;
+	while(indice < NUMERO_FILHOS)
+	{
+		if(raiz->filhos[indice]->filhos[NUMERO_FILHOS-1] != NULL)
+			indice++;
 		else
 		{
-			insereNodo(novoNodo, raiz->right);
-		}
-	}
-	else
-	{
-		if(raiz->left == NULL)
-		{
-			raiz->left = novoNodo;
-		}
-		else
-		{
-			insereNodo(novoNodo, raiz->left)
+			insereNodo(novoNodo, raiz->filhos[indice]);
+			indice = NUMERO_FILHOS;
 		}
 	}
 }
 
+void imprimeArvore(NODO* raiz)
+{
+	int indice;
+	printf("%d ", raiz->chave); 	
+	for(indice=0;indice<NUMERO_FILHOS;indice++)
+		if(raiz->filhos[indice] != NULL)		
+		{
+			printf("\n");			
+			imprimeArvore(raiz->filhos[indice]);
+		}
+}
 
 
+
+
+void main()
+{
+	NODO* raiz;
+	int chaves;
+	int resposta = 1;
+	
+	printf("insira o primeiro nó: ");
+	scanf("%d", &chaves);
+	raiz = criaNodo(chaves);
+	
+	while(resposta == 1)
+	{
+		printf("insira um nó: ");
+		scanf("%d", &chaves);
+		insereNodo(criaNodo(chaves),raiz);
+		printf("continuar?(1/0): ");
+		scanf("%d", &resposta);
+	}
+
+	imprimeArvore(raiz);
+}
