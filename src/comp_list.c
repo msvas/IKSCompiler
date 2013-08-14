@@ -7,16 +7,16 @@
 #include <stdlib.h>
 #include "comp_list.h"
 
-NODO* criaLista()
+comp_list_node* criaLista()
 {
 	return NULL;
 }
 
-NODO* criaNodo(int chave)
+comp_list_node* criaNodoLista(int chave)
 {
-	NODO *novoNodo;
+	comp_list_node *novoNodo;
 
-	novoNodo = malloc(sizeof(NODO));
+	novoNodo = malloc(sizeof(comp_list_node));
 	novoNodo->chave = chave;
 	novoNodo->proximo = NULL;
 	novoNodo->anterior = NULL;
@@ -24,9 +24,9 @@ NODO* criaNodo(int chave)
 	return novoNodo;
 }
 
-NODO* insereNodo(NODO* novoNodo, NODO* inicioLista)
+comp_list_node* insereNodoLista(comp_list_node* novoNodo, comp_list_node* inicioLista)
 {
-	NODO* aux;
+	comp_list_node* aux;
 	
 	aux = inicioLista;
 
@@ -47,10 +47,10 @@ NODO* insereNodo(NODO* novoNodo, NODO* inicioLista)
 	return inicioLista;
 }
 
-NODO* excluiNodo(NODO* nodoExcluido, NODO* inicioLista)
+comp_list_node* excluiNodoLista(comp_list_node* nodoExcluido, comp_list_node* inicioLista)
 {
-	NODO* auxProx;
-	NODO* auxAnt;
+	comp_list_node* auxProx;
+	comp_list_node* auxAnt;
 
 	auxProx = inicioLista;
 
@@ -72,9 +72,9 @@ NODO* excluiNodo(NODO* nodoExcluido, NODO* inicioLista)
 	return inicioLista;
 }
 
-NODO* concatenaListas(NODO* primeiraLista, NODO* segundaLista)
+comp_list_node* concatenaListas(comp_list_node* primeiraLista, comp_list_node* segundaLista)
 {
-	NODO* aux;
+	comp_list_node* aux;
 	
 	aux = primeiraLista;
 
@@ -92,9 +92,9 @@ NODO* concatenaListas(NODO* primeiraLista, NODO* segundaLista)
 	return primeiraLista;
 }
 
-void imprimeLista(NODO* inicioLista)
+void imprimeLista(comp_list_node* inicioLista)
 {
-	NODO* aux;
+	comp_list_node* aux;
 
 	aux = inicioLista;
 
@@ -112,17 +112,17 @@ void imprimeLista(NODO* inicioLista)
 #if 0
 int main()
 {
-	NODO* inicioLista;
-	NODO* nodo1;
-	NODO* nodo2;
+	comp_list_node* inicioLista;
+	comp_list_node* nodo1;
+	comp_list_node* nodo2;
 
 	inicioLista = criaLista();
 	
-	nodo1 = criaNodo(1);
-	nodo2 = criaNodo(2);
+	nodo1 = criaNodoLista(1);
+	nodo2 = criaNodoLista(2);
 
-	inicioLista = insereNodo(nodo1, inicioLista);
-	inicioLista = insereNodo(nodo2, inicioLista);
+	inicioLista = insereNodoLista(nodo1, inicioLista);
+	inicioLista = insereNodoLista(nodo2, inicioLista);
 
 	imprimeLista(inicioLista);
 }

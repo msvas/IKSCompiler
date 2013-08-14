@@ -11,20 +11,20 @@ typedef struct comp_list_t {
 	struct comp_list_t *proximo; //!< next entry
 	int chave;			//!< node data content
 	struct comp_list_t *anterior; //!< previous entry
-} NODO;
+} comp_list_node;
 
 /**
  * Creates a list.
  * @return a pointer to the list.
  */
-NODO* criaLista(void);
+comp_list_node* criaLista(void);
 
 /**
  * Creates a list node.
  * @param chave: node key.
  * @return pointer to the node created.
  */
-NODO* criaNodo(int chave);
+comp_list_node* criaNodoLista(int chave);
 
 /**
  * Insert the node into the list.
@@ -32,7 +32,7 @@ NODO* criaNodo(int chave);
  * @param inicioLista: pointer to the first node in the list.
  * @return pointer to the first node in the list.
  */
-NODO* insereNodo(NODO* novoNodo, NODO* inicioLista);
+comp_list_node* insereNodoLista(comp_list_node* novoNodo, comp_list_node* inicioLista);
 
 /**
  * Excludes the node from the list.
@@ -40,7 +40,7 @@ NODO* insereNodo(NODO* novoNodo, NODO* inicioLista);
  * @param inicioLista: pointer to the first node in the list.
  * @return pointer to the list beginning.
  */
-NODO* excluiNodo(NODO* nodoExcluido, NODO* inicioLista);
+comp_list_node* excluiNodoLista(comp_list_node* nodoExcluido, comp_list_node* inicioLista);
 
 /**
  * Concatenates two lists.
@@ -48,13 +48,13 @@ NODO* excluiNodo(NODO* nodoExcluido, NODO* inicioLista);
  * @param segundaLista: pointer to the list that is inserted after the first one.
  * @return pointer to the new list beginning.
  */
-NODO* concatenaListas(NODO* primeiraLista, NODO* segundaLista);
+comp_list_node* concatenaListas(comp_list_node* primeiraLista, comp_list_node* segundaLista);
 
 /**
  * Prints all the keys in the list.
  * @param inicioLista: pointer to the first node in the list.
  */
-void imprimeLista(NODO* inicioLista);
+void imprimeLista(comp_list_node* inicioLista);
 
 #endif /* __COMP_LIST_H__ */
 

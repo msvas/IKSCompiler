@@ -13,20 +13,20 @@
 typedef struct comp_graph_t {
 	struct comp_graph_t* nodos[ARESTAS];
 	int chave;
-} NODO;
+} comp_graph_node;
 
 /**
  * Creates a graph.
  * @return a pointer to the graph.
  */
-NODO* criaGrafo(void);
+comp_graph_node* criaGrafo(void);
 
 /**
  * Creates a graph node.
  * @param chave: node key.
  * @return pointer to the node created.
  */
-NODO* criaNodo(int chave);
+comp_graph_node* criaNodoGrafo(int chave);
 
 /**
  * Creates a single way connection between two nodes.
@@ -34,7 +34,7 @@ NODO* criaNodo(int chave);
  * @param nodoDestino: pointer to the connected node.
  * @return true if connection is successful.
  */
-int criaAresta(NODO* nodoOrigem, NODO* nodoDestino);
+int criaAresta(comp_graph_node* nodoOrigem, comp_graph_node* nodoDestino);
 
 /**
  * Creates a two-way connection between two nodes.
@@ -42,7 +42,7 @@ int criaAresta(NODO* nodoOrigem, NODO* nodoDestino);
  * @param nodoDestuno: second node.
  * @return true if connection is successful.
  */
-int ligaNodos(NODO* nodoUm, NODO* nodoDois);
+int ligaNodos(comp_graph_node* nodoUm, comp_graph_node* nodoDois);
 
 /**
  * Deletes a single way connection between two nodes.
@@ -50,18 +50,18 @@ int ligaNodos(NODO* nodoUm, NODO* nodoDois);
  * @param nodoDestino: pointer to the connected node.
  * @return true if deletion is successful.
  */
-int limpaAresta(NODO* nodoOrigem, NODO* nodoDestino);
+int limpaAresta(comp_graph_node* nodoOrigem, comp_graph_node* nodoDestino);
 
 /**
  * Deletes the node and excludes all the connections.
  * @param nodoVitima: node to be excluded.
  */
-void excluiNodo(NODO* nodoVitima);
+void excluiNodoGrafo(comp_graph_node* nodoVitima);
 
 /**
  * Shows the connections a node has.
  * @param nodo: node to be printed.
  */
-void imprimeArestas(NODO* nodo)
+void imprimeArestas(comp_graph_node* nodo);
 
 #endif /* __COMP_GRAPH_H__ */

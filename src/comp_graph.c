@@ -7,17 +7,17 @@
 #include <stdlib.h>
 #include "comp_graph.h"
 
-NODO* criaGrafo()
+comp_graph_node* criaGrafo()
 {
 	return NULL;
 }
 
-NODO* criaNodo(int chave)
+comp_graph_node* criaNodoGrafo(int chave)
 {
-	NODO *novoNodo;
+	comp_graph_node *novoNodo;
 	int i;
 
-	novoNodo = malloc(sizeof(NODO));
+	novoNodo = malloc(sizeof(comp_graph_node));
 
 	novoNodo->chave = chave;
 
@@ -28,7 +28,7 @@ NODO* criaNodo(int chave)
 	return novoNodo;
 }
 
-int criaAresta(NODO* nodoOrigem, NODO* nodoDestino)
+int criaAresta(comp_graph_node* nodoOrigem, comp_graph_node* nodoDestino)
 {
 	int i = 0;
 	int sucesso = 1;
@@ -46,7 +46,7 @@ int criaAresta(NODO* nodoOrigem, NODO* nodoDestino)
 	return sucesso;
 }
 
-int ligaNodos(NODO* nodoUm, NODO* nodoDois)
+int ligaNodos(comp_graph_node* nodoUm, comp_graph_node* nodoDois)
 {
 	int sucesso = 1;
 
@@ -59,7 +59,7 @@ int ligaNodos(NODO* nodoUm, NODO* nodoDois)
 	return sucesso;
 }
 
-int limpaAresta(NODO* nodoOrigem, NODO* nodoDestino)
+int limpaAresta(comp_graph_node* nodoOrigem, comp_graph_node* nodoDestino)
 {
 	int i = 0;
 
@@ -71,10 +71,10 @@ int limpaAresta(NODO* nodoOrigem, NODO* nodoDestino)
 	return 1;
 }
 
-void excluiNodo(NODO* nodoVitima)
+void excluiNodoGrafo(comp_graph_node* nodoVitima)
 {
 	int i = 0;
-	NODO* aux;
+	comp_graph_node* aux;
 	
 	for(i=0; i<ARESTAS; i++) {
 		if(nodoVitima->nodos[i]!=NULL) {
@@ -86,7 +86,7 @@ void excluiNodo(NODO* nodoVitima)
 	free(nodoVitima);
 }
 
-void imprimeArestas(NODO* nodo)
+void imprimeArestas(comp_graph_node* nodo)
 {
 	int i = 0;
 
@@ -100,15 +100,15 @@ void imprimeArestas(NODO* nodo)
 #if 0
 int main()
 {
-	NODO* nodoUm;
-	NODO* nodoDois;
+	comp_graph_node* nodoUm;
+	comp_graph_node* nodoDois;
 
-	nodoUm = criaNodo(1);
-	nodoDois = criaNodo(2);
+	nodoUm = criaNodoGrafo(1);
+	nodoDois = criaNodoGrafo(2);
 
 	ligaNodos(nodoUm, nodoDois);
 
-	excluiNodo(nodoUm);
+	excluiNodoGrafo(nodoUm);
 	
 	//imprimeArestas(nodoUm);
 	imprimeArestas(nodoDois);
