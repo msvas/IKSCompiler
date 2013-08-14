@@ -83,13 +83,35 @@ int excluiNodo(NODO* nodoVitima)
 		}
 	}
 
-	free(nodoVitima);	
+	free(nodoVitima);
+}
+
+void imprimeArestas(NODO* nodo)
+{
+	int i = 0;
+
+	for(i = 0; i<ARESTAS; i++) {
+		if(nodo->nodos[i]!=NULL) {
+			printf("There is a connection\n");
+		}
+	}
+}
 
 #if 0
 int main()
 {
 	NODO* nodoUm;
+	NODO* nodoDois;
 
-	criaNodo(1);
+	nodoUm = criaNodo(1);
+	nodoDois = criaNodo(2);
+
+	ligaNodos(nodoUm, nodoDois);
+
+	excluiNodo(nodoUm);
+	
+	//imprimeArestas(nodoUm);
+	imprimeArestas(nodoDois);
+
 }
 #endif
