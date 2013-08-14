@@ -71,7 +71,7 @@ int limpaAresta(NODO* nodoOrigem, NODO* nodoDestino)
 	return 1;
 }
 
-int excluiNodo(NODO* nodoVitima)
+void excluiNodo(NODO* nodoVitima)
 {
 	int i = 0;
 	NODO* aux;
