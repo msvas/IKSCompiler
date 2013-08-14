@@ -5,13 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#define ARESTAS 5
-
-typedef struct comp_graph_t {
-	struct comp_graph_t* nodos[ARESTAS];
-	int chave;
-} NODO;
+#include "comp_graph.h"
 
 NODO* criaGrafo()
 {

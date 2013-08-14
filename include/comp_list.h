@@ -31,6 +31,8 @@ NODO* insereNodo(NODO* novoNodo, NODO* inicioLista);
 
 NODO* excluiNodo(NODO* nodoExcluido, NODO* inicioLista);
 
+NODO* concatenaListas(NODO* primeiraLista, NODO* segundaLista);
+
 void imprimeLista(NODO* inicioLista);
 
 #endif /* __COMP_LIST_H__ */
