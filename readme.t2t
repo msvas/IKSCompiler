@@ -8,6 +8,7 @@
 man flex
 info flex
 info flex --vi-keys
+man ascii
 ```
 
 http://aquamentus.com/flex_bison.html
@@ -18,6 +19,7 @@ http://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
 == Regex ==
 
 http://pt.wikipedia.org/wiki/Express%C3%A3o_regular
+http://www.regular-expressions.info/charclass.html
 
 
 
