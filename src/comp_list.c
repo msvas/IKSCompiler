@@ -54,20 +54,25 @@ comp_list_node* excluiNodoLista(comp_list_node* nodoExcluido, comp_list_node* in
 
 	auxProx = inicioLista;
 
-	while(auxProx->proximo!=nodoExcluido && auxProx->proximo!=NULL) {
-		auxProx = auxProx->proximo;
-	}
+	if(auxProx != nodoExcluido) {	
+		while(auxProx->proximo!=nodoExcluido && auxProx->proximo!=NULL) {
+			auxProx = auxProx->proximo;
+		}
+		if(auxProx->proximo == nodoExcluido) {
+			auxAnt = auxProx;
+			auxProx->proximo = nodoExcluido->proximo;
+			auxProx = nodoExcluido->proximo;
 
-	if(auxProx->proximo == nodoExcluido) {
-		auxAnt = auxProx;
-		auxProx->proximo = nodoExcluido->proximo;
-		auxProx = nodoExcluido->proximo;
-
-		if(auxProx!=NULL) {
-			auxProx->anterior = auxAnt;
+			if(auxProx!=NULL) {
+				auxProx->anterior = auxAnt;
+			}
 		}
 	}
-
+	else {
+		auxProx = auxProx->proximo;
+		auxProx->anterior = NULL;
+		inicioLista = auxProx;
+	}
 	free(nodoExcluido);
 	return inicioLista;
 }
