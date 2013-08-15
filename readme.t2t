@@ -1,4 +1,34 @@
 
+= References =
+
+
+== Flex ==
+
+```
+man flex
+info flex
+info flex --vi-keys
+```
+
+http://aquamentus.com/flex_bison.html
+http://dinosaur.compilertools.net/flex/manpage.html
+http://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
+
+
+== Regex ==
+
+http://pt.wikipedia.org/wiki/Express%C3%A3o_regular
+
+
+
+== Other Useful Stuff (really) ==
+
+http://www.vim.org/
+http://cscope.sourceforge.net/
+http://txt2tags.org/
+
+
+
 = SSH key generation =
 
 ssh-keygen
