@@ -38,15 +38,24 @@ void insereNodo(NODO* novoNodo, NODO* raiz)
 		else
 		{
 			insereNodo(novoNodo, raiz->filhos[indice]);
-			indice = NUMERO_FILHOS;
+			return;
 		}
 	}
+	insereNodo(novoNodo, raiz->filhos[0]);
+	
+	
 }
 
 void imprimeArvore(NODO* raiz)
 {
 	int indice;
-	printf("%d ", raiz->chave); 	
+	printf("%d filhos: ", raiz->chave);
+	for(indice=0;indice<NUMERO_FILHOS;indice++)
+		if(raiz->filhos[indice] != NULL)		
+		{
+			printf("%d ", raiz->filhos[indice]->chave);			
+			
+		} 	
 	for(indice=0;indice<NUMERO_FILHOS;indice++)
 		if(raiz->filhos[indice] != NULL)		
 		{
@@ -55,9 +64,7 @@ void imprimeArvore(NODO* raiz)
 		}
 }
 
-
-
-#if 0
+#if0
 void main()
 {
 	NODO* raiz;
