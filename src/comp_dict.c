@@ -34,12 +34,12 @@ comp_dict_item_t *install(const char *name, const char *def)
 		/* not found */
 		dip = (comp_dict_item_t *)malloc(sizeof(*dip));
 		if (dip == NULL) {
-			printdbg("Could not install (%s, %s)", name, def);
+			debug("Could not install (%s, %s)", name, def);
 			return NULL;
 		}
 		dip->name = strdup(name);
 		if (dip->name == NULL) {
-			printdbg("Could not install (%s, %s)", name, def);
+			debug("Could not install (%s, %s)", name, def);
 			free(dip);
 			return NULL;
 		}
@@ -49,7 +49,7 @@ comp_dict_item_t *install(const char *name, const char *def)
 			/* first entry */
 			dicttab = malloc(sizeof(*dicttab));
 			if (dicttab == NULL) {
-				printdbg("Could not install (%s, %s)", name, def);
+				debug("Could not install (%s, %s)", name, def);
 				free(dip->name);
 				free(dip);
 				return NULL;
@@ -73,7 +73,7 @@ comp_dict_item_t *install(const char *name, const char *def)
 	
 	dip->def = strdup(def);
 	if (dip->def == NULL) {
-		printdbg("Could not install (%s, %s)", name, def);
+		debug("Could not install (%s, %s)", name, def);
 		free(dip->name);
 		free(dip);
 		return NULL;
