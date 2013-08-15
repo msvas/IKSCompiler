@@ -96,22 +96,3 @@ void imprimeArestas(comp_graph_node* nodo)
 		}
 	}
 }
-
-#if 0
-int main()
-{
-	comp_graph_node* nodoUm;
-	comp_graph_node* nodoDois;
-
-	nodoUm = criaNodoGrafo(1);
-	nodoDois = criaNodoGrafo(2);
-
-	ligaNodos(nodoUm, nodoDois);
-
-	excluiNodoGrafo(nodoUm);
-	
-	//imprimeArestas(nodoUm);
-	imprimeArestas(nodoDois);
-
-}
-#endif

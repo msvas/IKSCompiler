@@ -108,28 +108,3 @@ void imprimeLista(comp_list_node* inicioLista)
 		aux = aux->proximo;
 	}
 }
-
-/* 
- * TODO: it was not compiling. A C program supports only
- * one main() function.
- * Maybe we can move this to a tests subdir.
- */
-#if 0
-int main()
-{
-	comp_list_node* inicioLista;
-	comp_list_node* nodo1;
-	comp_list_node* nodo2;
-
-	inicioLista = criaLista();
-	
-	nodo1 = criaNodoLista(1);
-	nodo2 = criaNodoLista(2);
-
-	inicioLista = insereNodoLista(nodo1, inicioLista);
-	inicioLista = insereNodoLista(nodo2, inicioLista);
-
-	imprimeLista(inicioLista);
-}
-#endif
-

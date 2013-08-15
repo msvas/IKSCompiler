@@ -8,7 +8,6 @@
 
 //! Definition of a graph node structure
 typedef struct comp_tree {
-Add a comment to this line
  	struct comp_tree *filhos[NUMERO_FILHOS];
  	int chave;
 }NODO;
