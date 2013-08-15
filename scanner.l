@@ -20,5 +20,8 @@ do      { return TK_PR_DO;     }
 input   { return TK_PR_INPUT;  } 
 output  { return TK_PR_OUTPUT; } 
 return  { return TK_PR_RETURN; } 
+%}
+%%
+int { return TK_PR_INT; }
 . { return TOKEN_ERRO; }
 %%

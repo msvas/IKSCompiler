@@ -1,0 +1,31 @@
+
+= SSH key generation =
+
+ssh-keygen
+<enter>
+<enter>
+cat ~/.ssh/id_rsa.pub
+
+Set the public key in bitbucket.org --> Manage Account --> SSH keys --> copy and
+paste --> add button.
+
+
+== Install ==
+
+sudo apt-get install bison
+sudo apt-get install bison-doc
+sudo apt-get install flex
+sudo apt-get install cmake
+sudo apt-get install g++
+sudo apt-get install doxygen
+
+
+= Git =
+
+git remote -v
+git remote add schnorr git@bitbucket.org:schnorr/compiladores.git
+git remote -v
+git push origin master:eder-flex
+git checkout eder-flex
+git merge --no-ff schnorr/master
+
