@@ -9,7 +9,7 @@ typedef struct comp_tree {
 
 
 
-NODO* criaNodo(int chave)
+NODO* criaNodo(int chave) //create a new node
 {
 	NODO* novoNodo;
 	int indice;
@@ -21,17 +21,17 @@ NODO* criaNodo(int chave)
 }
 
 
-void insereNodo(NODO* novoNodo, NODO* raiz)
+void insereNodo(NODO* novoNodo, NODO* raiz) //function to insert a node on the tree
 {
 	int indice;
 	for(indice=0;indice<NUMERO_FILHOS;indice++)
-		if(raiz->filhos[indice] == NULL)
+		if(raiz->filhos[indice] == NULL)	//search for an empty slot on the vector of node's son.
 		{
 			raiz->filhos[indice] = novoNodo;
 			return; 	
 		}
 	indice = 0;
-	while(indice < NUMERO_FILHOS)
+	while(indice < NUMERO_FILHOS)		// if the node has the maximum number of sons, check the next node;
 	{
 		if(raiz->filhos[indice]->filhos[NUMERO_FILHOS-1] != NULL)
 			indice++;
@@ -41,12 +41,12 @@ void insereNodo(NODO* novoNodo, NODO* raiz)
 			return;
 		}
 	}
-	insereNodo(novoNodo, raiz->filhos[0]);
+	insereNodo(novoNodo, raiz->filhos[0]); // if there's no node to insert the new node, it is inserted on the first son.
 	
 	
 }
 
-void imprimeArvore(NODO* raiz)
+void imprimeArvore(NODO* raiz) //print function: used to view all the tree, good for tests.
 {
 	int indice;
 	printf("%d filhos: ", raiz->chave);
@@ -64,7 +64,7 @@ void imprimeArvore(NODO* raiz)
 		}
 }
 
-#if0
+/*#if0
 void main()
 {
 	NODO* raiz;
@@ -86,4 +86,4 @@ void main()
 
 	imprimeArvore(raiz);
 }
-#endif
+#endif*/
