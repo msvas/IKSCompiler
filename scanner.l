@@ -1,11 +1,13 @@
+
 %{
 #include "tokens.h"
 int line_cnt = 0;
 int word_cnt = 0;
 %}
+
 %%
 \n          ++line_cnt;
-[^ \t\n]+   ++word_count;
+[^ \t\n]+   ++word_cnt;
 
 int     { return TK_PR_INT;    } 
 float   { return TK_PR_FLOAT;  } 
@@ -20,8 +22,5 @@ do      { return TK_PR_DO;     }
 input   { return TK_PR_INPUT;  } 
 output  { return TK_PR_OUTPUT; } 
 return  { return TK_PR_RETURN; } 
-%}
-%%
-int { return TK_PR_INT; }
-. { return TOKEN_ERRO; }
+.       { return TOKEN_ERRO;   }
 %%
