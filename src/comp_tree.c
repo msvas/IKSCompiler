@@ -57,7 +57,7 @@ void imprimeArvore(NODO* raiz)
 
 
 
-
+#if 0
 void main()
 {
 	NODO* raiz;
@@ -79,3 +79,4 @@ void main()
 
 	imprimeArvore(raiz);
 }
+#endif
