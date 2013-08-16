@@ -1,3 +1,9 @@
+/*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
+ * @file   comp_tree_tst.c
+ * @brief  Tree routines test file.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

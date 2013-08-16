@@ -1,3 +1,9 @@
+/*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
+ * @file   comp_list_tst.c
+ * @brief  List routines test file.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

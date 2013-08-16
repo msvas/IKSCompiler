@@ -23,5 +23,8 @@
 #define debug(fmt, ...)
 #endif /* DEBUG_ON */
 
+/* Array size macro */
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+
 #endif /* __UTIL_H__ */
 
