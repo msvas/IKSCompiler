@@ -9,15 +9,33 @@
 #include "util.h"
 #include "tokens.h"
 
-int line_cnt = 0;
+int line_cnt = 1;
 %}
 
-INT   ([[:digit:]]{-}[0])[[:digit:]]*
- /* TODO: review this */
-CHAR  ('*')
+INT    -*([[:digit:]]{-}[0])[[:digit:]]*
+CHAR   '([^'\\\n]|\\.)'
+ /* a string: starts with a '"', accept everything scaped by '\' or everything that is not a '"' and then it ends with a '"' */
+STRING \"(\\.|[^"])*\"  
+ID     (_|[[:alpha:]])[[:alnum:]]*
 
+
+ /* This is a condition, when the scanner matches "/*" below it starts this condition */
+%x comment0
+%x comment1
 
 %%
+
+ /* Handle C style comments like this one */
+"/*"     BEGIN(comment0);
+<comment0>[^*\n]*                     /* Consume anything that is not a '*' */
+<comment0>"*"+[^*/\n]*                /* Ignore '*'s not followed by '/'s */
+<comment0>\n             ++line_cnt;  /* Commented lines are still lines. Count them. */
+<comment0>"*"+"/"        BEGIN(0);    /* End of comment found. Go back to initial condition and try to match a rule from begining (could be BEGIN(INITIAL) instead of BEGIN(0)). */
+
+"//"     BEGIN(comment1);             /* start comment1 condition */
+<comment1>[^\n]+                      /* ignore everything on this line */
+<comment1>\n             ++line_cnt; BEGIN(0);
+
  /* Line counting */
 \n ++line_cnt;
 
@@ -48,26 +66,26 @@ return  { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN);
   * Special characters. Some of them must be scaped with
   * a backslash (or be the first or last in the list!)
   */
-[,;:()\[\]{}+\-*/<>=!&$] { debug("%c found at line %d", yytext[0], line_cnt); return yytext[0];}
+[,;:()\[\]{}+\-*/<>=!&$] { debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
 
  /* Literals */
-{INT}                { debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT);   }
+{INT}                { debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
 {INT}+"."[[:digit:]] { debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
- /*
-{ return (TK_LIT_FALSE);  }
-{ return (TK_LIT_TRUE);   }
- */
+"false"              { debug("%s found at line %d", yytext, line_cnt);return (TK_LIT_FALSE); }
+"true"               { debug("%s found at line %d", yytext, line_cnt);return (TK_LIT_TRUE); }
+
  /* TODO: remove quotation marks */
 {CHAR}               { debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_CHAR); }
- /*
-{ return (TK_LIT_STRING);   }
- */
- /* Identifier
-{ return (TK_IDENTIFICADOR);}
- */
+{STRING}             { debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_STRING); }
+
+ /* Identifier */
+{ID}                 { debug("%s found at line %d", yytext, line_cnt); return (TK_IDENTIFICADOR); }
+
+[ \t]+               /* ignore white spaces */
 
  /* Did not match any of above regex */
-.       { debug("Invalid expression %s found in line %d", yytext, line_cnt); return TOKEN_ERRO;     } 
+.                    { debug("Invalid expression %s found in line %d", yytext, line_cnt); return (TOKEN_ERRO); }
+
 %%
 
 /**
@@ -86,7 +104,7 @@ int get_line(void)
  * On success the given file is used as input, otherwise
  * stdin.
  */
-//TODO: maybe use yyrestart(yyin) (see: info lex --vi-keys)
+//TODO: maybe use yyrestart(yyin) (see: info flex --vi-keys)
 void set_yyin(char *infile)
 {
 	int r = 0;
