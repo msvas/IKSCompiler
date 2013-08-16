@@ -1,6 +1,7 @@
 /*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   comp_dict_tst.c
- * @brief  Dictionary tests base file.
+ * @brief  Dictionary routines test file.
  */
 
 #include <stdio.h>
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
 
 	show_dict();
 
-	install("compiler", 98082);
+	install("compiler", 98765);
 	
 	show_dict();
 
