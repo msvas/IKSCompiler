@@ -16,7 +16,7 @@ INT    -*([[:digit:]]{-}[0])[[:digit:]]*
 CHAR   '([^'\\\n]|\\.)'
  /* a string: starts with a '"', accept everything scaped by '\' or everything that is not a '"' and then it ends with a '"' */
 STRING \"(\\.|[^"])*\"  
-ID     (_|[[:alpha:]])[[:alnum:]]*
+ID     (_|[[:alpha:]])(_|[[:alnum:]])*
 
 
  /* This is a condition, when the scanner matches "/*" below it starts this condition */
@@ -69,7 +69,9 @@ return  { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN);
 [,;:()\[\]{}+\-*/<>=!&$] { debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
 
  /* Literals */
+ /* FIXME: probably we need to use atoll() instead of atoi() */
 {INT}                { debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
+ /* FIXME: atof() */
 {INT}+"."[[:digit:]] { debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
 "false"              { debug("%s found at line %d", yytext, line_cnt);return (TK_LIT_FALSE); }
 "true"               { debug("%s found at line %d", yytext, line_cnt);return (TK_LIT_TRUE); }
@@ -86,6 +88,7 @@ return  { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN);
  /* Did not match any of above regex */
 .                    { debug("Invalid expression %s found in line %d", yytext, line_cnt); return (TOKEN_ERRO); }
 
+ /* TODO: implement line and colum counters */
 %%
 
 /**

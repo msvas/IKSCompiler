@@ -63,3 +63,14 @@ git push origin master:eder-flex
 git checkout eder-flex
 git merge --no-ff schnorr/master
 
+
+= Tests =
+
+./main ../test/tokens/1token.iks
+
+./main ../test/tokens/1600tokens.iks > temp
+vim temp
+gedit temp
+
+
+
