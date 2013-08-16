@@ -1,4 +1,5 @@
 /*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   util.h
  * @brief  General utilities.
  */

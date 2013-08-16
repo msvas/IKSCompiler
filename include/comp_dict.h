@@ -1,4 +1,5 @@
 /*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   comp_dict.h
  * @brief  Dictionary realted functions prototypes and data types.
  */

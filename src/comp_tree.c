@@ -1,16 +1,17 @@
+/*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
+ * @file   comp_tree.c
+ * @brief  Tree manipulation functions.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "comp_tree.h"
-
- 
-
  
 NODO* criaArvore()
 {
 	return NULL;
 } 
-
-
 
 NODO* criaNodo(int chave) //create a new node
 {
@@ -21,8 +22,7 @@ NODO* criaNodo(int chave) //create a new node
  	for(indice = 0; indice < NUMERO_FILHOS; indice++)
  		novoNodo->filhos[indice] = NULL;
  	return novoNodo;
-}
- 
+} 
 
 void insereNodo(NODO* novoNodo, NODO* raiz) //function to insert a node on the tree
 {
@@ -44,11 +44,8 @@ indice = 0;
  			return;
  		}
  	}
-	insereNodo(novoNodo, raiz->filhos[0]); // if there's no node to insert the new node, it is inserted on the first son.
- 	
- 	
- }
- 
+	insereNodo(novoNodo, raiz->filhos[0]); // if there's no node to insert the new node, it is inserted on the first son.	
+}
 
 void imprimeArvore(NODO* raiz) //print function: used to view all the tree, good for tests.
  {

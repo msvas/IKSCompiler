@@ -1,4 +1,5 @@
 /*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   comp_list.c
  * @brief  List manipulation functions.
  */

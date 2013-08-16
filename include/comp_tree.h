@@ -1,4 +1,5 @@
 /*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   comp_tree.h
  * @brief  N-ary Tree structures and manipulation functions prototypes.
  */

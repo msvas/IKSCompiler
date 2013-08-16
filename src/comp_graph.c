@@ -1,4 +1,5 @@
 /*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   comp_graph.c
  * @brief  Graph manipulation functions.
  */

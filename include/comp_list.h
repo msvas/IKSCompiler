@@ -1,4 +1,5 @@
 /*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   comp_list.h
  * @brief  List structures and manipulation functions prototypes.
  */
