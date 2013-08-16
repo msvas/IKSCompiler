@@ -6,35 +6,49 @@
 #ifndef __COMPT_DICT_H__
 #define __COMPT_DICT_H__
 
+#include <stdint.h>
+
 //! Dictionary element data
 typedef struct dict_item {
 	struct dict_item *next;	//!< next entry
-	char *name;		//!< name of the item (the key)
-	char *def;		//!< definition that replaces the key
+	char *key;		//!< key of the item
+	uint32_t val;		//!< value associated to the key
 } comp_dict_item_t;
 
 //! Dictionary
 typedef struct dict { 
 	comp_dict_item_t *fep;	//!< first entry pointer
 	comp_dict_item_t *lep;	//!< last entry pointer
+	uint32_t cnt;		//!< number of entries
 } comp_dict_t;
 
 /**
  * Look for s in dicttab
- * @param s: string to look up for.
+ * @param k: key to look up for.
  * @return pointer to the related entry if found, NULL
  * otherwise.
  */
-comp_dict_item_t *lookup(const char *s);
+comp_dict_item_t *lookup(const char *k);
 
 /**
- * Put (name, def) in dicttab
- * @param name: name or key for an entry.
- * @param def: definition or replacement text.
+ * Put (key, val) in dicttab
+ * @param key: key for an entry.
+ * @param val: value associated to that entry.
  * @return on success a pointer to the new entry is
  * returned, NULL otherwise.
  */
-comp_dict_item_t *install(const char *name, const char *def);
+comp_dict_item_t *install(const char *key, uint32_t val);
+
+/**
+ * Display all entries (key, val) in the dictionary
+ */
+void show_dict(void);
+
+/**
+ * Release resources previously allocated for this
+ * dictionary.
+ */
+void free_dict(void);
 
 #endif /* __COMPT_DICT_H__ */
 
