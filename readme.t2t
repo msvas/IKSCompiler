@@ -78,10 +78,17 @@ git merge --no-ff schnorr/master
 
 == Tests ==
 
+
+```
 ./main ../test/tokens/1token.iks
+time ./main ../test/tokens/1token.iks
 
 ./main ../test/tokens/1600tokens.iks > temp
 vim temp
 gedit temp
+
+./main ../test/tokens/1600tokens.iks | wc -l && ./main ../test/tokens/1600tokens.iks > temp
+```
+
 
 

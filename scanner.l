@@ -12,12 +12,13 @@
 int line_cnt = 1;
 %}
 
-INT    -*([[:digit:]]{-}[0])[[:digit:]]*
+ /* int: an optional '-' signal followed by a digit that is optionally followed by zero or more digits */
+INT    (-*[[:digit:]])[[:digit:]]*
+ /* character: starts with ''' that must not be directly followed by ''' or a new line (\n). The first part does't match the scape symbol which is treated in the second part */
 CHAR   '([^'\\\n]|\\.)'
- /* a string: starts with a '"', accept everything scaped by '\' or everything that is not a '"' and then it ends with a '"' */
+ /* string: starts with a '"', accept everything scaped by '\' or everything that is not a '"' and then it ends with a '"' */
 STRING \"(\\.|[^"])*\"  
 ID     (_|[[:alpha:]])(_|[[:alnum:]])*
-
 
  /* This is a condition, when the scanner matches "/*" below it starts this condition */
 %x comment0
@@ -69,24 +70,22 @@ return  { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN);
 [,;:()\[\]{}+\-*/<>=!&$] { debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
 
  /* Literals */
- /* FIXME: probably we need to use atoll() instead of atoi() */
-{INT}                { debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
- /* FIXME: atof() */
-{INT}+"."[[:digit:]] { debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
-"false"              { debug("%s found at line %d", yytext, line_cnt);return (TK_LIT_FALSE); }
-"true"               { debug("%s found at line %d", yytext, line_cnt);return (TK_LIT_TRUE); }
+{INT}                 { debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
+{INT}+"."[[:digit:]]+ { debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
+"false"               { debug("%s found at line %d", yytext, line_cnt);return (TK_LIT_FALSE); }
+"true"                { debug("%s found at line %d", yytext, line_cnt);return (TK_LIT_TRUE); }
 
- /* TODO: remove quotation marks */
-{CHAR}               { debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_CHAR); }
-{STRING}             { debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_STRING); }
+ /* TODO: remove ' and " from char and string respectively */
+{CHAR}                { debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_CHAR); }
+{STRING}              { debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_STRING); }
 
  /* Identifier */
-{ID}                 { debug("%s found at line %d", yytext, line_cnt); return (TK_IDENTIFICADOR); }
+{ID}                  { debug("%s found at line %d", yytext, line_cnt); return (TK_IDENTIFICADOR); }
 
 [ \t]+               /* ignore white spaces */
 
  /* Did not match any of above regex */
-.                    { debug("Invalid expression %s found in line %d", yytext, line_cnt); return (TOKEN_ERRO); }
+.                     { debug("Invalid expression %s found in line %d", yytext, line_cnt); return (TOKEN_ERRO); }
 
  /* TODO: implement line and colum counters */
 %%
