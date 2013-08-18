@@ -9,15 +9,16 @@
 #include "util.h"
 #include "tokens.h"
 
-int line_cnt = 1;
+uint32_t line_cnt = 1;
 %}
 
-INT    -*([[:digit:]]{-}[0])[[:digit:]]*
+ /* int: an optional '-' signal followed by a digit that is optionally followed by zero or more digits */
+INT    (-*[[:digit:]])[[:digit:]]*
+ /* character: starts with ''' that must not be directly followed by ''' or a new line (\n). The first part does't match the scape symbol which is treated in the second part */
 CHAR   '([^'\\\n]|\\.)'
- /* a string: starts with a '"', accept everything scaped by '\' or everything that is not a '"' and then it ends with a '"' */
+ /* string: starts with a '"', accept everything scaped by '\' or everything that is not a '"' and then it ends with a '"' */
 STRING \"(\\.|[^"])*\"  
 ID     (_|[[:alpha:]])(_|[[:alnum:]])*
-
 
  /* This is a condition, when the scanner matches "/*" below it starts this condition */
 %x comment0
@@ -40,53 +41,51 @@ ID     (_|[[:alpha:]])(_|[[:alnum:]])*
 \n ++line_cnt;
 
  /* Reserved words */
-int     { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INT);    }
-float   { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_FLOAT);  }
-bool    { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_BOOL);   }
-char    { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_CHAR);   }
-string  { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_STRING); }
-if      { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_IF);     }
-then    { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_THEN);   }
-else    { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_ELSE);   }
-while   { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_WHILE);  }
-do      { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_DO);     }
-input   { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INPUT);  }
-output  { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_OUTPUT); }
-return  { debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN); }
-
- /* Relational operators */
-"<="    { debug("%s found at line %d", yytext, line_cnt); return (TK_OC_LE);     }
-">="    { debug("%s found at line %d", yytext, line_cnt); return (TK_OC_GE);     }
-"=="    { debug("%s found at line %d", yytext, line_cnt); return (TK_OC_EQ);     }
-"!="    { debug("%s found at line %d", yytext, line_cnt); return (TK_OC_NE);     }
-"&&"    { debug("%s found at line %d", yytext, line_cnt); return (TK_OC_AND);    }
-"||"    { debug("%s found at line %d", yytext, line_cnt); return (TK_OC_OR);     }
+int     { install(yytext, (TK_PR_INT)   , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INT);    }
+float   { install(yytext, (TK_PR_FLOAT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_FLOAT);  }
+bool    { install(yytext, (TK_PR_BOOL)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_BOOL);   }
+char    { install(yytext, (TK_PR_CHAR)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_CHAR);   }
+string  { install(yytext, (TK_PR_STRING), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_STRING); }
+if      { install(yytext, (TK_PR_IF)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_IF);     }
+then    { install(yytext, (TK_PR_THEN)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_THEN);   }
+else    { install(yytext, (TK_PR_ELSE)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_ELSE);   }
+while   { install(yytext, (TK_PR_WHILE) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_WHILE);  }
+do      { install(yytext, (TK_PR_DO)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_DO);     }
+input   { install(yytext, (TK_PR_INPUT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INPUT);  }
+output  { install(yytext, (TK_PR_OUTPUT), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_OUTPUT); }
+return  { install(yytext, (TK_PR_RETURN), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN); }
 
  /* 
   * Special characters. Some of them must be scaped with
   * a backslash (or be the first or last in the list!)
   */
-[,;:()\[\]{}+\-*/<>=!&$] { debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
+[,;:()\[\]{}+\-*/<>=!&$] { install(yytext, (uint32_t)yytext[0], line_cnt); debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
+
+ /* Relational operators */
+"<="    { install(yytext, (TK_OC_LE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_LE);     }
+">="    { install(yytext, (TK_OC_GE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_GE);     }
+"=="    { install(yytext, (TK_OC_EQ) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_EQ);     }
+"!="    { install(yytext, (TK_OC_NE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_NE);     }
+"&&"    { install(yytext, (TK_OC_AND), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_AND);    }
+"||"    { install(yytext, (TK_OC_OR) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_OR);     }
 
  /* Literals */
- /* FIXME: probably we need to use atoll() instead of atoi() */
-{INT}                { debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
- /* FIXME: atof() */
-{INT}+"."[[:digit:]] { debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
-"false"              { debug("%s found at line %d", yytext, line_cnt);return (TK_LIT_FALSE); }
-"true"               { debug("%s found at line %d", yytext, line_cnt);return (TK_LIT_TRUE); }
+{INT}                 { install(yytext, (TK_LIT_INT)  , line_cnt); debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
+{INT}+"."[[:digit:]]+ { install(yytext, (TK_LIT_FLOAT), line_cnt); debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
+"false"               { install(yytext, (TK_LIT_FALSE), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_FALSE); }
+"true"                { install(yytext, (TK_LIT_TRUE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_TRUE); }
 
- /* TODO: remove quotation marks */
-{CHAR}               { debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_CHAR); }
-{STRING}             { debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_STRING); }
+ /* TODO: remove ' and " from char and string respectively */
+{CHAR}                { install(yytext, (TK_LIT_CHAR)  , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_CHAR); }
+{STRING}              { install(yytext, (TK_LIT_STRING), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_STRING); }
 
  /* Identifier */
-{ID}                 { debug("%s found at line %d", yytext, line_cnt); return (TK_IDENTIFICADOR); }
+{ID}                  { install(yytext, (TK_IDENTIFICADOR), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_IDENTIFICADOR); }
 
 [ \t]+               /* ignore white spaces */
 
  /* Did not match any of above regex */
-.                    { debug("Invalid expression %s found in line %d", yytext, line_cnt); return (TOKEN_ERRO); }
+.                     { debug("Invalid expression %s found in line %d", yytext, line_cnt); return (TOKEN_ERRO); }
 
  /* TODO: implement line and colum counters */
 %%

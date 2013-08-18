@@ -18,11 +18,11 @@ int main(int argc, char *argv[])
 	char *k[] = { "ein", "zwei", "drei", "vier", "funf" };
 	
 	for (i = 0; i < ARRAY_SIZE(k); i++)
-		install(k[i], i);
+		install(k[i], i, i);
 
 	show_dict();
 
-	install("compiler", 98765);
+	install("compiler", 98765, i + 1);
 	
 	show_dict();
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 	else
 		debug("Key \"test\" found (?!), val %d.", dip->val);
 
-	install("compilers", 9);
+	install("compilers", 9, i + 2);
 
 	dip = lookup("compilers");
 	if (dip == NULL)
