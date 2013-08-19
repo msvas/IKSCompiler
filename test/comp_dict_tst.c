@@ -8,24 +8,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <unistd.h>
+#include <errno.h>
 #include "comp_dict.h"
+#include "symbol_table.h"
 #include "util.h"
 
 int main(int argc, char *argv[])
 {
+	int rv = 0;
 	int i;
 	comp_dict_item_t *dip;
 	char *k[] = { "ein", "zwei", "drei", "vier", "funf" };
-	
+	char *sfn = NULL;
+
 	for (i = 0; i < ARRAY_SIZE(k); i++)
 		install(k[i], i, i);
 
-	show_dict();
-
 	install("compiler", 98765, i + 1);
 	
-	show_dict();
-
 	dip = lookup("test");
 	if (dip == NULL)
 		debug("Key \"test\" not found.");
@@ -40,10 +41,18 @@ int main(int argc, char *argv[])
 	else
 		debug("Key \"compilers\" found, val %d.", dip->val);
 
-	show_dict();
+	sfn = get_unique_fname();
+	if (sfn == NULL) {
+		rv = -1;
+		goto err_sfn;
+	}
+
+	create_symbol_file(sfn);
 
 	/* release and go */
+	free(sfn);
+err_sfn:
 	free_dict();
-	return 0;
+	return rv;
 }
 

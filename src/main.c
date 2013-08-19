@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 		//printf("token <%d> at line %d\n", token, getLineNumber());
 	}
 
-	show_dict();
+	show_dict(stdout);
 
 	return 0;
 }

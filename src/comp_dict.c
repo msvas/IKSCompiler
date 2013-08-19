@@ -81,15 +81,16 @@ comp_dict_item_t *install(const char *key, uint32_t val, uint32_t line)
 	return dip;
 }
 
-void show_dict()
+void show_dict(FILE *out)
 {
+	FILE *outstream;
 	comp_dict_item_t *dip;
-	printf("------------------------------------------------------------------------------\n");
-	printf("Entries in this dictionary:\n");
+
+	outstream = out ? out : stdout;
+
 	for (dip = dicttab->fep; dip != NULL; dip = dip->next) {
-		printf("%d: (%s, %d)\n", dip->l, dip->key, dip->val);
+		fprintf(outstream, "%d: (%d, %s)\n", dip->l, dip->val, dip->key);
 	}
-	printf("------------------------------------------------------------------------------\n");
 }
 
 void free_dict()

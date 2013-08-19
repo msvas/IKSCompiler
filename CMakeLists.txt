@@ -13,6 +13,7 @@ ADD_EXECUTABLE(main
   src/comp_list.c
   src/comp_tree.c
   src/comp_graph.c
+  src/symbol_table.c
 )
 #ADD_EXECUTABLE(graph_test
 #  test/comp_graph_tst.c
@@ -25,6 +26,7 @@ ADD_EXECUTABLE(main
 #ADD_EXECUTABLE(dict_test
 #  test/comp_dict_tst.c
 #  src/comp_dict.c
+#  src/symbol_table.c
 #)
 #ADD_EXECUTABLE(tree_test
 #  test/comp_tree_tst.c
