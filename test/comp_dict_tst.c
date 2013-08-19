@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
 	int i;
 	comp_dict_item_t *dip;
 	char *k[] = { "ein", "zwei", "drei", "vier", "funf" };
-	char *sfn = NULL;
 
 	for (i = 0; i < ARRAY_SIZE(k); i++)
 		install(k[i], i, i);
@@ -41,17 +40,9 @@ int main(int argc, char *argv[])
 	else
 		debug("Key \"compilers\" found, val %d.", dip->val);
 
-	sfn = get_unique_fname();
-	if (sfn == NULL) {
-		rv = -1;
-		goto err_sfn;
-	}
-
-	create_symbol_file(sfn);
+	create_symbol_file(NULL);
 
 	/* release and go */
-	free(sfn);
-err_sfn:
 	free_dict();
 	return rv;
 }

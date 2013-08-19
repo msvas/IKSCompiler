@@ -51,22 +51,40 @@ int create_symbol_file(const char *path)
 {
 	FILE *output;
 	comp_dict_item_t *dip;
-
-	if (file_exists(path)) {
-		char ans;
-		printf("File \"%s\" already exists and will be overwritten.\n", path);
-		printf("Shall I continue (y/n)? ");
-		scanf("%c", &ans);
-		switch (ans) {
-			case 'y':
-			case 'Y':
-				break;
-			default:
-				return -1;
+	char *sfn = NULL;
+	
+	if (path == NULL) {
+		/* 
+		 * User hasn't specified a path.
+		 * Let's create an unique file name to him.
+		 */
+		sfn = get_unique_fname();
+		if (sfn == NULL) {
+			debug("Could not get a name to the symbol file");
+			return -1;
+		} 
+	} else {
+		/*
+		 * Let's check if the file specified already exsit, so we can
+		 * ask before overwrite the file. The intent is avoiding damage
+		 * the system.
+		 */
+		if (file_exists(path)) {
+			char ans;
+			printf("File \"%s\" already exists and will be overwritten.\n", path);
+			printf("Shall I continue (y/n)? ");
+			scanf("%c", &ans);
+			switch (ans) {
+				case 'y':
+				case 'Y':
+					break;
+				default:
+					return -1;
+			}
 		}
 	}
 
-	output = fopen(path, "w+");
+	output = fopen((path != NULL) ? path : sfn, "w+");
 	if (output == NULL) {
 		debug("%s", strerror(errno));
 		return -1;	
