@@ -42,6 +42,11 @@ http://cscope.sourceforge.net/
 http://txt2tags.org/
 
 
+```
+cscope-indexer -r
+```
+
+
 
 == SSH key generation ==
 
