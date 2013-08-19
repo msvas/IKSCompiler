@@ -29,18 +29,15 @@ char *get_unique_fname()
 		debug("%s", strerror(errno));
 		return NULL;
 	}
-	debug("Current dir is %s", cwd);
 
 	/* create a path template */
 	asprintf(&template, "%s/symtab-XXXXXX", cwd);
-	debug("Template file is %s", template);
 
 	/* get a unique file name */
 	if ((fd = mkstemp(template)) == -1) {
 		debug("%s", strerror(errno));
 		return NULL;
 	}
-	debug("Unique file is %s", template);
 	close(fd);
 	remove(template);
 
@@ -94,6 +91,8 @@ int create_symbol_file(const char *path)
 	show_dict(output);
 
 	fclose(output);
+
+	printf("-- Symbol file created at %s\n", (path != NULL) ? path : sfn);
 	return 0;
 }
 

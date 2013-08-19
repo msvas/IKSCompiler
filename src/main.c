@@ -9,6 +9,7 @@
 #include "comp_graph.h"
 #include "tokens.h"
 #include "util.h"
+#include "symbol_table.h"
 
 int getLineNumber(void)
 {
@@ -35,7 +36,8 @@ int main(int argc, char *argv[])
 		//printf("token <%d> at line %d\n", token, getLineNumber());
 	}
 
-	show_dict(stdout);
+	create_symbol_file(NULL);
+	//show_dict(stdout);
 
 	return 0;
 }
