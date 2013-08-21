@@ -81,6 +81,11 @@ git checkout eder-flex
 git merge --no-ff schnorr/master
 
 
+git checkout 3aa33ec89d48960803818438396aa80a9b1af2ab
+git tag step1
+git push --tags
+
+
 == Tests ==
 
 

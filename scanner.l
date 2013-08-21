@@ -7,7 +7,7 @@
 #include <math.h>
 #include "comp_dict.h"
 #include "util.h"
-#include "tokens.h"
+#include "parser.h"
 
 uint32_t line_cnt = 1;
 %}
