@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
 %}
 
 /* Declaração dos tokens da gramática da Linguagem K */
