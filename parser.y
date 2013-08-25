@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "util.h"
 %}
 
 /* Declaração dos tokens da gramática da Linguagem K */
@@ -35,6 +36,11 @@
 %%
  /* Regras (e ações) da gramática da Linguagem K */
 
-s:
+/*
+ * Declaration of a variable.
+ */
+decl : type ":" list { printf("Success!\n"); } ;
+list : "," TK_IDENTIFICADOR list | ";";
+type : TK_PR_INT | TK_PR_FLOAT | TK_PR_CHAR | TK_PR_BOOL | TK_PR_STRING;
 
 %%
