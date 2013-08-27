@@ -1,7 +1,12 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <math.h>
+#include "comp_dict.h"
 #include "util.h"
+#include "parser.h"
 %}
 
 /* Declaração dos tokens da gramática da Linguagem K */
@@ -56,22 +61,55 @@ parameter_list:  parameter
 		|
 		;
 		
-function: 	 TK_PR_INT ':' TK_IDENTIFICADOR'('parameter_list')'
+function: 	 type ':' TK_IDENTIFICADOR '('parameter_list')'
+		/* TK_PR_INT ':' TK_IDENTIFICADOR'('parameter_list')'
 		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'('parameter_list')'
-		|TK_PR_BOOL ':' TK_IDENTIFICADOR'('parameter_list')'
+		|TK_PR_BOOL ':' TK_IDENTIFICADOR'('parameter_list')'*/
 		;
 
-//command can be an atribution, flux control, output,input or return
-command: ;
+cmd_block:	 '{' cmd_list '}' ;
+
+cmd_list:	 cmd ';'
+		|cmd ';' cmd_list
+		|
+		;
+
+cmd:		 attribution 
+		|flux 
+		|input
+		|output
+		|cmd_block
+		|call_function
+		|
+		;
+
+arit_expr:	 TK_IDENTIFICADOR
+		|TK_IDENTIFICADOR '[' TK_LIT_INT ']'
+		|TK_LIT_INT
+		|TK_LIT_FLOAT
+		|TK_LIT_CHAR
+		;
+
+log_expr:	;
+
+expr:		 arit_expr
+		|log_expr;		
+
+attribution:	;
+
+flux:		 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
+		|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd
+		|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd
+		|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'
+		;
+
+type:		 TK_PR_INT
+		|TK_PR_FLOAT		
+		|TK_PR_BOOL
+		|TK_PR_CHAR
+		|TK_PR_STRING
+		;
 
 //we must think in all possibilities... 
-
-
-/*
- * Declaration of a variable.
- */
-decl : type ":" list { printf("Success!\n"); } ;
-list : "," TK_IDENTIFICADOR list | ";";
-type : TK_PR_INT | TK_PR_FLOAT | TK_PR_CHAR | TK_PR_BOOL | TK_PR_STRING;
 
 %%
