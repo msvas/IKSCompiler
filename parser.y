@@ -36,18 +36,30 @@
 %%
  /* Regras (e ações) da gramática da Linguagem K */
 // declarations of the program
-global_decl : 	 declaration ';'
-		|declaration'['/*numeros*/']'
-		;
+global_decl : 	 declaration ';';
 
 declaration : 	 TK_PR_INT ':' TK_IDENTIFICADOR
+		|TK_PR_FLOAT ':' TK_IDENTIFICADOR		
 		|TK_PR_BOOL ':' TK_IDENTICADOR
 		|TK_PR_CHAR ':' TK_IDENTICADOR
 		|TK_PR_STRING ':' TK_IDENTICADOR
+		|vector_decl
+		;
+vector_decl:	 TK_PR_INT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
+		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
 		;
 //declaration of the functions
-parameters:  ;
-function: ;
+parameter: declaration;
+
+parameter_list:  parameter
+		|parameter ',' parameter_list
+		|
+		;
+		
+function: 	 TK_PR_INT ':' TK_IDENTIFICADOR'('parameter_list')'
+		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'('parameter_list')'
+		|TK_PR_BOOL ':' TK_IDENTIFICADOR'('parameter_list')'
+		;
 
 //command can be an atribution, flux control, output,input or return
 command: ;
