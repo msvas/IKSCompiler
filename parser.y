@@ -60,13 +60,20 @@ parameter_list:  parameter
 		|parameter ',' parameter_list
 		|
 		;
-		
+
+/*
+ * A function is made of a type declaration,
+ * followed by a colon, an identifier and parameters
+ */
 function: 	 type ':' TK_IDENTIFICADOR '('parameter_list')'
 		/* TK_PR_INT ':' TK_IDENTIFICADOR'('parameter_list')'
 		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'('parameter_list')'
 		|TK_PR_BOOL ':' TK_IDENTIFICADOR'('parameter_list')'*/
 		;
 
+/* 
+ * A command block is a group of commands
+ */
 cmd_block:	 '{' cmd_list '}' ;
 
 cmd_list:	 cmd ';'
@@ -74,6 +81,9 @@ cmd_list:	 cmd ';'
 		|
 		;
 
+/*
+ * Types of commands
+ */
 cmd:		 attribution 
 		|flux 
 		|input
@@ -83,6 +93,14 @@ cmd:		 attribution
 		|
 		;
 
+/*
+ * Expressions can be either logical or arithmetical
+ * TODO: enunciado confuso, não entendi o que ele quer
+ */
+
+expr:		 arit_expr
+		|log_expr;
+
 arit_expr:	 TK_IDENTIFICADOR
 		|TK_IDENTIFICADOR '[' TK_LIT_INT ']'
 		|TK_LIT_INT
@@ -90,19 +108,21 @@ arit_expr:	 TK_IDENTIFICADOR
 		|TK_LIT_CHAR
 		;
 
-log_expr:	;
-
-expr:		 arit_expr
-		|log_expr;		
+log_expr:	;		
 
 attribution:	;
 
+/*
+ * Control flux description
+ */
 flux:		 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 		|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd
 		|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd
 		|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'
 		;
-
+/*
+ * All the possibilities of types
+ */
 type:		 TK_PR_INT
 		|TK_PR_FLOAT		
 		|TK_PR_BOOL
