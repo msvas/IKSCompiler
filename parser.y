@@ -35,14 +35,24 @@
 
 %%
  /* Regras (e ações) da gramática da Linguagem K */
-
-global_decl : declaration ';' ;
+// declarations of the program
+global_decl : 	 declaration ';'
+		|declaration'['/*numeros*/']'
+		;
 
 declaration : 	 TK_PR_INT ':' TK_IDENTIFICADOR
 		|TK_PR_BOOL ':' TK_IDENTICADOR
 		|TK_PR_CHAR ':' TK_IDENTICADOR
 		|TK_PR_STRING ':' TK_IDENTICADOR
 		;
+//declaration of the functions
+parameters:  ;
+function: ;
+
+//command can be an atribution, flux control, output,input or return
+command: ;
+
+//we must think in all possibilities... 
 
 
 /*
