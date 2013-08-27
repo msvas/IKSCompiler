@@ -36,6 +36,15 @@
 %%
  /* Regras (e ações) da gramática da Linguagem K */
 
+global_decl : declaration ';' ;
+
+declaration : 	 TK_PR_INT ':' TK_IDENTIFICADOR
+		|TK_PR_BOOL ':' TK_IDENTICADOR
+		|TK_PR_CHAR ':' TK_IDENTICADOR
+		|TK_PR_STRING ':' TK_IDENTICADOR
+		;
+
+
 /*
  * Declaration of a variable.
  */
