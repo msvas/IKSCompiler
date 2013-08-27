@@ -110,7 +110,9 @@ arit_expr:	 TK_IDENTIFICADOR
 
 log_expr:	;		
 
-attribution:	;
+attribution:	 TK_IDENTIFICADOR '=' expr
+		|TK_IDENTIFICADOR '[' TK_LIT_INT ']' '=' expr
+		;
 
 /*
  * Control flux description
