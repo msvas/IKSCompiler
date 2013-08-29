@@ -259,7 +259,3 @@ type:		 TK_PR_INT
 
  //we must think in all possibilities... 
  %%
-void yyerror (const char *s)
-{
-	fprintf (stderr, "%s\n", s);
-}

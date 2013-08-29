@@ -42,46 +42,46 @@ ID     (_|[[:alpha:]])(_|[[:alnum:]])*
 \n ++line_cnt;
 
  /* Reserved words */
-int     { install(yytext, (TK_PR_INT)   , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INT);    }
-float   { install(yytext, (TK_PR_FLOAT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_FLOAT);  }
-bool    { install(yytext, (TK_PR_BOOL)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_BOOL);   }
-char    { install(yytext, (TK_PR_CHAR)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_CHAR);   }
-string  { install(yytext, (TK_PR_STRING), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_STRING); }
-if      { install(yytext, (TK_PR_IF)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_IF);     }
-then    { install(yytext, (TK_PR_THEN)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_THEN);   }
-else    { install(yytext, (TK_PR_ELSE)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_ELSE);   }
-while   { install(yytext, (TK_PR_WHILE) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_WHILE);  }
-do      { install(yytext, (TK_PR_DO)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_DO);     }
-input   { install(yytext, (TK_PR_INPUT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INPUT);  }
-output  { install(yytext, (TK_PR_OUTPUT), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_OUTPUT); }
-return  { install(yytext, (TK_PR_RETURN), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN); }
+int     { yylval.symbol = install(yytext, (TK_PR_INT)   , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INT);    }
+float   { yylval.symbol = install(yytext, (TK_PR_FLOAT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_FLOAT);  }
+bool    { yylval.symbol = install(yytext, (TK_PR_BOOL)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_BOOL);   }
+char    { yylval.symbol = install(yytext, (TK_PR_CHAR)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_CHAR);   }
+string  { yylval.symbol = install(yytext, (TK_PR_STRING), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_STRING); }
+if      { yylval.symbol = install(yytext, (TK_PR_IF)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_IF);     }
+then    { yylval.symbol = install(yytext, (TK_PR_THEN)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_THEN);   }
+else    { yylval.symbol = install(yytext, (TK_PR_ELSE)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_ELSE);   }
+while   { yylval.symbol = install(yytext, (TK_PR_WHILE) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_WHILE);  }
+do      { yylval.symbol = install(yytext, (TK_PR_DO)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_DO);     }
+input   { yylval.symbol = install(yytext, (TK_PR_INPUT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INPUT);  }
+output  { yylval.symbol = install(yytext, (TK_PR_OUTPUT), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_OUTPUT); }
+return  { yylval.symbol = install(yytext, (TK_PR_RETURN), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN); }
 
  /* 
   * Special characters. Some of them must be scaped with
   * a backslash (or be the first or last in the list!)
   */
-[,;:()\[\]{}+\-*/<>=!&$] { install(yytext, (uint32_t)yytext[0], line_cnt); debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
+[,;:()\[\]{}+\-*/<>=!&$] { yylval.symbol = install(yytext, (uint32_t)yytext[0], line_cnt); debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
 
  /* Relational operators */
-"<="    { install(yytext, (TK_OC_LE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_LE);     }
-">="    { install(yytext, (TK_OC_GE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_GE);     }
-"=="    { install(yytext, (TK_OC_EQ) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_EQ);     }
-"!="    { install(yytext, (TK_OC_NE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_NE);     }
-"&&"    { install(yytext, (TK_OC_AND), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_AND);    }
-"||"    { install(yytext, (TK_OC_OR) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_OR);     }
+"<="    { yylval.symbol = install(yytext, (TK_OC_LE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_LE);     }
+">="    { yylval.symbol = install(yytext, (TK_OC_GE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_GE);     }
+"=="    { yylval.symbol = install(yytext, (TK_OC_EQ) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_EQ);     }
+"!="    { yylval.symbol = install(yytext, (TK_OC_NE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_NE);     }
+"&&"    { yylval.symbol = install(yytext, (TK_OC_AND), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_AND);    }
+"||"    { yylval.symbol = install(yytext, (TK_OC_OR) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_OR);     }
 
  /* Literals */
-{INT}                 { install(yytext, (TK_LIT_INT)  , line_cnt); debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
-{INT}+"."[[:digit:]]+ { install(yytext, (TK_LIT_FLOAT), line_cnt); debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
-"false"               { install(yytext, (TK_LIT_FALSE), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_FALSE); }
-"true"                { install(yytext, (TK_LIT_TRUE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_TRUE); }
+{INT}                 { yylval.symbol = install(yytext, (TK_LIT_INT)  , line_cnt); debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
+{INT}+"."[[:digit:]]+ { yylval.symbol = install(yytext, (TK_LIT_FLOAT), line_cnt); debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
+"false"               { yylval.symbol = install(yytext, (TK_LIT_FALSE), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_FALSE); }
+"true"                { yylval.symbol = install(yytext, (TK_LIT_TRUE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_TRUE); }
 
  /* TODO: remove ' and " from char and string respectively */
-{CHAR}                { install(yytext, (TK_LIT_CHAR)  , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_CHAR); }
-{STRING}              { install(yytext, (TK_LIT_STRING), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_STRING); }
+{CHAR}                { yylval.symbol = install(yytext, (TK_LIT_CHAR)  , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_CHAR); }
+{STRING}              { yylval.symbol = install(yytext, (TK_LIT_STRING), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_STRING); }
 
  /* Identifier */
-{ID}                  { install(yytext, (TK_IDENTIFICADOR), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_IDENTIFICADOR); }
+{ID}                  { yylval.symbol = install(yytext, (TK_IDENTIFICADOR), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_IDENTIFICADOR); }
 
 [ \t]+               /* ignore white spaces */
 
