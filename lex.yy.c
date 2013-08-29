@@ -553,7 +553,7 @@ char *yytext;
 #include "comp_dict.h"
 #include "util.h"
 #include "parser.h"
-#include "y.tab.h"
+#include "parser.tab.h"
 
 uint32_t line_cnt = 1;
 /* int: an optional '-' signal followed by a digit that is optionally followed by zero or more digits */
@@ -891,67 +891,67 @@ YY_RULE_SETUP
 case 10:
 YY_RULE_SETUP
 #line 45 "scanner.l"
-{ install(yytext, (TK_PR_INT)   , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INT);    }
+{ yylval.symbol = install(yytext, (TK_PR_INT)   , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INT);    }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 46 "scanner.l"
-{ install(yytext, (TK_PR_FLOAT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_FLOAT);  }
+{ yylval.symbol = install(yytext, (TK_PR_FLOAT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_FLOAT);  }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 47 "scanner.l"
-{ install(yytext, (TK_PR_BOOL)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_BOOL);   }
+{ yylval.symbol = install(yytext, (TK_PR_BOOL)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_BOOL);   }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 48 "scanner.l"
-{ install(yytext, (TK_PR_CHAR)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_CHAR);   }
+{ yylval.symbol = install(yytext, (TK_PR_CHAR)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_CHAR);   }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 49 "scanner.l"
-{ install(yytext, (TK_PR_STRING), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_STRING); }
+{ yylval.symbol = install(yytext, (TK_PR_STRING), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_STRING); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 50 "scanner.l"
-{ install(yytext, (TK_PR_IF)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_IF);     }
+{ yylval.symbol = install(yytext, (TK_PR_IF)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_IF);     }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 51 "scanner.l"
-{ install(yytext, (TK_PR_THEN)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_THEN);   }
+{ yylval.symbol = install(yytext, (TK_PR_THEN)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_THEN);   }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 52 "scanner.l"
-{ install(yytext, (TK_PR_ELSE)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_ELSE);   }
+{ yylval.symbol = install(yytext, (TK_PR_ELSE)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_ELSE);   }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 53 "scanner.l"
-{ install(yytext, (TK_PR_WHILE) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_WHILE);  }
+{ yylval.symbol = install(yytext, (TK_PR_WHILE) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_WHILE);  }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 54 "scanner.l"
-{ install(yytext, (TK_PR_DO)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_DO);     }
+{ yylval.symbol = install(yytext, (TK_PR_DO)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_DO);     }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 55 "scanner.l"
-{ install(yytext, (TK_PR_INPUT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INPUT);  }
+{ yylval.symbol = install(yytext, (TK_PR_INPUT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INPUT);  }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 56 "scanner.l"
-{ install(yytext, (TK_PR_OUTPUT), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_OUTPUT); }
+{ yylval.symbol = install(yytext, (TK_PR_OUTPUT), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_OUTPUT); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 57 "scanner.l"
-{ install(yytext, (TK_PR_RETURN), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN); }
+{ yylval.symbol = install(yytext, (TK_PR_RETURN), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN); }
 	YY_BREAK
 /* 
   * Special characters. Some of them must be scaped with
@@ -960,77 +960,77 @@ YY_RULE_SETUP
 case 23:
 YY_RULE_SETUP
 #line 63 "scanner.l"
-{ install(yytext, (uint32_t)yytext[0], line_cnt); debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
+{ yylval.symbol = install(yytext, (uint32_t)yytext[0], line_cnt); debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
 	YY_BREAK
 /* Relational operators */
 case 24:
 YY_RULE_SETUP
 #line 66 "scanner.l"
-{ install(yytext, (TK_OC_LE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_LE);     }
+{ yylval.symbol = install(yytext, (TK_OC_LE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_LE);     }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 67 "scanner.l"
-{ install(yytext, (TK_OC_GE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_GE);     }
+{ yylval.symbol = install(yytext, (TK_OC_GE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_GE);     }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 68 "scanner.l"
-{ install(yytext, (TK_OC_EQ) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_EQ);     }
+{ yylval.symbol = install(yytext, (TK_OC_EQ) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_EQ);     }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 69 "scanner.l"
-{ install(yytext, (TK_OC_NE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_NE);     }
+{ yylval.symbol = install(yytext, (TK_OC_NE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_NE);     }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 70 "scanner.l"
-{ install(yytext, (TK_OC_AND), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_AND);    }
+{ yylval.symbol = install(yytext, (TK_OC_AND), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_AND);    }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 71 "scanner.l"
-{ install(yytext, (TK_OC_OR) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_OR);     }
+{ yylval.symbol = install(yytext, (TK_OC_OR) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_OR);     }
 	YY_BREAK
 /* Literals */
 case 30:
 YY_RULE_SETUP
 #line 74 "scanner.l"
-{ install(yytext, (TK_LIT_INT)  , line_cnt); debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
+{ yylval.symbol = install(yytext, (TK_LIT_INT)  , line_cnt); debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 75 "scanner.l"
-{ install(yytext, (TK_LIT_FLOAT), line_cnt); debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
+{ yylval.symbol = install(yytext, (TK_LIT_FLOAT), line_cnt); debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 76 "scanner.l"
-{ install(yytext, (TK_LIT_FALSE), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_FALSE); }
+{ yylval.symbol = install(yytext, (TK_LIT_FALSE), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_FALSE); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 77 "scanner.l"
-{ install(yytext, (TK_LIT_TRUE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_TRUE); }
+{ yylval.symbol = install(yytext, (TK_LIT_TRUE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_TRUE); }
 	YY_BREAK
 /* TODO: remove ' and " from char and string respectively */
 case 34:
 YY_RULE_SETUP
 #line 80 "scanner.l"
-{ install(yytext, (TK_LIT_CHAR)  , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_CHAR); }
+{ yylval.symbol = install(yytext, (TK_LIT_CHAR)  , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_CHAR); }
 	YY_BREAK
 case 35:
 /* rule 35 can match eol */
 YY_RULE_SETUP
 #line 81 "scanner.l"
-{ install(yytext, (TK_LIT_STRING), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_STRING); }
+{ yylval.symbol = install(yytext, (TK_LIT_STRING), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_STRING); }
 	YY_BREAK
 /* Identifier */
 case 36:
 YY_RULE_SETUP
 #line 84 "scanner.l"
-{ install(yytext, (TK_IDENTIFICADOR), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_IDENTIFICADOR); }
+{ yylval.symbol = install(yytext, (TK_IDENTIFICADOR), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_IDENTIFICADOR); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP

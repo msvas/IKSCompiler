@@ -73,19 +73,14 @@ declaration : 	 type ':' TK_IDENTIFICADOR
 vector_decl:	 type ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
  		;
 
-declaration : 	 TK_PR_INT ':' TK_IDENTIFICADOR
+/*declaration : 	 TK_PR_INT ':' TK_IDENTIFICADOR
  		|TK_PR_FLOAT ':' TK_IDENTIFICADOR		
  		|TK_PR_BOOL ':' TK_IDENTIFICADOR
  		|TK_PR_CHAR ':' TK_IDENTIFICADOR
  		|TK_PR_STRING ':' TK_IDENTIFICADOR
 		|TK_PR_INT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
  		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
- 		;
-
-/*vector_decl:	 TK_PR_INT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
- 		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
  		;*/
-
 
  //declaration of the functions
 parameter: declaration;
