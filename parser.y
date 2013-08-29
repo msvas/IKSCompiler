@@ -160,7 +160,33 @@ flux:		 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
  		|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd
  		|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'
  		;
- /*
+/*
+ * Input command description
+ */
+
+input: TK_PR_INPUT TK_IDENTIFICADOR;
+
+/*
+ * Output command description
+ */
+
+output: TK_PR_OUTPUT output_list;
+
+output_list: 	 output_element
+		|outpur_element ',' output_list
+		;
+
+output_element:	 TK_LIT_STRING
+		|arit_expr
+		;
+
+/*
+ * Return command description
+ */
+
+return: TK_PR_RETURN expr;
+
+/*
   * All the possibilities of types
   */
 type:		 TK_PR_INT
