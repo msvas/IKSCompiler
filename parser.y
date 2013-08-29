@@ -133,7 +133,23 @@ arit_expr:	 term
 		|mult
 		|div
 		
-log_expr:	expr; 
+log_expr:	 and
+		|or
+		|le
+		|ge
+		|eq
+		|ne
+		|term '<' term
+		|term '>' term
+		; 
+
+
+and:	term PR_OC_AND term;
+or:	term PR_OC_OR term;
+le:	term PR_OC_LE term;
+ge:	term PR_OC_GE term;
+eq:	term PR_OC_EQ term;
+ne:	PR_OC_NE term;
 
 sum: term '+' term;
 sub: term '-' term;
@@ -196,7 +212,7 @@ type:		 TK_PR_INT
  		|TK_PR_STRING
  		;
 
-constants:	 TK_LIT_INT
+constant:	 TK_LIT_INT
 		|TK_LIT_FLOAT
 		|TK_LIT_FALSE
 		|TK_LIT_TRUE
