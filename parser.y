@@ -58,24 +58,26 @@ program:	 list_global_decl function_list
 
 
  // declarations of the program
-list_global_decl:	 global_decl
-			|global_decl list_global_decl
+list_global_decl:	 declaration //global_decl
+			|declaration ';'/*global_decl*/ list_global_decl
 			;
 
-global_decl : 	 declaration ';'
+/*global_decl : 	 declaration ';'
 		|vector_decl ';'
-		;
+		;*/
  
 declaration : 	 TK_PR_INT ':' TK_IDENTIFICADOR
  		|TK_PR_FLOAT ':' TK_IDENTIFICADOR		
  		|TK_PR_BOOL ':' TK_IDENTIFICADOR
  		|TK_PR_CHAR ':' TK_IDENTIFICADOR
  		|TK_PR_STRING ':' TK_IDENTIFICADOR
- 		;
-
-vector_decl:	 TK_PR_INT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
+		|TK_PR_INT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
  		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
  		;
+
+/*vector_decl:	 TK_PR_INT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
+ 		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
+ 		;*/
 
  //declaration of the functions
 parameter: declaration;
@@ -134,7 +136,6 @@ cmd:		 attrib
 
  /*
   * Expressions can be either logical or arithmetical
-  * TODO: enunciado confuso, não entendi o que ele quer
   */
  
 expr:		 primary_expression
