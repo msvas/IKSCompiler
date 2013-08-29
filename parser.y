@@ -9,6 +9,11 @@
 #include "parser.h"
 
 %}
+
+%union
+	{
+	comp_dict_item_t* symbol;
+	};
  
 /* Declaração dos tokens da gramática da Linguagem K */
 %token TK_PR_INT
@@ -54,16 +59,37 @@ program:	 global_decl program
 
 
  // declarations of the program
+<<<<<<< HEAD
+=======
+list_global_decl:	 declaration //global_decl
+			|declaration ';'/*global_decl*/ list_global_decl
+			;
+>>>>>>> 78803c2c7db5cde653f1852bbc45778c3b4d4e47
 
-global_decl : 	 declaration ';'
+/*global_decl : 	 declaration ';'
 		|vector_decl ';'
-		;
+		;*/
  
+<<<<<<< HEAD
 declaration : 	 type ':' TK_IDENTIFICADOR
  		;
 
 vector_decl:	 type ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
  		;
+=======
+declaration : 	 TK_PR_INT ':' TK_IDENTIFICADOR
+ 		|TK_PR_FLOAT ':' TK_IDENTIFICADOR		
+ 		|TK_PR_BOOL ':' TK_IDENTIFICADOR
+ 		|TK_PR_CHAR ':' TK_IDENTIFICADOR
+ 		|TK_PR_STRING ':' TK_IDENTIFICADOR
+		|TK_PR_INT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
+ 		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
+ 		;
+
+/*vector_decl:	 TK_PR_INT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
+ 		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
+ 		;*/
+>>>>>>> 78803c2c7db5cde653f1852bbc45778c3b4d4e47
 
  //declaration of the functions
 parameter: declaration;
@@ -118,7 +144,6 @@ cmd:		 attrib
 
  /*
   * Expressions can be either logical or arithmetical
-  * TODO: enunciado confuso, não entendi o que ele quer
   */
  
 expr:		 primary_expression
