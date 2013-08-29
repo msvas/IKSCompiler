@@ -8,9 +8,12 @@
 #define __UTIL_H__
 
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 //! Enable/Disable debugs.
-#define DEBUG_ON
+//#define DEBUG_ON
 #ifdef DEBUG_ON
 /**
  * Print utility that prints file and line. Useful for debug. It can replace
@@ -25,6 +28,17 @@
 
 /* Array size macro */
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+
+/**
+ * Checks if a file exist.
+ * @param path: file path.
+ * return 1 if file exists, 0 otherwise.
+ */
+static int file_exists(const char *path)
+{
+	struct stat s;
+	return (stat(path, &s) == 0);
+}
 
 #endif /* __UTIL_H__ */
 

@@ -34,59 +34,63 @@ comp_dict_item_t *lookup(const char *k)
 	return NULL; /* not found */
 }
 
-comp_dict_item_t *install(const char *key, uint32_t val)
+comp_dict_item_t *install(const char *key, uint32_t val, uint32_t line)
 {
 	comp_dict_item_t *dip;
 
-	if ((dip = lookup(key)) == NULL) {
-		/* not found */
-		dip = (comp_dict_item_t *)malloc(sizeof(*dip));
-		if (dip == NULL) {
+	/* entry is already there, nothing to do */
+	if ((dip = lookup(key)) != NULL)
+		return dip;
+
+	/* not found */
+	dip = (comp_dict_item_t *)malloc(sizeof(*dip));
+	if (dip == NULL) {
+		debug("Could not install (%s, %d)", key, val);
+		return NULL;
+	}
+	dip->key = strdup(key);
+	if (dip->key == NULL) {
+		debug("Could not install (%s, %d)", key, val);
+		free(dip);
+		return NULL;
+	}
+	dip->next = NULL;
+
+	if (dicttab == NULL) {
+		/* first entry */
+		dicttab = malloc(sizeof(*dicttab));
+		if (dicttab == NULL) {
 			debug("Could not install (%s, %d)", key, val);
-			return NULL;
-		}
-		dip->key = strdup(key);
-		if (dip->key == NULL) {
-			debug("Could not install (%s, %d)", key, val);
+			free(dip->key);
 			free(dip);
 			return NULL;
 		}
-		dip->next = NULL;
-
-		if (dicttab == NULL) {
-			/* first entry */
-			dicttab = malloc(sizeof(*dicttab));
-			if (dicttab == NULL) {
-				debug("Could not install (%s, %d)", key, val);
-				free(dip->key);
-				free(dip);
-				return NULL;
-			}
-			dicttab->fep = dip;
-			dicttab->lep = dip;
-		} else {
-			dicttab->lep->next = dip;
-			dicttab->lep = dip;
-		}
-
-		/* increment the entries counter */
-		dicttab->cnt++;
+		dicttab->fep = dip;
+		dicttab->lep = dip;
+	} else {
+		dicttab->lep->next = dip;
+		dicttab->lep = dip;
 	}
-	
+
+	/* increment the entries counter */
+	dicttab->cnt++;
+
 	dip->val = val;
+	dip->l = line;
 
 	return dip;
 }
 
-void show_dict()
+void show_dict(FILE *out)
 {
+	FILE *outstream;
 	comp_dict_item_t *dip;
-	printf("------------------------------------------------------------------------------\n");
-	printf("Entries in this dictionary:\n");
+
+	outstream = out ? out : stdout;
+
 	for (dip = dicttab->fep; dip != NULL; dip = dip->next) {
-		printf("(%s, %d)\n", dip->key, dip->val);
+		fprintf(outstream, "%d: (%d, %s)\n", dip->l, dip->val, dip->key);
 	}
-	printf("------------------------------------------------------------------------------\n");
 }
 
 void free_dict()

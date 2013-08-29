@@ -1,40 +1,22 @@
+/*
+   main.c
 
+   Arquivo principal do analisador sintático.
+*/
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
 #include "comp_dict.h"
 #include "comp_list.h"
 #include "comp_tree.h"
 #include "comp_graph.h"
-#include "tokens.h"
-#include "util.h"
 
-int getLineNumber(void)
+void yyerror (char const *mensagem)
 {
-	return get_line();
+  fprintf (stderr, "%s\n", mensagem);
 }
 
 int main(int argc, char *argv[])
 {
-	int token = TOKEN_ERRO;
-
-	if (argc < 2 || argc > 2) {
-		puts("\n");
-		puts("Wrong number of arguments");
-		puts("Try:");
-		printf("\t%s <input file>\n", argv[0]);
-		puts("\n");
-		exit(EXIT_FAILURE);
-	}
-
-	/* Set flex to read from a file instead of stdin */
-	set_yyin(argv[1]);
-
-	while (token = yylex()) {
-		//printf("token <%d> at line %d\n", token, getLineNumber());
-	}
-
-	return 0;
+  int resultado = yyparse();
+  return resultado;
 }
 
