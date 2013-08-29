@@ -48,9 +48,9 @@ global_decl : 	 declaration ';'
  
 declaration : 	 TK_PR_INT ':' TK_IDENTIFICADOR
  		|TK_PR_FLOAT ':' TK_IDENTIFICADOR		
- 		|TK_PR_BOOL ':' TK_IDENTICADOR
- 		|TK_PR_CHAR ':' TK_IDENTICADOR
- 		|TK_PR_STRING ':' TK_IDENTICADOR
+ 		|TK_PR_BOOL ':' TK_IDENTIFICADOR
+ 		|TK_PR_CHAR ':' TK_IDENTIFICADOR
+ 		|TK_PR_STRING ':' TK_IDENTIFICADOR
  		;
 
 vector_decl:	 TK_PR_INT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
@@ -150,12 +150,12 @@ log_expr:	 and
 /*
  * logical operations
  */
-and:	term PR_OC_AND term;
-or:	term PR_OC_OR term;
-le:	term PR_OC_LE term;
-ge:	term PR_OC_GE term;
-eq:	term PR_OC_EQ term;
-ne:	PR_OC_NE term;
+and:	term TK_OC_AND term;
+or:	term TK_OC_OR term;
+le:	term TK_OC_LE term;
+ge:	term TK_OC_GE term;
+eq:	term TK_OC_EQ term;
+ne:	TK_OC_NE term;
 /*
  * arithmetical operations
  */
@@ -217,7 +217,7 @@ return: TK_PR_RETURN expr;
  * Call function command
  */
 
-call_function: 	TL_IDENTIFICADOR'('argument_list')';
+call_function: 	TK_IDENTIFICADOR'('argument_list')';
 
 argument_list:	 argument
 		|argument ',' argument_list
@@ -247,10 +247,8 @@ constant:	 TK_LIT_INT
 
 
  //we must think in all possibilities... 
-
- 
  %%
-
 void yyerror (const char *s)
 {
 	fprintf (stderr, "%s\n", s);
+}
