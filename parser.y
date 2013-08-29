@@ -71,7 +71,7 @@ parameter_list:  parameter
 function_header: 	 type ':' TK_IDENTIFICADOR '('parameter_list')';
 
 function_variables: 	 declaration ';'
-			|function_variables	
+			|declaration ';' function_variables	
 			|			
 			;
 
@@ -199,7 +199,7 @@ input: TK_PR_INPUT TK_IDENTIFICADOR;
 output: TK_PR_OUTPUT output_list;
 
 output_list: 	 output_element
-		|outpur_element ',' output_list
+		|output_element ',' output_list
 		;
 
 output_element:	 TK_LIT_STRING
