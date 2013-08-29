@@ -213,6 +213,20 @@ output_element:	 TK_LIT_STRING
 return: TK_PR_RETURN expr;
 
 /*
+ * Call function command
+ */
+
+call_function: 	TL_IDENTIFICADOR'('argument_list')';
+
+argument_list:	 argument
+		|argument ',' argument_list
+		;
+
+argument:	 term
+		|
+		;
+
+/*
   * All the possibilities of types
   */
 type:		 TK_PR_INT
