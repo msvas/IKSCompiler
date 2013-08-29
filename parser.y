@@ -9,6 +9,11 @@
 #include "parser.h"
 
 %}
+
+%union
+	{
+	comp_dict_item_t* symbol;
+	};
  
 /* Declaração dos tokens da gramática da Linguagem K */
 %token TK_PR_INT
