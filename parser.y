@@ -7,6 +7,7 @@
 #include "comp_dict.h"
 #include "util.h"
 #include "parser.h"
+
 %}
  
 /* Declaração dos tokens da gramática da Linguagem K */
@@ -249,3 +250,7 @@ constant:	 TK_LIT_INT
 
  
  %%
+
+void yyerror (const char *s)
+{
+	fprintf (stderr, "%s\n", s);
