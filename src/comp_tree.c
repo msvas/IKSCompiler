@@ -6,14 +6,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "comp_tree.h"
 #define NUMERO_FILHOS 2
 
-typedef struct comp_tree {
+/*typedef struct comp_tree {
 	struct comp_tree *filhos[NUMERO_FILHOS];
 	int chave;
 }NODO;
 
-/*NODO* criaNodo(int chave)
+NODO* criaNodo(int chave)
 {
 	NODO* novoNodo;
 	int indice;
@@ -90,8 +91,6 @@ void main()
 
 	imprimeArvore(raiz);
 }*/
-
-#include "comp_tree.h"
  
 NODO* criaArvore()
 {

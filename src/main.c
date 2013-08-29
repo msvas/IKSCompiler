@@ -11,7 +11,8 @@
 
 void yyerror (char const *mensagem)
 {
-  fprintf (stderr, "%s\n", mensagem);
+	fprintf (stderr, "%s\n", mensagem);
+	//exit(RS_ERRO);
 }
 
 int main(int argc, char *argv[])
