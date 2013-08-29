@@ -1,4 +1,5 @@
 /*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   comp_list.c
  * @brief  List manipulation functions.
  */
@@ -7,16 +8,16 @@
 #include <stdlib.h>
 #include "comp_list.h"
 
-NODO* criaLista()
+comp_list_node* criaLista()
 {
 	return NULL;
 }
 
-NODO* criaNodo(int chave)
+comp_list_node* criaNodoLista(int chave)
 {
-	NODO *novoNodo;
+	comp_list_node *novoNodo;
 
-	novoNodo = malloc(sizeof(NODO));
+	novoNodo = malloc(sizeof(comp_list_node));
 	novoNodo->chave = chave;
 	novoNodo->proximo = NULL;
 	novoNodo->anterior = NULL;
@@ -24,9 +25,9 @@ NODO* criaNodo(int chave)
 	return novoNodo;
 }
 
-NODO* insereNodo(NODO* novoNodo, NODO* inicioLista)
+comp_list_node* insereNodoLista(comp_list_node* novoNodo, comp_list_node* inicioLista)
 {
-	NODO* aux;
+	comp_list_node* aux;
 	
 	aux = inicioLista;
 
@@ -47,34 +48,39 @@ NODO* insereNodo(NODO* novoNodo, NODO* inicioLista)
 	return inicioLista;
 }
 
-NODO* excluiNodo(NODO* nodoExcluido, NODO* inicioLista)
+comp_list_node* excluiNodoLista(comp_list_node* nodoExcluido, comp_list_node* inicioLista)
 {
-	NODO* auxProx;
-	NODO* auxAnt;
+	comp_list_node* auxProx;
+	comp_list_node* auxAnt;
 
 	auxProx = inicioLista;
 
-	while(auxProx->proximo!=nodoExcluido && auxProx->proximo!=NULL) {
-		auxProx = auxProx->proximo;
-	}
+	if(auxProx != nodoExcluido) {	
+		while(auxProx->proximo!=nodoExcluido && auxProx->proximo!=NULL) {
+			auxProx = auxProx->proximo;
+		}
+		if(auxProx->proximo == nodoExcluido) {
+			auxAnt = auxProx;
+			auxProx->proximo = nodoExcluido->proximo;
+			auxProx = nodoExcluido->proximo;
 
-	if(auxProx->proximo == nodoExcluido) {
-		auxAnt = auxProx;
-		auxProx->proximo = nodoExcluido->proximo;
-		auxProx = nodoExcluido->proximo;
-
-		if(auxProx!=NULL) {
-			auxProx->anterior = auxAnt;
+			if(auxProx!=NULL) {
+				auxProx->anterior = auxAnt;
+			}
 		}
 	}
-
+	else {
+		auxProx = auxProx->proximo;
+		auxProx->anterior = NULL;
+		inicioLista = auxProx;
+	}
 	free(nodoExcluido);
 	return inicioLista;
 }
 
-NODO* concatenaListas(NODO* primeiraLista, NODO* segundaLista)
+comp_list_node* concatenaListas(comp_list_node* primeiraLista, comp_list_node* segundaLista)
 {
-	NODO* aux;
+	comp_list_node* aux;
 	
 	aux = primeiraLista;
 
@@ -92,9 +98,9 @@ NODO* concatenaListas(NODO* primeiraLista, NODO* segundaLista)
 	return primeiraLista;
 }
 
-void imprimeLista(NODO* inicioLista)
+void imprimeLista(comp_list_node* inicioLista)
 {
-	NODO* aux;
+	comp_list_node* aux;
 
 	aux = inicioLista;
 
@@ -103,28 +109,3 @@ void imprimeLista(NODO* inicioLista)
 		aux = aux->proximo;
 	}
 }
-
-/* 
- * TODO: it was not compiling. A C program supports only
- * one main() function.
- * Maybe we can move this to a tests subdir.
- */
-#if 0
-int main()
-{
-	NODO* inicioLista;
-	NODO* nodo1;
-	NODO* nodo2;
-
-	inicioLista = criaLista();
-	
-	nodo1 = criaNodo(1);
-	nodo2 = criaNodo(2);
-
-	inicioLista = insereNodo(nodo1, inicioLista);
-	inicioLista = insereNodo(nodo2, inicioLista);
-
-	imprimeLista(inicioLista);
-}
-#endif
-

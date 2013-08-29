@@ -1,0 +1,76 @@
+
+= References =
+
+
+== Flex ==
+
+```
+man flex
+info flex
+info flex --vi-keys
+man ascii
+```
+
+http://aquamentus.com/flex_bison.html
+http://dinosaur.compilertools.net/flex/manpage.html
+http://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
+http://www.lysator.liu.se/c/ANSI-C-grammar-l.html#comment
+http://stackoverflow.com/questions/2039795/regular-expression-for-a-string-literal-in-flex-lex
+http://stackoverflow.com/questions/15550553/flex-regular-expression-literal-char?rq=1
+
+== Regex ==
+
+http://pt.wikipedia.org/wiki/Express%C3%A3o_regular
+http://www.regular-expressions.info/charclass.html
+
+
+
+== Other Useful Stuff (really) ==
+
+http://www.vim.org/
+http://cscope.sourceforge.net/
+http://txt2tags.org/
+
+
+
+= SSH key generation =
+
+ssh-keygen
+<enter>
+<enter>
+cat ~/.ssh/id_rsa.pub
+
+Set the public key in bitbucket.org --> Manage Account --> SSH keys --> copy and
+paste --> add button.
+
+
+== Install ==
+
+sudo apt-get install bison
+sudo apt-get install bison-doc
+sudo apt-get install flex
+sudo apt-get install cmake
+sudo apt-get install g++
+sudo apt-get install doxygen
+
+
+= Git =
+
+git remote -v
+git remote add schnorr git@bitbucket.org:schnorr/compiladores.git
+git remote -v
+git push origin master:eder-flex
+git checkout eder-flex
+git merge --no-ff schnorr/master
+
+
+= Tests =
+
+./main ../test/tokens/1token.iks
+
+./main ../test/tokens/1600tokens.iks > temp
+vim temp
+gedit temp
+
+
+

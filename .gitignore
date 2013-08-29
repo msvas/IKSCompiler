@@ -1,4 +1,10 @@
 *.swp
 *.o
+*.cmake
+cscope*
+Doxyfile*
 build/
+CMakeFiles/
+latex/
+html/
 
