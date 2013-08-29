@@ -41,9 +41,25 @@
  
 %%
   /* Regras (e ações) da gramática da Linguagem K */
+/*
+ * Program definition
+ */
+
+program:	 list_global_decl function_list
+		|
+		;
+
+
+
+
  // declarations of the program
+list_global_decl:	 global_decl
+			|global_decl list_global_decl
+			;
+
 global_decl : 	 declaration ';'
 		|vector_decl ';'
+		|
 		;
  
 declaration : 	 TK_PR_INT ':' TK_IDENTIFICADOR
@@ -82,6 +98,9 @@ function_body: 	cmd_block;
  * A function is made of a header, declaration of locals variables and body
  *		
  */
+function_list:	function
+		|function function_list
+		;
 
 function: 	function_header function_variables function_body;
  
