@@ -125,14 +125,17 @@ primary_expression: 	 TK_IDENTIFICADOR
 			|constant
 			;
 
- //I think that is an arit_expr 
+/*
+ * Descriptions of an arithmetical expressions and logical expressions
+ */
 
 arit_expr:	 term
 		|sum
 		|sub
 		|mult
 		|div
-		
+		;
+
 log_expr:	 and
 		|or
 		|le
@@ -143,24 +146,31 @@ log_expr:	 and
 		|term '>' term
 		; 
 
-
+/*
+ * logical operations
+ */
 and:	term PR_OC_AND term;
 or:	term PR_OC_OR term;
 le:	term PR_OC_LE term;
 ge:	term PR_OC_GE term;
 eq:	term PR_OC_EQ term;
 ne:	PR_OC_NE term;
-
+/*
+ * arithmetical operations
+ */
 sum: term '+' term;
 sub: term '-' term;
 mult: term '*' term;
 div: term '/' term;
 
+/*
+ * term can be a number or a variable.
+ */
 term: 	 TK_LIT_INT
 	|TK_LIT_FLOAT
 	|TK_LIT_CHAR
 	|TK_IDENTIFICADOR
-	|TK_IDENTIFICADOR '[' TK_LIT_INT ']'
+	|TK_IDENTIFICADOR '[' expr ']'
 	;
 
 
