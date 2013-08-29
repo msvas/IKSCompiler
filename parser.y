@@ -45,7 +45,8 @@
  * Program definition
  */
 
-program:	 list_global_decl function_list
+program:	 global_decl program
+		|function program
 		|
 		;
 
@@ -53,23 +54,15 @@ program:	 list_global_decl function_list
 
 
  // declarations of the program
-list_global_decl:	 global_decl
-			|global_decl list_global_decl
-			;
 
 global_decl : 	 declaration ';'
 		|vector_decl ';'
 		;
  
-declaration : 	 TK_PR_INT ':' TK_IDENTIFICADOR
- 		|TK_PR_FLOAT ':' TK_IDENTIFICADOR		
- 		|TK_PR_BOOL ':' TK_IDENTIFICADOR
- 		|TK_PR_CHAR ':' TK_IDENTIFICADOR
- 		|TK_PR_STRING ':' TK_IDENTIFICADOR
+declaration : 	 type ':' TK_IDENTIFICADOR
  		;
 
-vector_decl:	 TK_PR_INT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
- 		|TK_PR_FLOAT ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
+vector_decl:	 type ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
  		;
 
  //declaration of the functions
@@ -95,11 +88,7 @@ function_body: 	cmd_block;
 
 /*
  * A function is made of a header, declaration of locals variables and body
- *		
  */
-function_list:	function
-		|function function_list
-		;
 
 function: 	function_header function_variables function_body;
  
