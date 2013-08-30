@@ -105,21 +105,21 @@ function: 	function_header function_variables function_body;
   */
 cmd_block:	 '{' cmd_list '}' ;
  
-cmd_list:	 cmd ';'
- 		|cmd ';' cmd_list
+cmd_list:	 cmd 
+ 		|cmd cmd_list
  		|
  		;
  
  /*
   * Types of commands
   */
-cmd:		 attrib 
+cmd:		 attrib ';'
  		|flux 
- 		|input
- 		|output
-		|return
+ 		|input ';'
+ 		|output ';'
+		|return ';'
  		|cmd_block
- 		|call_function
+ 		|call_function ';'
  		|
  		;
  
