@@ -1,3 +1,9 @@
+/*
+ * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
+ * @file   util.h
+ * @brief  General utilities.
+ */
+
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -123,7 +129,7 @@ cmd:		 attrib
   */
  
 expr:		 primary_expression
-		|function 
+		|call_function 
  		|arit_expr
 		|log_expr
 		|'('expr')'
