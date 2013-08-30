@@ -8,16 +8,21 @@
 #include "comp_list.h"
 #include "comp_tree.h"
 #include "comp_graph.h"
+#include "lex.yy.h"
+
 
 void yyerror (char const *mensagem)
 {
-	fprintf (stderr, "%s\n", mensagem);
+	fprintf (stderr, "%s line:\n", mensagem);
 	//exit(RS_ERRO);
 }
 
-int main(int argc, char *argv[])
+int main(char argv, int **argc)
 {
-  int resultado = yyparse();
-  return resultado;
+	int resultado;
+
+	yyin = fopen(argc[1], "r");
+	yyparse();
+  	return resultado;
 }
 
