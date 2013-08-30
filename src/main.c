@@ -13,7 +13,7 @@
 
 void yyerror (char const *mensagem)
 {
-	fprintf (stderr, "%s line:\n", mensagem);
+	fprintf (stderr, "%s line: %d\n", mensagem, yylineno);
 	//exit(RS_ERRO);
 }
 
