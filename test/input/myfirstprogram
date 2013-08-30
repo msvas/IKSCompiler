@@ -1,0 +1,14 @@
+int : idade;
+
+aumentaIdade ( int numero )
+float : um;
+{
+	um = 1;
+	return numero + 1;
+}
+
+main()
+{
+	idade = 20;
+	aumentaIdade(idade)
+}
