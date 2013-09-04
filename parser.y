@@ -67,7 +67,7 @@ global_decl : 	 declaration ';'
 		;
  
 
-declaration : 	 type ':' TK_IDENTIFICADOR
+declaration : 	 type ':' TK_IDENTIFICADOR {}
  		;
 
 vector_decl:	 type ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
@@ -119,6 +119,7 @@ cmd:		 attrib ';'
  		|output ';'
 		|return ';'
  		|cmd_block
+		|cmd_block ';'
  		|call_function ';'
  		|
  		;
@@ -184,12 +185,13 @@ div: term '/' term;
 term: 	 TK_LIT_INT
 	|TK_LIT_FLOAT
 	|TK_LIT_CHAR
-	|TK_IDENTIFICADOR
-	|TK_IDENTIFICADOR '[' expr ']'
+	|TK_IDENTIFICADOR				
+ 	|TK_IDENTIFICADOR '[' expr ']'
 	;
 
 
 attrib:	 	 TK_IDENTIFICADOR '=' expr
+		|TK_IDENTIFICADOR '=' TK_LIT_STRING
 		|TK_IDENTIFICADOR '[' expr ']' '=' expr
 		;
  
@@ -222,7 +224,7 @@ output_element:	 TK_LIT_STRING
 		;
 
 /*
- * Return command description
+ * Return command description				
  */
 
 return: TK_PR_RETURN expr;
