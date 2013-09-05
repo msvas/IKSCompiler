@@ -67,7 +67,7 @@ global_decl : 	 declaration ';'
 		;
  
 
-declaration : 	 type ':' TK_IDENTIFICADOR {}
+declaration : 	 type ':' TK_IDENTIFICADOR 
  		;
 
 vector_decl:	 type ':' TK_IDENTIFICADOR'['TK_LIT_INT']'
@@ -78,7 +78,7 @@ parameter: declaration;
  
 parameter_list:  parameter
  		|parameter ',' parameter_list
- 		|
+		|
  		;
  
  /*
@@ -92,7 +92,8 @@ function_variables: 	 declaration ';'
 			|			
 			;
 
-function_body: 	cmd_block;
+function_body: 	 cmd_block
+		;
 
 /*
  * A function is made of a header, declaration of locals variables and body
@@ -114,14 +115,15 @@ cmd_list:	 cmd
   * Types of commands
   */
 cmd:		 attrib ';'
- 		|flux 
+ 		|flow 
  		|input ';'
  		|output ';'
+		|output
 		|return ';'
  		|cmd_block
 		|cmd_block ';'
  		|call_function ';'
- 		|
+ 		| ';'
  		;
  
 
@@ -150,6 +152,10 @@ arit_expr:	 term
 		|sub
 		|mult
 		|div
+		|'('sum')'
+		|'('sub')'
+		|'('mult')'
+		|'('div')'
 		;
 
 log_expr:	 and
@@ -167,17 +173,17 @@ log_expr:	 and
  */
 and:	term TK_OC_AND term;
 or:	term TK_OC_OR term;
-le:	term TK_OC_LE term;
-ge:	term TK_OC_GE term;
-eq:	term TK_OC_EQ term;
-ne:	TK_OC_NE term;
+le:	term TK_OC_LE arit_expr;
+ge:	term TK_OC_GE arit_expr;
+eq:	term TK_OC_EQ arit_expr;
+ne:	term TK_OC_NE arit_expr;
 /*
  * arithmetical operations
  */
-sum: term '+' term;
-sub: term '-' term;
-mult: term '*' term;
-div: term '/' term;
+sum: arit_expr '+' arit_expr;
+sub: arit_expr '-' arit_expr;
+mult: arit_expr '*' arit_expr;
+div: arit_expr '/' arit_expr;
 
 /*
  * term can be a number or a variable.
@@ -187,6 +193,7 @@ term: 	 TK_LIT_INT
 	|TK_LIT_CHAR
 	|TK_IDENTIFICADOR				
  	|TK_IDENTIFICADOR '[' expr ']'
+	|call_function
 	;
 
 
@@ -196,9 +203,9 @@ attrib:	 	 TK_IDENTIFICADOR '=' expr
 		;
  
  /*
-  * Control flux description
+  * Control flow description
   */
-flux:		 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
+flow:		 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
  		|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd
  		|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd
  		|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'

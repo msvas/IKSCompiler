@@ -8,7 +8,6 @@
 #include "comp_dict.h"
 #include "util.h"
 #include "parser.h"
-#include "parser.tab.h"
 
 uint32_t line_cnt = 1;
 %}
