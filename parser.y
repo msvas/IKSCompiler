@@ -16,6 +16,45 @@
 
 %}
 
+%type<symbol> global_decl
+%type<symbol> declaration
+%type<symbol> vector_decl
+%type<symbol> parameter
+%type<symbol> parameter_list
+%type<symbol> function_header
+%type<symbol> function_variables
+%type<symbol> function_body
+%type<symbol> function
+%type<symbol> cmd_block
+%type<symbol> cmd_list
+%type<symbol> cmd
+%type<symbol> expr
+%type<symbol> primary_expression
+%type<symbol> arit_expr
+%type<symbol> log_expr
+%type<symbol> and
+%type<symbol> or
+%type<symbol> le
+%type<symbol> ge
+%type<symbol> eq
+%type<symbol> ne
+%type<symbol> sum
+%type<symbol> sub
+%type<symbol> mult
+%type<symbol> div
+%type<symbol> term
+%type<symbol> attrib
+%type<symbol> flow
+%type<symbol> input
+%type<symbol> output
+%type<symbol> output_list
+%type<symbol> output_element
+%type<symbol> return
+%type<symbol> call_function
+%type<symbol> argument_list
+%type<symbol> argument
+%type<symbol> type
+
 %union
 	{
 	comp_dict_item_t* symbol;
