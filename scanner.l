@@ -8,13 +8,10 @@
 #include "comp_dict.h"
 #include "util.h"
 #include "parser.h"
-#include "parser.tab.h"
 
 uint32_t line_cnt = 1;
 %}
-
 %option yylineno
-
  /* int: an optional '-' signal followed by a digit that is optionally followed by zero or more digits */
 INT    (-*[[:digit:]])[[:digit:]]*
  /* character: starts with ''' that must not be directly followed by ''' or a new line (\n). The first part does't match the scape symbol which is treated in the second part */

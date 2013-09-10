@@ -1,14 +1,24 @@
 int : idade;
 
-aumentaIdade ( int numero )
+int : aumentaIdade (int : numero)
 float : um;
 {
 	um = 1;
 	return numero + 1;
 }
 
-main()
+int : main()
+bool : inicio;
 {
 	idade = 20;
-	aumentaIdade(idade)
+	if(idade > 5) then
+	{
+	 inicio = FALSE;
+	}
+	else
+	{
+	 inicio = TRUE;
+	}	
+	aumentaIdade(idade);
+	output idade;
 }
