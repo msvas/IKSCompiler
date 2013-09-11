@@ -117,7 +117,7 @@ parameter: declaration;
  
 parameter_list:  parameter
  		|parameter ',' parameter_list
-		|
+		| { $$ = NULL; }
  		;
  
  /*
@@ -128,7 +128,7 @@ function_header: 	 type ':' TK_IDENTIFICADOR '('parameter_list')';
 
 function_variables: 	 declaration ';'
 			|declaration ';' function_variables	
-			|			
+			| { $$ = NULL; }		
 			;
 
 function_body: 	 cmd_block
@@ -147,7 +147,7 @@ cmd_block:	 '{' cmd_list '}' ;
  
 cmd_list:	 cmd 
  		|cmd cmd_list
- 		|
+ 		| { $$ = NULL; }
  		;
  
  /*
@@ -286,7 +286,7 @@ argument_list:	 argument
 		;
 
 argument:	 term
-		|
+		| { $$ = NULL; }
 		;
 
 /*
