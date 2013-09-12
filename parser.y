@@ -52,8 +52,8 @@
 %token TK_PR_CHAR
 %token TK_PR_STRING
 %token TK_PR_IF
-%token TK_PR_THEN
-%token TK_PR_ELSE
+%right TK_PR_THEN
+%right TK_PR_ELSE
 %token TK_PR_WHILE
 %token TK_PR_DO
 %token TK_PR_INPUT
@@ -107,7 +107,7 @@ parameter_list:  declaration
   * followed by a colon, an identifier and parameters
   */
 function_header: 	 type ':' TK_IDENTIFICADOR '('parameter_list')';
-function_variables:	declaration ';' function_variables	
+function_variables:	 declaration ';' function_variables	
 			| { $$ = NULL; }		
 			;
 
@@ -119,25 +119,23 @@ function: 	function_header function_variables cmd_block;
  /* 
   * A command block is a group of commands
   */
-cmd_block:	 '{' cmd_list '}' ;
+cmd_block:	 '{' cmd_list '}';
  
 cmd_list:	 cmd cmd_list
  		| { $$ = NULL; }
  		;
- 
  /*
   * Types of commands
   */
 cmd:		 attrib ';'
  		|flow 
  		|input ';'
- 		|output ';'
 		|output
+		|output ';'
 		|return ';'
  		|cmd_block
 		|cmd_block ';'
  		|call_function ';'
- 		| ';'
  		;
  
  /*
@@ -145,27 +143,24 @@ cmd:		 attrib ';'
   */
 expr: 		 arit_expr
 		|log_expr
-		|'('expr')'
  		;
 
 /*
  * Descriptions of an arithmetical expressions and logical expressions
  */
 arit_expr:	 term
+		|'('arit_expr')'
 		|arit_expr '+' arit_expr
 		|arit_expr '-' arit_expr
 		|arit_expr '*' arit_expr
 		|arit_expr '/' arit_expr
-		|'('arit_expr '+' arit_expr')'
-		|'('arit_expr '-' arit_expr')'
-		|'('arit_expr '*' arit_expr')'
-		|'('arit_expr '/' arit_expr')'
 		;
 
 /*
  * logical operations
  */
-log_expr:	 term TK_OC_AND term
+log_expr:	 '('log_expr')'	
+		|term TK_OC_AND term
 		|term TK_OC_OR term
 		|term TK_OC_LE arit_expr
 		|term TK_OC_GE arit_expr
@@ -198,15 +193,15 @@ attrib:	 	 TK_IDENTIFICADOR '=' expr
   * Control flow description
   */
 flow:		 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
- 		|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd
+		|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd
  		|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd
  		|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'
  		;
 /*
  * Input, output and return command descriptions
  */
-input: 		TK_PR_INPUT TK_IDENTIFICADOR;
-output: 	TK_PR_OUTPUT output_list;
+input: 		 TK_PR_INPUT TK_IDENTIFICADOR;
+output: 	 TK_PR_OUTPUT output_list;
 output_list: 	 output_element
 		|output_element ',' output_list
 		;
@@ -219,7 +214,7 @@ return: 	TK_PR_RETURN expr
 /*
  * Call function command
  */
-call_function: 	TK_IDENTIFICADOR'('argument_list')';
+call_function: 	 TK_IDENTIFICADOR'('argument_list')';
 
 argument_list:	 term
 		|term ',' argument_list
@@ -227,8 +222,8 @@ argument_list:	 term
 		;
 
 /*
-  * All the possibilities of types
-  */
+ * All the possibilities of types
+ */
 type:		 TK_PR_INT
  		|TK_PR_FLOAT		
  		|TK_PR_BOOL
