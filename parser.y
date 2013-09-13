@@ -11,38 +11,41 @@
 #include <errno.h>
 #include <math.h>
 #include "comp_dict.h"
+#include "comp_tree.h"
 #include "util.h"
 #include "parser.h"
+#include "iks_ast.h"
 
 %}
 
-%type<symbol> global_decl
-%type<symbol> declaration
-%type<symbol> parameter_list
-%type<symbol> function_header
-%type<symbol> function_variables
-%type<symbol> function
-%type<symbol> cmd_block
-%type<symbol> cmd_list
-%type<symbol> cmd
-%type<symbol> expr
-%type<symbol> arit_expr
-%type<symbol> log_expr
-%type<symbol> term
-%type<symbol> attrib
-%type<symbol> flow
-%type<symbol> input
-%type<symbol> output
-%type<symbol> output_list
-%type<symbol> output_element
-%type<symbol> return
-%type<symbol> call_function
-%type<symbol> argument_list
-%type<symbol> type
+%type<ast> global_decl
+%type<ast> declaration
+%type<ast> parameter_list
+%type<ast> function_header
+%type<ast> function_variables
+%type<ast> function
+%type<ast> cmd_block
+%type<ast> cmd_list
+%type<ast> cmd
+%type<ast> expr
+%type<ast> arit_expr
+%type<ast> log_expr
+%type<ast> term
+%type<ast> attrib
+%type<ast> flow
+%type<ast> input
+%type<ast> output
+%type<ast> output_list
+%type<ast> output_element
+%type<ast> return
+%type<ast> call_function
+%type<ast> argument_list
+%type<ast> type
 
 %union
 	{
 	comp_dict_item_t* symbol;
+	NODO* ast;
 	};
  
 /* Declaração dos tokens da gramática da Linguagem K */
