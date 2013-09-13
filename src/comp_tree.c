@@ -40,22 +40,26 @@ NODO* ast(int type, NODO* nodoPai, comp_dict_item_t* tableEntry)
 	novoNodo = criaNodo(type, tableEntry);
 	insereNodo(novoNodo, nodoPai);
 }
-/*
+
 void imprimeArvore(NODO* raiz) //print function: used to view all the tree, good for tests.
  {
- 	int indice;
- 	printf("%d filhos: ", raiz->chave);
- 	for(indice=0;indice<NUMERO_FILHOS;indice++)
- 		if(raiz->filhos[indice] != NULL)		
- 		{
- 			printf("%d ", raiz->filhos[indice]->chave);			
- 			
- 		} 	
- 	for(indice=0;indice<NUMERO_FILHOS;indice++)
- 		if(raiz->filhos[indice] != NULL)		
- 		{
- 			printf("\n");			
- 			imprimeArvore(raiz->filhos[indice]);
- 		}
+ 	simple_node* aux;
+	aux = raiz->filhos;
+ 	printf("%d filhos: ", raiz->type);
+ 	while (aux->proximo!=NULL)
+		{
+			printf("%d ", aux->filho->type);
+			aux = aux->proximo;
+		}
+	aux = raiz->filhos;	
+ 	while (aux->proximo!=NULL)
+		{
+			if(aux->filho!=NULL)
+			{
+				printf("\n");
+				imprimeArvore(aux->filho);
+			}
+			aux=aux->proximo;
+		}
  }
-*/
+
