@@ -43,10 +43,10 @@
 %type<ast> type
 
 %union
-	{
+{
 	comp_dict_item_t* symbol;
 	NODO* ast;
-	};
+};
  
 /* Declaração dos tokens da gramática da Linguagem K */
 %token TK_PR_INT
@@ -68,14 +68,15 @@
 %token TK_OC_NE
 %token TK_OC_AND
 %token TK_OC_OR
-%token TK_LIT_INT
-%token TK_LIT_FLOAT
-%token TK_LIT_FALSE
-%token TK_LIT_TRUE
-%token TK_LIT_CHAR
-%token TK_LIT_STRING
-%token TK_IDENTIFICADOR
 %token TOKEN_ERRO
+
+%token<symbol> TK_LIT_INT   	1
+%token<symbol> TK_LIT_FLOAT  	2
+%token<symbol> TK_LIT_TRUE      	3
+%token<symbol> TK_LIT_FALSE     	4
+%token<symbol> TK_LIT_CHAR      	5
+%token<symbol> TK_LIT_STRING    	6
+%token<symbol> TK_IDENTIFICADOR 	7
 
 %left '+'
 %left '-'
@@ -118,7 +119,7 @@ function_variables:	 declaration ';' function_variables			{}
 /*
  * A function is made of a header, declaration of locals variables and body
  */
-function: 		 function_header function_variables cmd_block		{}
+function: 		 function_header function_variables cmd_block		{ }
 			;
  
  /* 
