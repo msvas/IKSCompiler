@@ -1,7 +1,7 @@
 /*
  * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   comp_tree.c
- * @brief  Tree manipulation functions.
+ * @brief  Ast Tree manipulation functions.
  */
 
 #include <stdio.h>
@@ -14,54 +14,18 @@ NODO* criaArvore()
 	return NULL;
 } 
 
-NODO* criaNodo(int chave) //create a new node
+NODO* ast(int type,comp_dict_item_t *symbol, AST_TREE *s0, AST_TREE *s1, AST_TREE *s2, AST_TREE *s3)
 {
- 	NODO* novoNodo;
- 	int indice;
- 	novoNodo = malloc(sizeof(NODO));
- 	novoNodo->chave = chave;
- 	for(indice = 0; indice < NUMERO_FILHOS; indice++)
- 		novoNodo->filhos[indice] = NULL;
- 	return novoNodo;
+ 	AST_TREE *newNode;
+	
+	newNode = malloc(sizeof(AST_TREE);
+	newNode->type = type;
+	newNode->symbol = symbol;
+	newNode->filhos[0] = s0;
+	newNode->filhos[1] = s1;
+	newNode->filhos[2] = s2;
+	newNode->filhos[3] = s3;
+	return newNode;
 } 
 
-void insereNodo(NODO* novoNodo, NODO* raiz) //function to insert a node on the tree
-{
- 	int indice;
- 	for(indice=0;indice<NUMERO_FILHOS;indice++)
-		if(raiz->filhos[indice] == NULL)	//search for an empty slot on the vector of node's son.
- 		{
- 			raiz->filhos[indice] = novoNodo;
- 			return; 	
- 		}
-indice = 0;
-	while(indice < NUMERO_FILHOS)		// if the node has the maximum number of sons, check the next node;
- 	{
- 		if(raiz->filhos[indice]->filhos[NUMERO_FILHOS-1] != NULL)
- 			indice++;
- 		else
- 		{
- 			insereNodo(novoNodo, raiz->filhos[indice]);
- 			return;
- 		}
- 	}
-	insereNodo(novoNodo, raiz->filhos[0]); // if there's no node to insert the new node, it is inserted on the first son.	
-}
 
-void imprimeArvore(NODO* raiz) //print function: used to view all the tree, good for tests.
- {
- 	int indice;
- 	printf("%d filhos: ", raiz->chave);
- 	for(indice=0;indice<NUMERO_FILHOS;indice++)
- 		if(raiz->filhos[indice] != NULL)		
- 		{
- 			printf("%d ", raiz->filhos[indice]->chave);			
- 			
- 		} 	
- 	for(indice=0;indice<NUMERO_FILHOS;indice++)
- 		if(raiz->filhos[indice] != NULL)		
- 		{
- 			printf("\n");			
- 			imprimeArvore(raiz->filhos[indice]);
- 		}
- }
