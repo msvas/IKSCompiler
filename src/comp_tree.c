@@ -1,3 +1,5 @@
+
+
 /*
  * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   comp_tree.c
@@ -7,90 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "comp_tree.h"
-#define NUMERO_FILHOS 2
-
-/*typedef struct comp_tree {
-	struct comp_tree *filhos[NUMERO_FILHOS];
-	int chave;
-}NODO;
-
-NODO* criaNodo(int chave)
-{
-	NODO* novoNodo;
-	int indice;
-	novoNodo = malloc(sizeof(NODO));
-	novoNodo->chave = chave;
-	for(indice = 0; indice < NUMERO_FILHOS; indice++)
-		novoNodo->filhos[indice] = NULL;
-	return novoNodo;
-}
+#include "comp_simplelist.h"
 
 
-void insereNodo(NODO* novoNodo, NODO* raiz)
-{
-	int indice;
-	for(indice=0;indice<NUMERO_FILHOS;indice++)
-		if(raiz->filhos[indice] == NULL)
-		{
-			raiz->filhos[indice] = novoNodo;
-			return; 	
-		}
-	indice = 0;
-	while(indice < NUMERO_FILHOS)
-	{
-		if(raiz->filhos[indice]->filhos[NUMERO_FILHOS-1] != NULL)
-			indice++;
-		else
-		{
-			insereNodo(novoNodo, raiz->filhos[indice]);
-			return;
-		}
-	}
-	insereNodo(novoNodo, raiz->filhos[0]);
-	
-	
-}
-
-void imprimeArvore(NODO* raiz)
-{
-	int indice;
-	printf("%d filhos: ", raiz->chave);
-	for(indice=0;indice<NUMERO_FILHOS;indice++)
-		if(raiz->filhos[indice] != NULL)		
-		{
-			printf("%d ", raiz->filhos[indice]->chave);			
-			
-		} 	
-	for(indice=0;indice<NUMERO_FILHOS;indice++)
-		if(raiz->filhos[indice] != NULL)		
-		{
-			printf("\n");			
-			imprimeArvore(raiz->filhos[indice]);
-		}
-}
-
-
-void main()
-{
-	NODO* raiz;
-	int chaves;
-	int resposta = 1;
-	
-	printf("insira o primeiro nó: ");
-	scanf("%d", &chaves);
-	raiz = criaNodo(chaves);
-	
-	while(resposta == 1)
-	{
-		printf("insira um nó: ");
-		scanf("%d", &chaves);
-		insereNodo(criaNodo(chaves),raiz);
-		printf("continuar?(1/0): ");
-		scanf("%d", &resposta);
-	}
-
-	imprimeArvore(raiz);
-}*/
  
 NODO* criaArvore()
 {
@@ -100,37 +21,23 @@ NODO* criaArvore()
 NODO* criaNodo(int chave) //create a new node
 {
  	NODO* novoNodo;
- 	int indice;
  	novoNodo = malloc(sizeof(NODO));
  	novoNodo->chave = chave;
- 	for(indice = 0; indice < NUMERO_FILHOS; indice++)
- 		novoNodo->filhos[indice] = NULL;
+ 	novoNodo->filhos = NULL;
  	return novoNodo;
 } 
 
 void insereNodo(NODO* novoNodo, NODO* raiz) //function to insert a node on the tree
 {
- 	int indice;
- 	for(indice=0;indice<NUMERO_FILHOS;indice++)
-		if(raiz->filhos[indice] == NULL)	//search for an empty slot on the vector of node's son.
- 		{
- 			raiz->filhos[indice] = novoNodo;
- 			return; 	
- 		}
-indice = 0;
-	while(indice < NUMERO_FILHOS)		// if the node has the maximum number of sons, check the next node;
- 	{
- 		if(raiz->filhos[indice]->filhos[NUMERO_FILHOS-1] != NULL)
- 			indice++;
- 		else
- 		{
- 			insereNodo(novoNodo, raiz->filhos[indice]);
- 			return;
- 		}
- 	}
-	insereNodo(novoNodo, raiz->filhos[0]); // if there's no node to insert the new node, it is inserted on the first son.	
-}
+ 	simple_node* aux;
+	aux->filho = novoNodo;	
+	raiz->filhos = simpleInsert(aux,raiz->filhos);
 
+	
+
+	
+}
+/*
 void imprimeArvore(NODO* raiz) //print function: used to view all the tree, good for tests.
  {
  	int indice;
@@ -148,3 +55,4 @@ void imprimeArvore(NODO* raiz) //print function: used to view all the tree, good
  			imprimeArvore(raiz->filhos[indice]);
  		}
  }
+*/

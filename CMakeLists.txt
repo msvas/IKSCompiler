@@ -16,6 +16,7 @@ ADD_EXECUTABLE(main
   src/gv.c
   src/comp_dict.c
   src/comp_list.c
+  src/comp_simplelist.c
   src/comp_tree.c
   src/comp_graph.c
   src/symbol_table.c

@@ -9,8 +9,8 @@
 
 //! Definition of a graph node structure
 typedef struct comp_tree {
- 	struct comp_tree *filhos[NUMERO_FILHOS];
- 	int chave;
+ 	struct comp_simplelist_t *filhos;
+ 	int type;
 }NODO;
 /**
  * Creates a tree.
