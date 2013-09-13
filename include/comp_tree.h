@@ -18,6 +18,8 @@ typedef struct comp_tree {
  * Creates an ast tree.
  * @return a pointer to the node.
  */
-NODO* ast(int type,comp_dict_item_t *symbol, AST_TREE *s0, AST_TREE *s1, AST_TREE *s2, AST_TREE *s3);
+AST_TREE* ast(int type,comp_dict_item_t *symbol, AST_TREE *s0, AST_TREE *s1, AST_TREE *s2, AST_TREE *s3);
 
+//AST_TREE* print_tree(AST_TREE *root);
 
+//AST_TREE* print_node(AST_TREE *node); 
