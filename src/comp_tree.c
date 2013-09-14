@@ -9,6 +9,7 @@
 #include "comp_tree.h"
 #include "comp_simplelist.h"
 #include "comp_dict.h"
+#include "gv.h"
 
 AST_TREE* criaArvore()
 {
@@ -30,6 +31,8 @@ AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz) //function to insert a
         simple_node* aux;
         aux = malloc(sizeof(simple_node));
         aux->filho = novoFilho;
+	gv_declare(novoFilho->type,novoFilho,novoFilho->tableEntry->key);
+	gv_connect(raiz,aux);
         raiz->filhos = simpleInsert(aux, raiz->filhos);
 	return raiz;
 }
