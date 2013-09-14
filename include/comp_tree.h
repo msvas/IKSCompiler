@@ -6,7 +6,7 @@
 
 //! Maximum value for number of sons in each node
 #define NUMERO_FILHOS 4
-
+#include "comp_dict.h"
 
 //! Definition of an ast tree node structure
 typedef struct comp_tree {
@@ -22,4 +22,4 @@ AST_TREE* ast(int type,comp_dict_item_t *symbol, AST_TREE *s0, AST_TREE *s1, AST
 
 //AST_TREE* print_tree(AST_TREE *root);
 
-//AST_TREE* print_node(AST_TREE *node); 
+AST_TREE* print_node(AST_TREE *node); 

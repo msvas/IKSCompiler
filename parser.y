@@ -44,8 +44,9 @@
 
 %union
 {
+	struct comp_tree *ast;	
 	comp_dict_item_t* symbol;
-	AST_TREE* ast;
+	
 };
  
 /* Declaração dos tokens da gramática da Linguagem K */
@@ -119,7 +120,7 @@ function_variables:	 declaration ';' function_variables			{}
 /*
  * A function is made of a header, declaration of locals variables and body
  */
-function: 		 function_header function_variables cmd_block		{ $$ = ast(IKS_AST_FUNCTION, NULL, $1, $2, $3, 0); }
+function: 		 function_header function_variables cmd_block		{ $$ = ast(IKS_AST_FUNCAO, NULL, $1, $2, $3, 0); }
 			;
  
  /* 

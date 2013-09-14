@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "ast_table.h"
+#include "iks_ast.h"
 #include "comp_tree.h"
 #include "gv.h"
  
@@ -19,14 +19,14 @@ AST_TREE* ast(int type,comp_dict_item_t *symbol, AST_TREE *s0, AST_TREE *s1, AST
 {
  	AST_TREE *newNode;
 	
-	newNode = malloc(sizeof(AST_TREE);
+	newNode = malloc(sizeof(AST_TREE));
 	newNode->type = type;
-	newNode->symbol = symbol;
+	newNode->tableEntry = symbol;
 	newNode->filhos[0] = s0;
 	newNode->filhos[1] = s1;
 	newNode->filhos[2] = s2;
 	newNode->filhos[3] = s3;
-	gv_declare(type, *newNode, symbol->val);
+	//gv_declare(type, *newNode, symbol->val);
 	return newNode;
 }
 
