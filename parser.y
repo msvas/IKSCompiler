@@ -16,10 +16,13 @@
 #include "parser.h"
 #include "iks_ast.h"
 
+struct comp_tree *root;
+
 %}
 
 %type<ast> global_decl
 %type<ast> declaration
+%type<ast> declarations
 %type<ast> parameter_list
 %type<ast> function_header
 %type<ast> function_variables
@@ -89,21 +92,23 @@
 /*
  * Program definition
  */
-program:		 global_decl program
-			|function program
-			|
+program:		 declarations						{ root = $1; }
+			;	
+declarations:		 global_decl declarations				{ $$ = ast(NULL, NULL, $1, $2, 0, 0); }
+			|function declarations					{ $$ = ast(NULL, NULL, $1, $2, 0, 0); }
+			|							{ $$ = NULL; }
 			;
 
  // declarations of the program
-global_decl : 		 declaration ';' 					{}
-			|type ':' TK_IDENTIFICADOR'['TK_LIT_INT']' ';' 		{}
+global_decl : 		 declaration ';' 					{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+			|type ':' TK_IDENTIFICADOR'['TK_LIT_INT']' ';' 		{ $$ = ast(IKS_AST_VETOR_INDEXADO, $3, $1, 0, 0, 0); }
 			;
-declaration : 		 type ':' TK_IDENTIFICADOR 				{}
+declaration : 		 type ':' TK_IDENTIFICADOR 				{ $$ = ast(IKS_AST_IDENTIFICADOR, $3, $1, 0, 0, 0); }
  			;
 
  //declaration of the functions
-parameter_list: 	 declaration 						{}
- 			|declaration ',' parameter_list 			{}
+parameter_list: 	 declaration 						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+ 			|declaration ',' parameter_list 			{ $$ = ast(NULL, NULL, $1, $3, 0, 0); }
 			| 							{ $$ = NULL; }
  			;
  
@@ -111,9 +116,9 @@ parameter_list: 	 declaration 						{}
   * A function header is made of a type declaration,
   * followed by a colon, an identifier and parameters
   */
-function_header: 	 type ':' TK_IDENTIFICADOR '('parameter_list')'		{}
+function_header: 	 type ':' TK_IDENTIFICADOR '('parameter_list')'		{ $$ = ast(IKS_AST_IDENTIFICADOR, $3, $1, $5, 0, 0); }
 			;
-function_variables:	 declaration ';' function_variables			{}
+function_variables:	 declaration ';' function_variables			{ $$ = ast(NULL, NULL, $1, $3, 0, 0); }
 			| 							{ $$ = NULL; }		
 			;
 
@@ -129,35 +134,35 @@ function: 		 function_header function_variables cmd_block		{ $$ = ast(IKS_AST_FU
 cmd_block:		 '{' cmd_list '}'					{ $$ = ast(IKS_AST_BLOCO , NULL, $2, 0, 0, 0); }
 			;
  
-cmd_list:		 cmd cmd_list						{}
+cmd_list:		 cmd cmd_list						{ $$ = ast(NULL, NULL, $1, $2, 0, 0); }
  			| 							{ $$ = NULL; }
  			;
  /*
   * Types of commands
   */
-cmd:			 attrib ';'						{}
- 			|flow 							{}
- 			|input ';'						{}
-			|output							{}
-			|output ';'						{}
-			|return ';'						{}
- 			|cmd_block						{}
-			|cmd_block ';'						{}
- 			|call_function ';'					{}
+cmd:			 attrib ';'						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+ 			|flow 							{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+ 			|input ';'						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+			|output							{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+			|output ';'						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+			|return ';'						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+ 			|cmd_block						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+			|cmd_block ';'						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+ 			|call_function ';'					{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
  			;
  
  /*
   * Expressions can be either logical or arithmetical
   */
-expr: 			 arit_expr						{}
-			|log_expr						{}
+expr: 			 arit_expr						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+			|log_expr						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
  			;
 
 /*
  * Descriptions of an arithmetical expressions and logical expressions
  */
-arit_expr:		 term							{}
-			|'('arit_expr')'					{}
+arit_expr:		 term							{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+			|'('arit_expr')'					{ $$ = ast(NULL, NULL, $2, 0, 0, 0); }
 			|arit_expr '+' arit_expr				{ $$ = ast(IKS_AST_ARIM_SOMA, NULL, $1, $3, 0, 0); }
 			|arit_expr '-' arit_expr				{ $$ = ast(IKS_AST_ARIM_SUBTRACAO, NULL, $1, $3, 0, 0); }
 			|arit_expr '*' arit_expr				{ $$ = ast(IKS_AST_ARIM_MULTIPLICACAO, NULL, $1, $3, 0, 0); }
@@ -167,7 +172,7 @@ arit_expr:		 term							{}
 /*
  * logical operations
  */
-log_expr:		 '('log_expr')'						{}	
+log_expr:		 '('log_expr')'						{ $$ = ast(NULL, NULL, $2, 0, 0, 0); }	
 			|term TK_OC_AND term					{ $$ = ast(IKS_AST_LOGICO_E, NULL, $1, $3, 0, 0); }
 			|term TK_OC_OR term					{ $$ = ast(IKS_AST_LOGICO_OU, NULL, $1, $3, 0, 0); }
 			|term TK_OC_LE arit_expr				{ $$ = ast(IKS_AST_LOGICO_COMP_LE, NULL, $1, $3, 0, 0); }
@@ -186,7 +191,7 @@ term: 			 TK_LIT_INT						{ $$ = ast(IKS_AST_LITERAL, $1, 0, 0, 0, 0); }
 			|TK_LIT_CHAR						{ $$ = ast(IKS_AST_LITERAL, $1, 0, 0, 0, 0); }
 			|TK_IDENTIFICADOR					{ $$ = ast(IKS_AST_IDENTIFICADOR, $1, 0, 0, 0, 0); }
  			|TK_IDENTIFICADOR '[' expr ']'				{ $$ = ast(IKS_AST_VETOR_INDEXADO, $1, $3, 0, 0, 0); }
-			|call_function						{}
+			|call_function						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
 			;
 
 /*
@@ -212,23 +217,23 @@ input: 			 TK_PR_INPUT TK_IDENTIFICADOR				{ $$ = ast(IKS_AST_INPUT, NULL, 0, 0,
 			;
 output: 		 TK_PR_OUTPUT output_list				{ $$ = ast(IKS_AST_OUTPUT, NULL, 0, 0, 0, 0); }
 			;
-output_list: 		 output_element						{}
-			|output_element ',' output_list				{}
+output_list: 		 output_element						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+			|output_element ',' output_list				{ $$ = ast(NULL, NULL, $1, $3, 0, 0); }
 			;
-output_element:		 TK_LIT_STRING						{}
-			|arit_expr						{}
+output_element:		 TK_LIT_STRING						{ $$ = ast(IKS_AST_LITERAL, $1, 0, 0, 0, 0); }
+			|arit_expr						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
 			;
-return:			 TK_PR_RETURN expr					{}
+return:			 TK_PR_RETURN expr					{ $$ = ast(NULL, NULL, $2, 0, 0, 0); }
 			;
 
 /*
  * Call function command
  */
-call_function:		 TK_IDENTIFICADOR'('argument_list')'			{}
+call_function:		 TK_IDENTIFICADOR'('argument_list')'			{ $$ = ast(IKS_AST_IDENTIFICADOR, $1, $3, 0, 0, 0); }
 			;
 
-argument_list:		 term							{}
-			|term ',' argument_list					{}
+argument_list:		 term							{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+			|term ',' argument_list					{ $$ = ast(NULL, NULL, $1, $3, 0, 0); }
 			| 							{ $$ = NULL; }
 			;
 
