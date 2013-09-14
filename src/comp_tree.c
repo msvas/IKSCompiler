@@ -25,20 +25,13 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
         return novoNodo;
 }
 
-void insereNodo(AST_TREE* novoNodo, AST_TREE* raiz) //function to insert a node on the tree
+AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz) //function to insert a node on the tree
 {
         simple_node* aux;
         aux = malloc(sizeof(simple_node));
-        aux->filho = novoNodo;
+        aux->filho = novoFilho;
         raiz->filhos = simpleInsert(aux, raiz->filhos);
-}
-
-AST_TREE* ast(int type, AST_TREE* nodoPai, comp_dict_item_t* tableEntry)
-{
-        AST_TREE* novoNodo;
-
-        novoNodo = criaNodo(type, tableEntry);
-        insereNodo(novoNodo, nodoPai);
+	return raiz;
 }
 
 void imprimeArvore(AST_TREE* raiz) //print function: used to view all the tree, good for tests.

@@ -31,9 +31,7 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry);
  * @param novoNodo: node to be inserted
  * @param raiz: tree's root
  */
-void insereNodo(AST_TREE* novoNodo, AST_TREE* raiz);
-
-AST_TREE* ast(int type, AST_TREE* nodoPai, comp_dict_item_t* tableEntry);
+AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz);
 
 /**
  * print all nodes of the tree

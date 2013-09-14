@@ -92,149 +92,419 @@ struct comp_tree *root;
 /*
  * Program definition
  */
-program:		 declarations						{ root = $1; }
+program:		 declarations						
+			{ root = $1; }
 			;	
-declarations:		 global_decl declarations				{ $$ = ast(NULL, NULL, $1, $2, 0, 0); }
-			|function declarations					{ $$ = ast(NULL, NULL, $1, $2, 0, 0); }
-			|							{ $$ = NULL; }
+declarations:		 global_decl declarations				
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($2, $$);
+			}
+			|function declarations					
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($2, $$);
+			}
+			|							
+			{ $$ = NULL; }
 			;
 
  // declarations of the program
-global_decl : 		 declaration ';' 					{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
-			|type ':' TK_IDENTIFICADOR'['TK_LIT_INT']' ';' 		{ $$ = ast(IKS_AST_VETOR_INDEXADO, $3, $1, 0, 0, 0); }
+global_decl : 		 declaration ';' 					
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+			|type ':' TK_IDENTIFICADOR'['TK_LIT_INT']' ';' 		
+			{ 
+				$$ = criaNodo(IKS_AST_VETOR_INDEXADO, $3);
+				$$ = insereNodo($1, $$);
+			}
 			;
-declaration : 		 type ':' TK_IDENTIFICADOR 				{ $$ = ast(IKS_AST_IDENTIFICADOR, $3, $1, 0, 0, 0); }
+declaration : 		 type ':' TK_IDENTIFICADOR 				
+			{ 
+				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $3);
+				$$ = insereNodo($1, $$);
+			}
  			;
 
  //declaration of the functions
-parameter_list: 	 declaration 						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
- 			|declaration ',' parameter_list 			{ $$ = ast(NULL, NULL, $1, $3, 0, 0); }
-			| 							{ $$ = NULL; }
+parameter_list: 	 declaration 						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+ 			|declaration ',' parameter_list 			
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			| 							
+			{ $$ = NULL; }
  			;
  
  /*
   * A function header is made of a type declaration,
   * followed by a colon, an identifier and parameters
   */
-function_header: 	 type ':' TK_IDENTIFICADOR '('parameter_list')'		{ $$ = ast(IKS_AST_IDENTIFICADOR, $3, $1, $5, 0, 0); }
+function_header: 	 type ':' TK_IDENTIFICADOR '('parameter_list')'		
+			{ 
+				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $3);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($5, $$);
+			}
 			;
-function_variables:	 declaration ';' function_variables			{ $$ = ast(NULL, NULL, $1, $3, 0, 0); }
-			| 							{ $$ = NULL; }		
+function_variables:	 declaration ';' function_variables			
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			| 							
+			{ $$ = NULL; }		
 			;
 
 /*
  * A function is made of a header, declaration of locals variables and body
  */
-function: 		 function_header function_variables cmd_block		{ $$ = ast(IKS_AST_FUNCAO, NULL, $1, $2, $3, 0); }
+function: 		 function_header function_variables cmd_block		
+			{ 
+				$$ = criaNodo(IKS_AST_FUNCAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($3, $$);
+			}
 			;
  
  /* 
   * A command block is a group of commands
   */
-cmd_block:		 '{' cmd_list '}'					{ $$ = ast(IKS_AST_BLOCO , NULL, $2, 0, 0, 0); }
+cmd_block:		 '{' cmd_list '}'					
+			{ 
+				$$ = criaNodo(IKS_AST_BLOCO, 0);
+				$$ = insereNodo($2, $$);
+			}
 			;
  
-cmd_list:		 cmd cmd_list						{ $$ = ast(NULL, NULL, $1, $2, 0, 0); }
- 			| 							{ $$ = NULL; }
+cmd_list:		 cmd cmd_list						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($2, $$);
+			}
+ 			| 							
+			{ $$ = NULL; }
  			;
  /*
   * Types of commands
   */
-cmd:			 attrib ';'						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
- 			|flow 							{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
- 			|input ';'						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
-			|output							{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
-			|output ';'						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
-			|return ';'						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
- 			|cmd_block						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
-			|cmd_block ';'						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
- 			|call_function ';'					{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+cmd:			 attrib ';'						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+ 			|flow 							
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+ 			|input ';'						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+			|output							
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+			|output ';'						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+			|return ';'						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+ 			|cmd_block						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+			|cmd_block ';'						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+ 			|call_function ';'					
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
  			;
  
  /*
   * Expressions can be either logical or arithmetical
   */
-expr: 			 arit_expr						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
-			|log_expr						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+expr: 			 arit_expr						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+			|log_expr						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
  			;
 
 /*
  * Descriptions of an arithmetical expressions and logical expressions
  */
-arit_expr:		 term							{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
-			|'('arit_expr')'					{ $$ = ast(NULL, NULL, $2, 0, 0, 0); }
-			|arit_expr '+' arit_expr				{ $$ = ast(IKS_AST_ARIM_SOMA, NULL, $1, $3, 0, 0); }
-			|arit_expr '-' arit_expr				{ $$ = ast(IKS_AST_ARIM_SUBTRACAO, NULL, $1, $3, 0, 0); }
-			|arit_expr '*' arit_expr				{ $$ = ast(IKS_AST_ARIM_MULTIPLICACAO, NULL, $1, $3, 0, 0); }
-			|arit_expr '/' arit_expr				{ $$ = ast(IKS_AST_ARIM_DIVISAO, NULL, $1, $3, 0, 0); }
+arit_expr:		 term							
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+			|'('arit_expr')'					
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($2, $$);
+			}
+			|arit_expr '+' arit_expr				
+			{ 
+				$$ = criaNodo(IKS_AST_ARIM_SOMA, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|arit_expr '-' arit_expr				
+			{ 
+				$$ = criaNodo(IKS_AST_ARIM_SUBTRACAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|arit_expr '*' arit_expr				
+			{ 
+				$$ = criaNodo(IKS_AST_ARIM_MULTIPLICACAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|arit_expr '/' arit_expr				
+			{ 
+				$$ = criaNodo(IKS_AST_ARIM_DIVISAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
 			;
 
 /*
  * logical operations
  */
-log_expr:		 '('log_expr')'						{ $$ = ast(NULL, NULL, $2, 0, 0, 0); }	
-			|term TK_OC_AND term					{ $$ = ast(IKS_AST_LOGICO_E, NULL, $1, $3, 0, 0); }
-			|term TK_OC_OR term					{ $$ = ast(IKS_AST_LOGICO_OU, NULL, $1, $3, 0, 0); }
-			|term TK_OC_LE arit_expr				{ $$ = ast(IKS_AST_LOGICO_COMP_LE, NULL, $1, $3, 0, 0); }
-			|term TK_OC_GE arit_expr				{ $$ = ast(IKS_AST_LOGICO_COMP_GE, NULL, $1, $3, 0, 0); }
-			|term TK_OC_EQ arit_expr				{ $$ = ast(IKS_AST_LOGICO_COMP_IGUAL, NULL, $1, $3, 0, 0); }
-			|term TK_OC_NE arit_expr				{ $$ = ast(IKS_AST_LOGICO_COMP_DIF, NULL, $1, $3, 0, 0); }
-			|term '<' term						{ $$ = ast(IKS_AST_LOGICO_COMP_L, NULL, $1, $3, 0, 0); }
-			|term '>' term						{ $$ = ast(IKS_AST_LOGICO_COMP_G, NULL, $1, $3, 0, 0); }
+log_expr:		 '('log_expr')'						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($2, $$);
+			}	
+			|term TK_OC_AND term					
+			{ 
+				$$ = criaNodo(IKS_AST_LOGICO_E, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|term TK_OC_OR term					
+			{ 
+				$$ = criaNodo(IKS_AST_LOGICO_OU, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|term TK_OC_LE arit_expr				
+			{ 
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_LE, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|term TK_OC_GE arit_expr				
+			{ 
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_GE, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|term TK_OC_EQ arit_expr				
+			{ 
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_IGUAL, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|term TK_OC_NE arit_expr				
+			{ 
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_DIF, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|term '<' term						
+			{ 
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_L, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|term '>' term						
+			{ 
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_G, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
 			;
 
 /*
  * term can be a number or a variable.
  */
-term: 			 TK_LIT_INT						{ $$ = ast(IKS_AST_LITERAL, $1, 0, 0, 0, 0); }
-			|TK_LIT_FLOAT						{ $$ = ast(IKS_AST_LITERAL, $1, 0, 0, 0, 0); }
-			|TK_LIT_CHAR						{ $$ = ast(IKS_AST_LITERAL, $1, 0, 0, 0, 0); }
-			|TK_IDENTIFICADOR					{ $$ = ast(IKS_AST_IDENTIFICADOR, $1, 0, 0, 0, 0); }
- 			|TK_IDENTIFICADOR '[' expr ']'				{ $$ = ast(IKS_AST_VETOR_INDEXADO, $1, $3, 0, 0, 0); }
-			|call_function						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+term: 			 TK_LIT_INT						
+			{ 
+				$$ = criaNodo(IKS_AST_LITERAL, $1);
+			}
+			|TK_LIT_FLOAT						
+			{ 
+				$$ = criaNodo(IKS_AST_LITERAL, $1);
+			}
+			|TK_LIT_CHAR						
+			{ 
+				$$ = criaNodo(IKS_AST_LITERAL, $1);
+			}
+			|TK_IDENTIFICADOR					
+			{ 
+				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1);
+			}
+ 			|TK_IDENTIFICADOR '[' expr ']'				
+			{ 
+				$$ = criaNodo(IKS_AST_VETOR_INDEXADO, $1);
+				$$ = insereNodo($3, $$);
+			}
+			|call_function						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
 			;
 
 /*
  * possible attributions
  */
-attrib:	 		 TK_IDENTIFICADOR '=' expr				{ $$ = ast(IKS_AST_ATRIBUICAO, NULL, $1, $3, 0, 0); }
-			|TK_IDENTIFICADOR '=' TK_LIT_STRING			{ $$ = ast(IKS_AST_ATRIBUICAO, NULL, $1, $3, 0, 0); }
-			|TK_IDENTIFICADOR '[' expr ']' '=' expr			{ $$ = ast(IKS_AST_ATRIBUICAO, NULL, $1, $3, $6, 0); }
+attrib:	 		 TK_IDENTIFICADOR '=' expr				
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($3, $$);
+			}
+			|TK_IDENTIFICADOR '=' TK_LIT_STRING			
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+			}
+			|TK_IDENTIFICADOR '[' expr ']' '=' expr			
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+			}
 			;
  
  /*
   * Control flow description
   */
-flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd			{ $$ = ast(IKS_AST_IF_ELSE, NULL, $3, $6, 0, 0); }
-			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd	{ $$ = ast(IKS_AST_IF_ELSE, NULL, $3, $6, $8, 0); }
- 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd			{ $$ = ast(IKS_AST_WHILE_DO, NULL, $3, $6, 0, 0); }
- 			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'			{ $$ = ast(IKS_AST_DO_WHILE, NULL, $2, $5, 0, 0); }
+flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd			
+			{ 
+				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+			}
+			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd	
+			{ 
+				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+				$$ = insereNodo($8, $$);
+			}
+ 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd			
+			{ 
+				$$ = criaNodo(IKS_AST_WHILE_DO, 0);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+			}
+ 			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'			
+			{ 
+				$$ = criaNodo(IKS_AST_DO_WHILE, 0);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($5, $$);
+			}
  			;
 /*
  * Input, output and return command descriptions
  */
-input: 			 TK_PR_INPUT TK_IDENTIFICADOR				{ $$ = ast(IKS_AST_INPUT, NULL, 0, 0, 0, 0); }
+input: 			 TK_PR_INPUT TK_IDENTIFICADOR				
+			{ 
+				$$ = criaNodo(IKS_AST_INPUT, 0);
+			}
 			;
-output: 		 TK_PR_OUTPUT output_list				{ $$ = ast(IKS_AST_OUTPUT, NULL, 0, 0, 0, 0); }
+output: 		 TK_PR_OUTPUT output_list				
+			{ 
+				$$ = criaNodo(IKS_AST_OUTPUT, 0);
+			}
 			;
-output_list: 		 output_element						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
-			|output_element ',' output_list				{ $$ = ast(NULL, NULL, $1, $3, 0, 0); }
+output_list: 		 output_element						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+			|output_element ',' output_list				
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
 			;
-output_element:		 TK_LIT_STRING						{ $$ = ast(IKS_AST_LITERAL, $1, 0, 0, 0, 0); }
-			|arit_expr						{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
+output_element:		 TK_LIT_STRING						
+			{ 
+				$$ = criaNodo(IKS_AST_LITERAL, $1);
+			}
+			|arit_expr						
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
 			;
-return:			 TK_PR_RETURN expr					{ $$ = ast(NULL, NULL, $2, 0, 0, 0); }
+return:			 TK_PR_RETURN expr					
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($2, $$);
+			}
 			;
 
 /*
  * Call function command
  */
-call_function:		 TK_IDENTIFICADOR'('argument_list')'			{ $$ = ast(IKS_AST_IDENTIFICADOR, $1, $3, 0, 0, 0); }
+call_function:		 TK_IDENTIFICADOR'('argument_list')'			
+			{ 
+				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1);
+				$$ = insereNodo($3, $$);
+			}
 			;
 
-argument_list:		 term							{ $$ = ast(NULL, NULL, $1, 0, 0, 0); }
-			|term ',' argument_list					{ $$ = ast(NULL, NULL, $1, $3, 0, 0); }
-			| 							{ $$ = NULL; }
+argument_list:		 term							
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+			}
+			|term ',' argument_list					
+			{ 
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			| 							
+			{ $$ = NULL; }
 			;
 
 /*
