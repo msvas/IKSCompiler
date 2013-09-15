@@ -44,12 +44,14 @@ struct comp_tree *root;
 %type<ast> call_function
 %type<ast> argument_list
 %type<ast> type
+%type<ast> lit_int
+%type<ast> lit_string
+%type<ast> identificador
 
 %union
 {
 	struct comp_tree *ast;	
 	comp_dict_item_t* symbol;
-	
 };
  
 /* Declaração dos tokens da gramática da Linguagem K */
@@ -117,16 +119,19 @@ global_decl : 		 declaration ';'
 				$$ = criaNodo(-1, 0);
 				$$ = insereNodo($1, $$);
 			}
-			|type ':' TK_IDENTIFICADOR'['TK_LIT_INT']' ';' 		
+			|type ':' identificador'['lit_int']' ';' 		
 			{ 
-				$$ = criaNodo(IKS_AST_VETOR_INDEXADO, $3);
+				$$ = criaNodo(IKS_AST_VETOR_INDEXADO, 0);
 				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($5, $$);
 			}
 			;
-declaration : 		 type ':' TK_IDENTIFICADOR 				
+declaration : 		 type ':' identificador 				
 			{ 
-				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $3);
+				$$ = criaNodo(-1, 0);
 				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
 			}
  			;
 
@@ -150,10 +155,11 @@ parameter_list: 	 declaration
   * A function header is made of a type declaration,
   * followed by a colon, an identifier and parameters
   */
-function_header: 	 type ':' TK_IDENTIFICADOR '('parameter_list')'		
+function_header: 	 type ':' identificador '('parameter_list')'		
 			{ 
-				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $3);
+				$$ = criaNodo(-1, 0);
 				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
 				$$ = insereNodo($5, $$);
 			}
 			;
@@ -394,18 +400,22 @@ term: 			 TK_LIT_INT
 /*
  * possible attributions
  */
-attrib:	 		 TK_IDENTIFICADOR '=' expr				
+attrib:	 		 identificador '=' expr				
 			{ 
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
-			|TK_IDENTIFICADOR '=' TK_LIT_STRING			
+			|identificador '=' lit_string			
 			{ 
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
 			}
-			|TK_IDENTIFICADOR '[' expr ']' '=' expr			
+			|identificador '[' expr ']' '=' expr			
 			{ 
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
@@ -443,14 +453,16 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 /*
  * Input, output and return command descriptions
  */
-input: 			 TK_PR_INPUT TK_IDENTIFICADOR				
+input: 			 TK_PR_INPUT identificador				
 			{ 
 				$$ = criaNodo(IKS_AST_INPUT, 0);
+				$$ = insereNodo($2, $$);
 			}
 			;
 output: 		 TK_PR_OUTPUT output_list				
 			{ 
 				$$ = criaNodo(IKS_AST_OUTPUT, 0);
+				$$ = insereNodo($2, $$);
 			}
 			;
 output_list: 		 output_element						
@@ -477,7 +489,7 @@ output_element:		 TK_LIT_STRING
 			;
 return:			 TK_PR_RETURN expr					
 			{ 
-				$$ = criaNodo(-1, 0);
+				$$ = criaNodo(IKS_AST_RETURN, 0);
 				$$ = insereNodo($2, $$);
 			}
 			;
@@ -485,9 +497,10 @@ return:			 TK_PR_RETURN expr
 /*
  * Call function command
  */
-call_function:		 TK_IDENTIFICADOR'('argument_list')'			
+call_function:		 identificador'('argument_list')'			
 			{ 
-				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1);
+				$$ = criaNodo(IKS_AST_CHAMADA_DE_FUNCAO, 0);
+				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			;
@@ -515,5 +528,21 @@ type:			 TK_PR_INT						{}
  			|TK_PR_BOOL						{}
  			|TK_PR_CHAR						{}
  			|TK_PR_STRING						{}
- 			;
- %%
+			;
+
+/*
+ * Terminal symbols
+ */
+lit_int: 		TK_LIT_INT
+			{ 
+				$$ = criaNodo(IKS_AST_LITERAL, $1);
+			};
+lit_string: 		TK_LIT_STRING
+			{ 
+				$$ = criaNodo(IKS_AST_LITERAL, $1);
+			};
+identificador: 		TK_IDENTIFICADOR
+			{ 
+				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1);
+			};
+%%
