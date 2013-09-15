@@ -6,6 +6,10 @@
 
 //! Maximum value for number of sons in each node
 #include "comp_dict.h"
+#include "iks_ast.h"
+#include "comp_simplelist.h"
+#include "comp_dict.h"
+#include "gv.h"
 
 //! Definition of a graph node structure
 typedef struct comp_tree {

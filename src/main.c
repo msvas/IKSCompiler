@@ -13,6 +13,7 @@ void yyerror (char const *mensagem)
 int main(char argv, int **argc)
 {
 	gv_init("visual_tree.dot");
+	printf("comecou");
 	int resultado = yyparse();
 	gv_close();
 	return resultado;
