@@ -49,11 +49,13 @@ static inline char *__gv_description_from_type (int tipo)
   case IKS_AST_INPUT: return "input";
   case IKS_AST_OUTPUT: return "output";
   case IKS_AST_ATRIBUICAO: return "=";
+  case IKS_AST_RETURN: return "return";
   case IKS_AST_BLOCO: return "block";
   case IKS_AST_ARIM_SOMA: return "+";
   case IKS_AST_ARIM_SUBTRACAO: return "-";
   case IKS_AST_ARIM_MULTIPLICACAO: return "*";
   case IKS_AST_ARIM_DIVISAO: return "/";
+  case IKS_AST_ARIM_INVERSAO: return "-";
   case IKS_AST_LOGICO_E: return "&&";
   case IKS_AST_LOGICO_OU: return "||";
   case IKS_AST_LOGICO_COMP_DIF: return "!=";
@@ -63,6 +65,8 @@ static inline char *__gv_description_from_type (int tipo)
   case IKS_AST_LOGICO_COMP_L: return "<";
   case IKS_AST_LOGICO_COMP_G: return ">";
   case IKS_AST_LOGICO_COMP_NEGACAO: return "!";
+  case IKS_AST_VETOR_INDEXADO: return "[]";
+  case IKS_AST_CHAMADA_DE_FUNCAO: return "call";
 
   default:
     fprintf (stderr, "%s: tipo provided is invalid here\n", __FUNCTION__);
@@ -99,7 +103,7 @@ void gv_init (const char *filename)
   }else{
     fp = stderr;    
   }
-  fprintf (fp, "graph G {\n");
+  fprintf (fp, "digraph G {\n");
 }
 
 /**
@@ -158,11 +162,13 @@ void gv_declare (const int tipo, const void *pointer, char *name)
   case IKS_AST_INPUT:
   case IKS_AST_OUTPUT:
   case IKS_AST_ATRIBUICAO:
+  case IKS_AST_RETURN:
   case IKS_AST_BLOCO:
   case IKS_AST_ARIM_SOMA:
   case IKS_AST_ARIM_SUBTRACAO:
   case IKS_AST_ARIM_MULTIPLICACAO:
   case IKS_AST_ARIM_DIVISAO:
+  case IKS_AST_ARIM_INVERSAO:
   case IKS_AST_LOGICO_E:
   case IKS_AST_LOGICO_OU:
   case IKS_AST_LOGICO_COMP_DIF:
@@ -172,6 +178,8 @@ void gv_declare (const int tipo, const void *pointer, char *name)
   case IKS_AST_LOGICO_COMP_L:
   case IKS_AST_LOGICO_COMP_G:
   case IKS_AST_LOGICO_COMP_NEGACAO:
+  case IKS_AST_VETOR_INDEXADO:
+  case IKS_AST_CHAMADA_DE_FUNCAO:
     if (name){
       fprintf (stderr, "%s: name should be NULL\n", __FUNCTION__);
       abort();
@@ -201,5 +209,5 @@ void gv_connect (const void *p1, const void *p2)
   __gv_test_valid_ast_pointer (__FUNCTION__, p1);
   __gv_test_valid_ast_pointer (__FUNCTION__, p2);
 
-  fprintf(fp, "node_%p -- node_%p\n", p1, p2);
+  fprintf(fp, "node_%p -> node_%p\n", p1, p2);
 }
