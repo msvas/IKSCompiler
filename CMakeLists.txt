@@ -41,5 +41,5 @@ ADD_EXECUTABLE(main
 TARGET_LINK_LIBRARIES(main ${FLEX_LIBRARIES})
 
 # Use compiler flags for compiling a debug build (with debug symbols, so we can use gdb)
-#SET(CMAKE_BUILD_TYPE Debug)
+SET(CMAKE_BUILD_TYPE Debug)
 

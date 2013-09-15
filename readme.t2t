@@ -73,17 +73,36 @@ sudo apt-get install doxygen
 
 == Git ==
 
+
+```
 git remote -v
 git remote add schnorr git@bitbucket.org:schnorr/compiladores.git
 git remote -v
+```
+
+
+Criar um branch de desenvolvimento e ir para ele para iniciar os trabalhos lá.
+
+```
 git push origin master:eder-flex
 git checkout eder-flex
+```
+
+
+Exemplo de merge com commit que marca o merge (--no-ff).
+
+```
 git merge --no-ff schnorr/master
+```
 
 
+Criar uma tag:
+
+```
 git checkout 3aa33ec89d48960803818438396aa80a9b1af2ab
 git tag step1
 git push --tags
+```
 
 
 == Tests ==
@@ -99,6 +118,11 @@ gedit temp
 
 ./main ../test/tokens/1600tokens.iks | wc -l && ./main ../test/tokens/1600tokens.iks > temp
 ```
+
+
+= Scratch =
+
+./main < ../test/input/certa02.txt
 
 
 
