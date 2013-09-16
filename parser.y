@@ -134,7 +134,6 @@ global_decl : 		 declaration ';'
 			|type ':' identificador'['lit_int']' ';' 		
 			{ 
 				$$ = criaNodo(IKS_AST_VETOR_INDEXADO, 0);
-				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($5, $$);
 			}
@@ -142,7 +141,6 @@ global_decl : 		 declaration ';'
 declaration : 		 type ':' identificador 				
 			{ 
 				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
  			;
@@ -170,7 +168,6 @@ parameter_list: 	 declaration
 function_header: 	 type ':' identificador '('parameter_list')'		
 			{ 
 				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($5, $$);
 			}
