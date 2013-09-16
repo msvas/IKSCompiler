@@ -1,7 +1,7 @@
 /*
  * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
- * @file   util.h
- * @brief  General utilities.
+ * @file   parser.y
+ * @brief  Grammar description.
  */
 
 %{
@@ -180,10 +180,9 @@ function_variables:	 declaration ';' function_variables
 function: 		 type ':' TK_IDENTIFICADOR '('parameter_list')' function_variables cmd_block		
 			{ 
 				$$ = criaNodo(IKS_AST_FUNCAO, $3);
-				//$$ = insereNodo($1, $$); debug("nome da funcao");
-				$$ = insereNodo($5, $$); debug("parametros");
-				$$ = insereNodo($7, $$); debug("variaveis");
-				$$ = insereNodo($8, $$); debug("comandos da funcao");
+				$$ = insereNodo($5, $$);
+				$$ = insereNodo($7, $$); 
+				$$ = insereNodo($8, $$);
 			}
 			;
  
