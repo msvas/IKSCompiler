@@ -40,12 +40,12 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
 	 * pointer: deve ser um pointeiro para o nó da árvore AST que está sendo
 	 * declarado, servindo a partir de agora como identificador único do nó
 	 *
-	 * gv_declare(const int tipo, const void *pointer, char *name);
-	 *
 	 * name: que deve ser um lexema válido somente se o tipo for um desses
 	 * três valores: IKS_AST_IDENTIFICADOR (o lexema do identificador),
 	 * IKS_AST_LITERAL (o lexema do literal) ou IKS_AST_FUNCAO (o lexema do
 	 * identificador da função).
+	 *
+	 * gv_declare(const int tipo, const void *pointer, char *name);
 	 */
 	gv_declare(chave,novoNodo,tableEntry->key);
 
