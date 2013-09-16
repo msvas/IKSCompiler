@@ -1,0 +1,20 @@
+int:positivo;
+int:negativo;
+int:dobro;
+
+bool: inverte()
+{
+	positivo = 2;
+	negativo = -positivo;
+	
+	dobro = positivo-negativo;
+
+	
+	
+}
+
+int: converte(bool:convertido)
+{
+	convertido=!inverte(2);
+}
+
