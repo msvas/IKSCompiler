@@ -25,7 +25,6 @@ struct comp_tree *root;
 %type<ast> declaration
 %type<ast> declarations
 %type<ast> parameter_list
-%type<ast> function_header
 %type<ast> function_variables
 %type<ast> function
 %type<ast> cmd_block
@@ -115,7 +114,7 @@ declarations:		 global_decl declarations
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($2, $$);
 			}
-			|function declarations					
+			|function declarations				
 			{ 
 				$$ = criaNodo(-1, 0);
 				$$ = insereNodo($1, $$);
@@ -165,13 +164,6 @@ parameter_list: 	 declaration
   * A function header is made of a type declaration,
   * followed by a colon, an identifier and parameters
   */
-function_header: 	 type ':' identificador '('parameter_list')'		
-			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($3, $$);
-				$$ = insereNodo($5, $$);
-			}
-			;
 function_variables:	 declaration ';' function_variables			
 			{ 
 				$$ = criaNodo(-1, 0);
@@ -185,12 +177,13 @@ function_variables:	 declaration ';' function_variables
 /*
  * A function is made of a header, declaration of locals variables and body
  */
-function: 		 function_header function_variables cmd_block		
+function: 		 type ':' TK_IDENTIFICADOR '('parameter_list')' function_variables cmd_block		
 			{ 
-				$$ = criaNodo(IKS_AST_FUNCAO, 0);
-				$$ = insereNodo($1, $$);
-				$$ = insereNodo($2, $$);
-				$$ = insereNodo($3, $$);
+				$$ = criaNodo(IKS_AST_FUNCAO, $3);
+				//$$ = insereNodo($1, $$); debug("nome da funcao");
+				$$ = insereNodo($5, $$); debug("parametros");
+				$$ = insereNodo($7, $$); debug("variaveis");
+				$$ = insereNodo($8, $$); debug("comandos da funcao");
 			}
 			;
  
