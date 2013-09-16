@@ -47,7 +47,10 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
 	 *
 	 * gv_declare(const int tipo, const void *pointer, char *name);
 	 */
-	gv_declare(chave,novoNodo,tableEntry->key);
+	if(chave == IKS_AST_IDENTIFICADOR || chave == IKS_AST_LITERAL || chave ==IKS_AST_FUNCAO)
+		gv_declare(chave,novoNodo,tableEntry->key);
+	else
+		gv_declare(chave,novoNodo,NULL);
 
         return novoNodo;
 }
