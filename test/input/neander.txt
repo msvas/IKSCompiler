@@ -5,8 +5,16 @@ int:dobro;
 bool: inverte()
 {
 	positivo = 2;
-	negativo = - positivo;
+	negativo = -positivo;
 	
-	dobro = positivo - negativo;
+	dobro = positivo-negativo;
+
+	
 	
 }
+
+int: ingrid(bool:pergunta)
+{
+	pergunta=!inverte();
+}
+
