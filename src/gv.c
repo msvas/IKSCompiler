@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include "iks_ast.h"
 
+#include "util.h"
+
 static FILE *fp = NULL;
 
 static inline void __gv_test_valid_fp (const char *function_name)
@@ -206,8 +208,12 @@ void gv_declare (const int tipo, const void *pointer, char *name)
 void gv_connect (const void *p1, const void *p2)
 {
   __gv_test_valid_fp (__FUNCTION__);
+  debug("1.");
   __gv_test_valid_ast_pointer (__FUNCTION__, p1);
+  debug("2.");
   __gv_test_valid_ast_pointer (__FUNCTION__, p2);
+  debug("3.");
 
   fprintf(fp, "node_%p -> node_%p\n", p1, p2);
+  debug("node_%p -> node_%p", p1, p2);
 }

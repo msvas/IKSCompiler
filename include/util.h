@@ -23,7 +23,7 @@
  */
 #define debug(fmt, ...) printf("%s (%d): " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #else
-#define debug(fmt, ...)
+#define debug(fmt, ...) do {} while (0);
 #endif /* DEBUG_ON */
 
 /* Array size macro */

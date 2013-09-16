@@ -125,4 +125,6 @@ gedit temp
 ./main < ../test/input/certa02.txt
 
 
+dot -Tpng visual_tree.dot -o visual_tree.png
+eog visual_tree.png
 

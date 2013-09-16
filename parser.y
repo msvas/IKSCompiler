@@ -76,6 +76,10 @@ struct comp_tree *root;
 %token TK_OC_OR
 %token TOKEN_ERRO
 
+/* 
+ * Terminais, que são os símbolos que devem apontar para uma entrada na tabela
+ * de símbolos 
+ */
 %token<symbol> TK_LIT_INT   	1
 %token<symbol> TK_LIT_FLOAT  	2
 %token<symbol> TK_LIT_TRUE      	3
