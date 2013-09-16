@@ -14,12 +14,9 @@ void yyerror (char const *mensagem)
 
 int main(char argv, int **argc)
 {
-	debug("*1");
+	//TODO: exit(IKS_SYNTAX_OK) or exit(IKS_SYNTAX_SUCESSO)
 	gv_init("visual_tree.dot");
-	debug("*1");
 	int resultado = yyparse();
-	debug("*2");
 	gv_close();
-	debug("*3");
 	return resultado;
 }
