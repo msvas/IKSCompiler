@@ -370,6 +370,11 @@ log_expr:		 '('log_expr')'
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
+			| '!' term
+			{
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_NEGACAO, 0);
+				$$ = insereNodo($2, $$);
+			}
 			;
 
 /*
