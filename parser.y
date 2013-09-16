@@ -20,6 +20,7 @@ struct comp_tree *root;
 
 %}
 
+%type<ast> body
 %type<ast> global_decl
 %type<ast> declaration
 %type<ast> declarations
@@ -98,9 +99,15 @@ struct comp_tree *root;
 /*
  * Program definition
  */
-program:		 declarations						
-			{ root = $1;}
-			;	
+program:		 body						
+			{ root = $1; }
+			;
+body:			 declarations
+			{ 
+				$$ = criaNodo(IKS_AST_PROGRAMA, 0);
+				$$ = insereNodo($1, $$);
+			}
+			;
 declarations:		 global_decl declarations				
 			{ 
 				$$ = criaNodo(-1, 0);
