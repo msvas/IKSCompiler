@@ -1,7 +1,7 @@
 /*
  * \authors Éder Zulian, Hugo Constantinopolos e Marcelo Vasques
  * @file   parser.y
- * @brief  Grammar description.
+ * @brief  Grammar description
  */
 
 %{
