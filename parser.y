@@ -307,6 +307,11 @@ arit_expr:		 term
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
+			|'-' arit_expr
+			{
+				$$ = criaNodo(IKS_AST_ARIM_INVERSAO, 0);
+				$$ = insereNodo($2, $$);
+			}
 			;
 
 /*
