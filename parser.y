@@ -394,10 +394,10 @@ term: 			 TK_LIT_INT
 			{ 
 				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1);
 			}
- 			|TK_IDENTIFICADOR '[' expr ']'				
+ 			|v_ident				
 			{ 
-				$$ = criaNodo(IKS_AST_VETOR_INDEXADO, $1);
-				$$ = insereNodo($3, $$);
+				$$ = criaNodo(-1, 0);
+				$$ = insereNodo($1, $$);
 			}
 			|call_function						
 			{ 
@@ -464,6 +464,11 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 input: 			 TK_PR_INPUT identificador				
 			{ 
 				$$ = criaNodo(IKS_AST_INPUT, 0);
+				$$ = insereNodo($2, $$);
+			}
+			|TK_PR_INPUT v_ident
+			{
+				$$ = criaNodo(IKS_AST_INPUT,0);
 				$$ = insereNodo($2, $$);
 			}
 			;
