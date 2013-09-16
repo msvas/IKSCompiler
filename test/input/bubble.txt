@@ -1,0 +1,51 @@
+//IKS_Bubblesort
+//Ordena um vetor de 10 elementos
+
+int:aux;
+int:entrada[10];
+int:indice;
+
+bool:ordenado()
+{
+	indice = 0;
+	while(indice<8)do
+	{
+		if(entrada[indice]<entrada[indice+1])then
+		{
+			indice = indice + 1;
+		}else
+		{
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+int:varredura()
+{
+	indice = 0;
+	while(indice<8)do
+	{
+		if(entrada[indice]>entrada[indice+1])then
+		{
+			aux = entrada[indice];
+			entrada[indice] = entrada[indice+1];
+			entrada[indice+1] = aux;
+		}
+	}
+}
+int:main()
+{
+	indice=0;
+	while(indice<9)do
+	{
+		input entrada[indice];
+		indice = indice + 1;
+	}
+	indice = 0;
+	
+	while(ordenado() == FALSE)do
+	{
+		varredura();
+	}
+
+}
