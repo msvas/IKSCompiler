@@ -48,6 +48,7 @@ struct comp_tree *root;
 %type<ast> lit_int
 %type<ast> lit_string
 %type<ast> identificador
+%type<ast> v_ident
 
 %union
 {
@@ -423,12 +424,11 @@ attrib:	 		 identificador '=' expr
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
-			|identificador '[' expr ']' '=' expr			
+			|v_ident '=' expr			
 			{ 
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
-				$$ = insereNodo($6, $$);
 			}
 			;
  
@@ -555,5 +555,11 @@ lit_string: 		TK_LIT_STRING
 identificador: 		TK_IDENTIFICADOR
 			{ 
 				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1);
+			};
+v_ident:		identificador '[' expr ']'					
+			{ 
+				$$ = criaNodo(IKS_AST_VETOR_INDEXADO, NULL);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
 			};
 %%
