@@ -44,6 +44,7 @@ static inline void __gv_test_valid_ast_pointer (const char *function_name, const
 static inline char *__gv_description_from_type (int tipo)
 {
   switch (tipo){
+  case -1: return "pass";
   case IKS_AST_PROGRAMA: return "programa";
   case IKS_AST_IF_ELSE: return "ifelse";
   case IKS_AST_DO_WHILE: return "dowhile";
@@ -157,6 +158,7 @@ void gv_declare (const int tipo, const void *pointer, char *name)
     description = name;
     break;
 
+  case -1:
   case IKS_AST_PROGRAMA:
   case IKS_AST_IF_ELSE:
   case IKS_AST_DO_WHILE:
