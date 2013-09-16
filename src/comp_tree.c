@@ -18,17 +18,15 @@ AST_TREE* criaArvore()
 AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
 {
         AST_TREE* novoNodo;
+
 	debug("criando nodo chave = %d", chave);
-	if (tableEntry == NULL) {
-		debug("tableEntry is NULL!");
-		return NULL;
+	if (tableEntry) {
+		debug("tableEntry:");
+		debug("tableEntry->key = %s", tableEntry->key);
+		debug("tableEntry->val = %d", tableEntry->val);
+		debug("tableEntry->l = %d (line number)", tableEntry->l);
 	}
 
-	// FIXME: tableEntry may be NULL!
-	debug("tableEntry:");
-	debug("tableEntry->key = %s", tableEntry->key);
-	debug("tableEntry->val = %d", tableEntry->val);
-	debug("tableEntry->l = %d (line number)", tableEntry->l);
         novoNodo = malloc(sizeof(AST_TREE));
         novoNodo->type = chave;
         novoNodo->tableEntry = tableEntry;
@@ -47,12 +45,23 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
 	 *
 	 * gv_declare(const int tipo, const void *pointer, char *name);
 	 */
-	if(chave == IKS_AST_IDENTIFICADOR || chave == IKS_AST_LITERAL || chave ==IKS_AST_FUNCAO)
-		gv_declare(chave,novoNodo,tableEntry->key);
-	else
-		gv_declare(chave,novoNodo,NULL);
-
-        return novoNodo;
+	switch (chave) {
+		case IKS_AST_IDENTIFICADOR:
+		case IKS_AST_LITERAL:
+		case IKS_AST_FUNCAO:
+			if (tableEntry == NULL) {
+				debug("Error! tableEntry is NULL! Should not be! (chave = %d)", chave);
+				return NULL;
+			}
+			gv_declare(chave, novoNodo, tableEntry->key);
+			break;
+		default:
+			debug("tableEntry is NULL! Ok! (chave = %d)", chave);
+			gv_declare(chave, novoNodo, NULL);
+			break;
+	}
+        
+	return novoNodo;
 }
 
 AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz) //function to insert a node on the tree
