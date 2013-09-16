@@ -20,12 +20,6 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
         AST_TREE* novoNodo;
 
 	debug("criando nodo chave = %d", chave);
-	if (tableEntry) {
-		debug("tableEntry:");
-		debug("tableEntry->key = %s", tableEntry->key);
-		debug("tableEntry->val = %d", tableEntry->val);
-		debug("tableEntry->l = %d (line number)", tableEntry->l);
-	}
 
         novoNodo = malloc(sizeof(AST_TREE));
         novoNodo->type = chave;
@@ -71,9 +65,9 @@ AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz) //function to insert a
 	if (novoFilho == NULL){
 		debug("novoFilho == NULL!");
 		return raiz;
-		}
+	}
+
 	if (raiz == NULL) {
-		
 		return novoFilho;
 	}
 
