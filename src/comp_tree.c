@@ -66,19 +66,20 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
 
 AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz) //function to insert a node on the tree
 {
-        simple_node* aux;
+        simple_node *aux;
 
-	if (novoFilho == NULL)
+	if (novoFilho == NULL){
 		debug("novoFilho == NULL!");
-	
+		return raiz;
+		}
 	if (raiz == NULL) {
-		debug("raiz == NULL!");
-		return NULL;
+		
+		return novoFilho;
 	}
 
         aux = malloc(sizeof(simple_node));
         aux->filho = novoFilho;
-	gv_connect(raiz,aux);
+	gv_connect(raiz,novoFilho);
 	debug("inserindo ");
         raiz->filhos = simpleInsert(aux, raiz->filhos);
 	return raiz;

@@ -99,7 +99,7 @@ struct comp_tree *root;
  * Program definition
  */
 program:		 declarations						
-			{ root = $1; }
+			{ root = $1;}
 			;	
 declarations:		 global_decl declarations				
 			{ 
