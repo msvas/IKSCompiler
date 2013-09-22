@@ -15,6 +15,7 @@
 #include "util.h"
 #include "parser.h"
 #include "iks_ast.h"
+#include "comp_list.h"
 
 struct comp_tree *root;
 
@@ -26,7 +27,6 @@ struct comp_tree *root;
 %type<ast> declarations
 %type<ast> parameter_list
 %type<ast> function_variables
-%type<ast> function
 %type<ast> cmd_block
 %type<ast> cmd_list
 %type<ast> cmd
@@ -110,15 +110,13 @@ body:			 declarations
 			;
 declarations:		 global_decl declarations				
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
-				$$ = insereNodo($2, $$);
+				$$ = $2;
 			}
-			|function declarations				
+			|type ':' TK_IDENTIFICADOR '('parameter_list')' function_variables cmd_block declarations				
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
-				$$ = insereNodo($2, $$);
+				$$ = criaNodo(IKS_AST_FUNCAO, $3); 
+				$$ = insereNodo($8, $$);
+				$$ = insereNodo($9, $$);
 			}
 			|							
 			{ $$ = NULL; }
@@ -127,34 +125,31 @@ declarations:		 global_decl declarations
  // declarations of the program
 global_decl : 		 declaration ';' 					
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				//$$ = $1;
 			}
 			|type ':' identificador'['lit_int']' ';' 		
 			{ 
-				$$ = criaNodo(IKS_AST_VETOR_INDEXADO, 0);
-				$$ = insereNodo($3, $$);
-				$$ = insereNodo($5, $$);
+				//$$ = criaNodo(IKS_AST_VETOR_INDEXADO, 0);
+				//$$ = insereNodo($3, $$);
+				//$$ = insereNodo($5, $$);
 			}
 			;
-declaration : 		 type ':' identificador 				
+declaration : 		 type ':' TK_IDENTIFICADOR				
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($3, $$);
+				
 			}
  			;
 
  //declaration of the functions
 parameter_list: 	 declaration 						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
  			|declaration ',' parameter_list 			
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
-				$$ = insereNodo($3, $$);
+				//$$ = criaNodo(-1, 0);
+				//$$ = insereNodo($1, $$);
+				//$$ = insereNodo($3, $$);
 			}
 			| 							
 			{ $$ = NULL; }
@@ -166,30 +161,16 @@ parameter_list: 	 declaration
   */
 function_variables:	 declaration ';' function_variables			
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
-				$$ = insereNodo($3, $$);
+				
 			}
 			| 							
 			{ $$ = NULL; }		
-			;
-
-/*
- * A function is made of a header, declaration of locals variables and body
- */
-function: 		 type ':' TK_IDENTIFICADOR '('parameter_list')' function_variables cmd_block		
-			{ 
-				$$ = criaNodo(IKS_AST_FUNCAO, $3);
-				$$ = insereNodo($5, $$);
-				$$ = insereNodo($7, $$); 
-				$$ = insereNodo($8, $$);
-			}
 			;
  
  /* 
   * A command block is a group of commands
   */
-cmd_block:		 '{' cmd_list '}'					
+cmd_block:		 '{' cmd_list '}'			
 			{ 
 				$$ = criaNodo(IKS_AST_BLOCO, 0);
 				$$ = insereNodo($2, $$);
@@ -210,48 +191,39 @@ cmd_list:		 cmd cmd_list
   */
 cmd:			 attrib ';'						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
  			|flow 							
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
  			|input ';'						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			|output							
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			|output ';'						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			|return ';'						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
  			|cmd_block						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			|cmd_block ';'						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
  			|call_function ';'					
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
  			;
  
@@ -260,13 +232,11 @@ cmd:			 attrib ';'
   */
 expr: 			 arit_expr						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			|log_expr						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
  			;
 
@@ -275,13 +245,11 @@ expr: 			 arit_expr
  */
 arit_expr:		 term							
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			|'('arit_expr')'					
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($2, $$);
+				$$ = $2;
 			}
 			|arit_expr '+' arit_expr				
 			{ 
@@ -319,8 +287,7 @@ arit_expr:		 term
  */
 log_expr:		 '('log_expr')'						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($2, $$);
+				$$ = $2;
 			}	
 			|term TK_OC_AND term					
 			{ 
@@ -398,13 +365,11 @@ term: 			 TK_LIT_INT
 			}
  			|v_ident				
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			|call_function						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			;
 
@@ -482,8 +447,7 @@ output: 		 TK_PR_OUTPUT output_list
 			;
 output_list: 		 output_element						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			|output_element ',' output_list				
 			{ 
@@ -498,8 +462,7 @@ output_element:		 TK_LIT_STRING
 			}
 			|arit_expr						
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			;
 return:			 TK_PR_RETURN expr					
@@ -522,8 +485,7 @@ call_function:		 identificador'('argument_list')'
 
 argument_list:		 term							
 			{ 
-				$$ = criaNodo(-1, 0);
-				$$ = insereNodo($1, $$);
+				$$ = $1;
 			}
 			|term ',' argument_list					
 			{ 
