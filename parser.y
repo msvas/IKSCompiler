@@ -25,6 +25,7 @@ struct comp_tree *root;
 %type<ast> global_decl
 %type<ast> declaration
 %type<ast> declarations
+%type<ast> func_body
 %type<ast> parameter_list
 %type<ast> function_variables
 %type<ast> cmd_block
@@ -112,7 +113,7 @@ declarations:		 global_decl declarations
 			{ 
 				$$ = $2;
 			}
-			|type ':' TK_IDENTIFICADOR '('parameter_list')' function_variables cmd_block declarations				
+			|type ':' TK_IDENTIFICADOR '('parameter_list')' function_variables func_body declarations				
 			{ 
 				$$ = criaNodo(IKS_AST_FUNCAO, $3); 
 				$$ = insereNodo($8, $$);
@@ -166,11 +167,16 @@ function_variables:	 declaration ';' function_variables
 			| 							
 			{ $$ = NULL; }		
 			;
+
+func_body: 		 '{' cmd_list '}'
+			{ 
+				$$ = $2;
+			}
  
  /* 
   * A command block is a group of commands
   */
-cmd_block:		 '{' cmd_list '}'			
+cmd_block:		 '{' cmd_list '}'	
 			{ 
 				$$ = criaNodo(IKS_AST_BLOCO, 0);
 				$$ = insereNodo($2, $$);
@@ -399,32 +405,33 @@ attrib:	 		 identificador '=' expr
  /*
   * Control flow description
   */
-flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd			
+flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 			{ 
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
-			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd	
+			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd
 			{ 
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 				$$ = insereNodo($8, $$);
 			}
- 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd			
+ 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd	
 			{ 
 				$$ = criaNodo(IKS_AST_WHILE_DO, 0);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
- 			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'			
+ 			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'
 			{ 
 				$$ = criaNodo(IKS_AST_DO_WHILE, 0);
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($5, $$);
 			}
  			;
+
 /*
  * Input, output and return command descriptions
  */
