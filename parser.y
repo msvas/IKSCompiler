@@ -28,20 +28,21 @@ struct comp_tree *root;
 %type<ast> func_body
 %type<ast> parameter_list
 %type<ast> function_variables
-%type<ast> cmd_block
-%type<ast> cmd_list
-%type<ast> cmd
+//%type<ast> cmd_block
+//%type<ast> cmd_list
+//%type<ast> cmd
+%type<ast> cmdr
 %type<ast> expr
 %type<ast> arit_expr
 %type<ast> log_expr
 %type<ast> term
-%type<ast> attrib
-%type<ast> flow
-%type<ast> input
-%type<ast> output
+//%type<ast> attrib
+//%type<ast> flow
+//%type<ast> input
+//%type<ast> output
 %type<ast> output_list
 %type<ast> output_element
-%type<ast> return
+//%type<ast> return
 %type<ast> call_function
 %type<ast> argument_list
 %type<ast> type
@@ -168,22 +169,22 @@ function_variables:	 declaration ';' function_variables
 			{ $$ = NULL; }		
 			;
 
-func_body: 		 '{' cmd_list '}'
+func_body: 		 '{' cmdr '}'
 			{ 
 				$$ = $2;
 			}
- 
+ 			;
  /* 
   * A command block is a group of commands
   */
-cmd_block:		 '{' cmd_list '}'	
+/*cmd_block:		 '{' cmdr '}'	
 			{ 
 				$$ = criaNodo(IKS_AST_BLOCO, 0);
 				$$ = insereNodo($2, $$);
 			}
-			;
+			;*/
  
-cmd_list:		 cmd cmd_list						
+/*cmd_list:		 cmdr cmd_list						
 			{ 
 				$$ = criaNodo(-1, 0);
 				$$ = insereNodo($1, $$);
@@ -191,11 +192,11 @@ cmd_list:		 cmd cmd_list
 			}
  			| 							
 			{ $$ = NULL; }
- 			;
+ 			;*/
  /*
   * Types of commands
   */
-cmd:			 attrib ';'						
+/*cmd:			 attrib ';'						
 			{ 
 				$$ = $1;
 			}
@@ -231,7 +232,7 @@ cmd:			 attrib ';'
 			{ 
 				$$ = $1;
 			}
- 			;
+ 			;*/
  
  /*
   * Expressions can be either logical or arithmetical
@@ -382,7 +383,7 @@ term: 			 TK_LIT_INT
 /*
  * possible attributions
  */
-attrib:	 		 identificador '=' expr				
+/*attrib:	 		 identificador '=' expr				
 			{ 
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
 				$$ = insereNodo($1, $$);
@@ -400,42 +401,149 @@ attrib:	 		 identificador '=' expr
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
-			;
+			;*/
+ /*
+  * Recursive command
+  */
+cmdr:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmdr cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+				$$ = insereNodo($7, $$);
+			}
+			|TK_PR_IF '(' expr ')' TK_PR_THEN cmdr TK_PR_ELSE cmdr cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+				$$ = insereNodo($8, $$);
+				$$ = insereNodo($9, $$);
+			}
+ 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmdr cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_WHILE_DO, 0);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+				$$ = insereNodo($7, $$);
+			}
+ 			|TK_PR_DO cmdr TK_PR_WHILE '(' expr ')' cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_DO_WHILE, 0);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($5, $$);
+				$$ = insereNodo($7, $$);
+			}
+ 			|TK_PR_INPUT identificador ';' cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_INPUT, 0);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($4, $$);
+			}
+			|TK_PR_INPUT v_ident ';' cmdr
+			{
+				$$ = criaNodo(IKS_AST_INPUT,0);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($4, $$);
+			}
+			|TK_PR_OUTPUT output_list ';' cmdr	
+			{ 
+				$$ = criaNodo(IKS_AST_OUTPUT, 0);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($4, $$);
+			}
+			|TK_PR_OUTPUT output_list cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_OUTPUT, 0);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|identificador '=' expr	';' cmdr	
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($5, $$);
+			}
+			|identificador '=' lit_string ';' cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($5, $$);
+			}
+			|v_ident '=' expr ';' cmdr	
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($5, $$);
+			}
+			|TK_PR_RETURN expr ';' cmdr	
+			{ 
+				$$ = criaNodo(IKS_AST_RETURN, 0);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($4, $$);
+			}
+			|identificador'('argument_list')' ';' cmdr	
+			{ 
+				$$ = criaNodo(IKS_AST_CHAMADA_DE_FUNCAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+			}
+			|'{' cmdr '}' cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_BLOCO, 0);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($4, $$);
+			}
+			|'{' cmdr '}' ';' cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_BLOCO, 0);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($5, $$);
+			}
+			|
+			{
+				$$ = NULL;
+			}
+			;			
  
  /*
   * Control flow description
   */
-flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
+/*flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmdr
 			{ 
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
-			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd
+			|TK_PR_IF '(' expr ')' TK_PR_THEN cmdr TK_PR_ELSE cmdr
 			{ 
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 				$$ = insereNodo($8, $$);
 			}
- 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd	
+ 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmdr
 			{ 
 				$$ = criaNodo(IKS_AST_WHILE_DO, 0);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
- 			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'
+ 			|TK_PR_DO cmdr TK_PR_WHILE '(' expr ')'
 			{ 
 				$$ = criaNodo(IKS_AST_DO_WHILE, 0);
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($5, $$);
 			}
- 			;
+ 			;*/
 
 /*
  * Input, output and return command descriptions
  */
-input: 			 TK_PR_INPUT identificador				
+/*input: 			 TK_PR_INPUT identificador				
 			{ 
 				$$ = criaNodo(IKS_AST_INPUT, 0);
 				$$ = insereNodo($2, $$);
@@ -451,7 +559,7 @@ output: 		 TK_PR_OUTPUT output_list
 				$$ = criaNodo(IKS_AST_OUTPUT, 0);
 				$$ = insereNodo($2, $$);
 			}
-			;
+			;*/
 output_list: 		 output_element						
 			{ 
 				$$ = $1;
@@ -472,12 +580,12 @@ output_element:		 TK_LIT_STRING
 				$$ = $1;
 			}
 			;
-return:			 TK_PR_RETURN expr					
+/*return:			 TK_PR_RETURN expr					
 			{ 
 				$$ = criaNodo(IKS_AST_RETURN, 0);
 				$$ = insereNodo($2, $$);
 			}
-			;
+			;/
 
 /*
  * Call function command
