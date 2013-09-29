@@ -28,7 +28,7 @@ struct comp_tree *root;
 %type<ast> func_body
 %type<ast> parameter_list
 %type<ast> function_variables
-//%type<ast> cmd_block
+%type<ast> cmd_block
 //%type<ast> cmd_list
 //%type<ast> cmd
 %type<ast> cmdr
@@ -36,7 +36,7 @@ struct comp_tree *root;
 %type<ast> arit_expr
 %type<ast> log_expr
 %type<ast> term
-//%type<ast> attrib
+%type<ast> attrib
 //%type<ast> flow
 //%type<ast> input
 //%type<ast> output
@@ -405,14 +405,14 @@ term: 			 TK_LIT_INT
  /*
   * Recursive command
   */
-cmdr:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmdr cmdr
+cmdr:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmdr cmd_block
 			{ 
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 				$$ = insereNodo($7, $$);
 			}
-			|TK_PR_IF '(' expr ')' TK_PR_THEN cmdr TK_PR_ELSE cmdr cmdr
+			|TK_PR_IF '(' expr ')' TK_PR_THEN cmdr TK_PR_ELSE cmdr cmd_block
 			{ 
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
 				$$ = insereNodo($3, $$);
@@ -420,79 +420,88 @@ cmdr:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmdr cmdr
 				$$ = insereNodo($8, $$);
 				$$ = insereNodo($9, $$);
 			}
- 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmdr cmdr
+ 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmdr cmd_block
 			{ 
 				$$ = criaNodo(IKS_AST_WHILE_DO, 0);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 				$$ = insereNodo($7, $$);
 			}
- 			|TK_PR_DO cmdr TK_PR_WHILE '(' expr ')' cmdr
+ 			|TK_PR_DO cmdr TK_PR_WHILE '(' expr ')' cmd_block
 			{ 
 				$$ = criaNodo(IKS_AST_DO_WHILE, 0);
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($5, $$);
 				$$ = insereNodo($7, $$);
 			}
- 			|TK_PR_INPUT identificador ';' cmdr
+ 			|TK_PR_INPUT identificador ';' cmd_block
 			{ 
 				$$ = criaNodo(IKS_AST_INPUT, 0);
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($4, $$);
 			}
-			|TK_PR_INPUT v_ident ';' cmdr
+			|TK_PR_INPUT v_ident ';' cmd_block
 			{
 				$$ = criaNodo(IKS_AST_INPUT,0);
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($4, $$);
 			}
-			|TK_PR_OUTPUT output_list ';' cmdr	
+			|TK_PR_OUTPUT output_list ';' cmd_block	
 			{ 
 				$$ = criaNodo(IKS_AST_OUTPUT, 0);
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($4, $$);
 			}
-			|TK_PR_OUTPUT output_list cmdr
+			|TK_PR_OUTPUT output_list cmd_block
 			{ 
 				$$ = criaNodo(IKS_AST_OUTPUT, 0);
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($3, $$);
 			}
-			|identificador '=' expr	';' cmdr	
-			{ 
-				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
-				$$ = insereNodo($1, $$);
-				$$ = insereNodo($3, $$);
-				$$ = insereNodo($5, $$);
-			}
-			|identificador '=' lit_string ';' cmdr
-			{ 
-				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
-				$$ = insereNodo($1, $$);
-				$$ = insereNodo($3, $$);
-				$$ = insereNodo($5, $$);
-			}
-			|v_ident '=' expr ';' cmdr	
-			{ 
-				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
-				$$ = insereNodo($1, $$);
-				$$ = insereNodo($3, $$);
-				$$ = insereNodo($5, $$);
-			}
-			|TK_PR_RETURN expr ';' cmdr	
+			
+			|TK_PR_RETURN expr ';' cmd_block	
 			{ 
 				$$ = criaNodo(IKS_AST_RETURN, 0);
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($4, $$);
 			}
-			|identificador'('argument_list')' ';' cmdr	
+			|identificador'('argument_list')' ';' cmd_block	
 			{ 
 				$$ = criaNodo(IKS_AST_CHAMADA_DE_FUNCAO, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
-			|'{' cmdr '}' cmdr
+			|attrib
+			{
+				$$ = $1;
+			}
+			;
+
+attrib: 		 identificador '=' expr	';' cmd_block	
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($5, $$);
+			}
+			|identificador '=' lit_string ';' cmd_block
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($5, $$);
+			}
+			|v_ident '=' expr ';' cmd_block	
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($5, $$);
+			}
+			;
+
+cmd_block:		 '{' cmdr '}' cmdr
 			{ 
 				$$ = criaNodo(IKS_AST_BLOCO, 0);
 				$$ = insereNodo($2, $$);
@@ -504,11 +513,15 @@ cmdr:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmdr cmdr
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($5, $$);
 			}
+			|cmdr
+			{
+				$$ = $1;
+			}
 			|
 			{
 				$$ = NULL;
 			}
-			;			
+			;	
  
  /*
   * Control flow description
