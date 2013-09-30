@@ -7,9 +7,11 @@
 #include "util.h"
 #include "comp_dict.h"
 
+int yylineno;
+
 void yyerror (char const *mensagem)
 {
-	fprintf (stderr, "%s\n", mensagem);
+	fprintf (stderr, "%s line: %i\n", mensagem, yylineno);
 }
 
 int main(char argv, int **argc)

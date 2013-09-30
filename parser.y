@@ -37,6 +37,7 @@ struct comp_tree *root;
 %type<ast> attrib
 %type<ast> flow
 %type<ast> input
+%type<ast> bool
 %type<ast> output
 %type<ast> output_list
 %type<ast> output_element
@@ -125,13 +126,11 @@ declarations:            global_decl declarations
  // declarations of the program
 global_decl :            declaration ';'                                        
                         { 
-                                //$$ = $1;
+                                
                         }
                         |type ':' identificador'['lit_int']' ';'                
                         { 
-                                //$$ = criaNodo(IKS_AST_VETOR_INDEXADO, 0);
-                                //$$ = insereNodo($3, $$);
-                                //$$ = insereNodo($5, $$);
+                                
                         }
                         ;
 declaration :            type ':' TK_IDENTIFICADOR                              
@@ -146,7 +145,9 @@ parameter_list:          declaration
                                 $$ = $1;
                         }
                         |declaration ',' parameter_list                         
-                        {}
+                        {
+
+			}
                         |                                                       
                         { $$ = NULL; }
                         ;
@@ -183,20 +184,30 @@ cmd_list:		 cmd cmd_list
 				$$ = insereNodo($2, $1);
 			}
  			| 							
-			{ $$ = NULL; }
+			{ 
+				$$ = NULL;
+			}
  			;
  /*
   * Types of commands
   */
-cmd:			 attrib ';'						
+cmd:			 attrib					
 			{ 
 				$$ = $1;
 			}
- 			|flow 							
+			|attrib ';'						
 			{ 
 				$$ = $1;
 			}
- 			|input ';'						
+ 			|flow 					
+			{ 
+				$$ = $1;
+			}
+			|input			
+			{ 
+				$$ = $1;
+			}
+ 			|input ';'				
 			{ 
 				$$ = $1;
 			}
@@ -205,6 +216,10 @@ cmd:			 attrib ';'
 				$$ = $1;
 			}
 			|output ';'						
+			{ 
+				$$ = $1;
+			}
+			|return						
 			{ 
 				$$ = $1;
 			}
@@ -381,6 +396,12 @@ attrib:	 		 identificador '=' expr
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
+			|identificador '=' bool		
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
 			|identificador '=' lit_string			
 			{ 
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
@@ -417,7 +438,7 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
- 			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'			
+ 			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'	';'
 			{ 
 				$$ = criaNodo(IKS_AST_DO_WHILE, 0);
 				$$ = insereNodo($2, $$);
@@ -480,11 +501,11 @@ call_function:		 identificador'('argument_list')'
 			}
 			;
 
-argument_list:		 term							
+argument_list:		 expr							
 			{ 
 				$$ = $1;
 			}
-			|term ',' argument_list					
+			|expr ',' argument_list					
 			{ 
 				$$ = insereNodo($3, $1);
 			}
@@ -507,19 +528,27 @@ type:			 TK_PR_INT						{}
 /*
  * Terminal symbols
  */
-lit_int: 		TK_LIT_INT
+lit_int: 		 TK_LIT_INT
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1);
 			};
-lit_string: 		TK_LIT_STRING
+lit_string: 		 TK_LIT_STRING
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1);
 			};
-identificador: 		TK_IDENTIFICADOR
+bool:	 		 TK_LIT_TRUE
+			{ 
+				$$ = criaNodo(IKS_AST_LITERAL, $1);
+			}
+			|TK_LIT_FALSE
+			{ 
+				$$ = criaNodo(IKS_AST_LITERAL, $1);
+			};
+identificador: 		 TK_IDENTIFICADOR
 			{ 
 				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1);
 			};
-v_ident:		identificador '[' expr ']'					
+v_ident:		 identificador '[' expr ']'					
 			{ 
 				$$ = criaNodo(IKS_AST_VETOR_INDEXADO, NULL);
 				$$ = insereNodo($1, $$);
