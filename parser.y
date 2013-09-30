@@ -30,7 +30,7 @@ struct comp_tree *root;
 %type<ast> function_variables
 %type<ast> cmd_block
 //%type<ast> cmd_list
-//%type<ast> cmd
+%type<ast> cmd
 %type<ast> cmdr
 %type<ast> expr
 %type<ast> arit_expr
@@ -405,99 +405,93 @@ term: 			 TK_LIT_INT
  /*
   * Recursive command
   */
-cmdr:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmdr cmd_block
-			{ 
-				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
-				$$ = insereNodo($3, $$);
-				$$ = insereNodo($6, $$);
-				$$ = insereNodo($7, $$);
-			}
-			|TK_PR_IF '(' expr ')' TK_PR_THEN cmdr TK_PR_ELSE cmdr cmd_block
-			{ 
-				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
-				$$ = insereNodo($3, $$);
-				$$ = insereNodo($6, $$);
-				$$ = insereNodo($8, $$);
-				$$ = insereNodo($9, $$);
-			}
- 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmdr cmd_block
-			{ 
-				$$ = criaNodo(IKS_AST_WHILE_DO, 0);
-				$$ = insereNodo($3, $$);
-				$$ = insereNodo($6, $$);
-				$$ = insereNodo($7, $$);
-			}
- 			|TK_PR_DO cmdr TK_PR_WHILE '(' expr ')' cmd_block
-			{ 
-				$$ = criaNodo(IKS_AST_DO_WHILE, 0);
-				$$ = insereNodo($2, $$);
-				$$ = insereNodo($5, $$);
-				$$ = insereNodo($7, $$);
-			}
- 			|TK_PR_INPUT identificador ';' cmd_block
-			{ 
-				$$ = criaNodo(IKS_AST_INPUT, 0);
-				$$ = insereNodo($2, $$);
-				$$ = insereNodo($4, $$);
-			}
-			|TK_PR_INPUT v_ident ';' cmd_block
-			{
-				$$ = criaNodo(IKS_AST_INPUT,0);
-				$$ = insereNodo($2, $$);
-				$$ = insereNodo($4, $$);
-			}
-			|TK_PR_OUTPUT output_list ';' cmd_block	
-			{ 
-				$$ = criaNodo(IKS_AST_OUTPUT, 0);
-				$$ = insereNodo($2, $$);
-				$$ = insereNodo($4, $$);
-			}
-			|TK_PR_OUTPUT output_list cmd_block
-			{ 
-				$$ = criaNodo(IKS_AST_OUTPUT, 0);
-				$$ = insereNodo($2, $$);
-				$$ = insereNodo($3, $$);
-			}
-			
-			|TK_PR_RETURN expr ';' cmd_block	
-			{ 
-				$$ = criaNodo(IKS_AST_RETURN, 0);
-				$$ = insereNodo($2, $$);
-				$$ = insereNodo($4, $$);
-			}
-			|identificador'('argument_list')' ';' cmd_block	
+cmdr:			 identificador'('argument_list')' ';' cmd_block	
 			{ 
 				$$ = criaNodo(IKS_AST_CHAMADA_DE_FUNCAO, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
-			|attrib
+			|attrib cmd_block
 			{
-				$$ = $1;
+				$$ = insereNodo($2, $1);
+			}
+			|cmd cmd_block
+			{
+				$$ = insereNodo($2, $1);
 			}
 			;
 
-attrib: 		 identificador '=' expr	';' cmd_block	
+cmd:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmdr
 			{ 
-				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
-				$$ = insereNodo($1, $$);
+				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
 				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+			}
+			|TK_PR_IF '(' expr ')' TK_PR_THEN cmdr TK_PR_ELSE cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_IF_ELSE, 0);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+				$$ = insereNodo($8, $$);
+			}
+ 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmdr
+			{ 
+				$$ = criaNodo(IKS_AST_WHILE_DO, 0);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+			}
+ 			|TK_PR_DO cmdr TK_PR_WHILE '(' expr ')'
+			{ 
+				$$ = criaNodo(IKS_AST_DO_WHILE, 0);
+				$$ = insereNodo($2, $$);
 				$$ = insereNodo($5, $$);
 			}
-			|identificador '=' lit_string ';' cmd_block
+ 			|TK_PR_INPUT identificador ';'
 			{ 
-				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
-				$$ = insereNodo($1, $$);
-				$$ = insereNodo($3, $$);
-				$$ = insereNodo($5, $$);
+				$$ = criaNodo(IKS_AST_INPUT, 0);
+				$$ = insereNodo($2, $$);
 			}
-			|v_ident '=' expr ';' cmd_block	
+			|TK_PR_INPUT v_ident ';'
+			{
+				$$ = criaNodo(IKS_AST_INPUT,0);
+				$$ = insereNodo($2, $$);
+			}
+			/*|TK_PR_OUTPUT output_list cmd_block	
+			{ 
+				$$ = criaNodo(IKS_AST_OUTPUT, 0);
+				$$ = insereNodo($2, $$);
+				$$ = insereNodo($3, $$);
+			}*/
+			|TK_PR_OUTPUT output_list ';'
+			{ 
+				$$ = criaNodo(IKS_AST_OUTPUT, 0);
+				$$ = insereNodo($2, $$);
+			}
+			|TK_PR_RETURN expr ';'	
+			{ 
+				$$ = criaNodo(IKS_AST_RETURN, 0);
+				$$ = insereNodo($2, $$);
+			}
+			;
+
+attrib: 		 identificador '=' expr	';'
 			{ 
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
-				$$ = insereNodo($5, $$);
+			}
+			|identificador '=' lit_string ';'
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
+			|v_ident '=' expr ';'
+			{ 
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
 			}
 			;
 
