@@ -71,26 +71,11 @@ AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz) //function to insert a
 		return novoFilho;
 	}
 
-	if(novoFilho->type == -1) {
-		aux = novoFilho->filhos;
-		if(aux == NULL) {
-			raiz->filhos = NULL;
-		}
-		else {
-			while(aux->proximo != NULL && aux!=NULL) {
-				raiz = insereNodo(aux->filho, raiz);			
-				aux = aux->proximo;
-			}
-			free(novoFilho);
-		}
-	}
-	else {
-		aux = malloc(sizeof(simple_node));
-		aux->filho = novoFilho;
-		gv_connect(raiz,novoFilho);
-		debug("inserindo ");
-		raiz->filhos = simpleInsert(aux, raiz->filhos);
-	}
+        aux = malloc(sizeof(simple_node));
+        aux->filho = novoFilho;
+	gv_connect(raiz,novoFilho);
+	debug("inserindo ");
+        raiz->filhos = simpleInsert(aux, raiz->filhos);
 	return raiz;
 }
 
