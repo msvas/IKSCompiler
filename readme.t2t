@@ -41,7 +41,6 @@ http://www.vim.org/
 http://cscope.sourceforge.net/
 http://txt2tags.org/
 
-
 ```
 cscope-indexer -r
 ```
@@ -114,7 +113,6 @@ time ./main ../test/tokens/1token.iks
 
 ./main ../test/tokens/1600tokens.iks > temp
 vim temp
-gedit temp
 
 ./main ../test/tokens/1600tokens.iks | wc -l && ./main ../test/tokens/1600tokens.iks > temp
 ```
@@ -123,8 +121,7 @@ gedit temp
 = Scratch =
 
 ./main < ../test/input/certa02.txt
-
-
 dot -Tpng visual_tree.dot -o visual_tree.png
 eog visual_tree.png
+
 

@@ -19,27 +19,34 @@ ADD_EXECUTABLE(main
   src/comp_simplelist.c
   src/comp_tree.c
   src/comp_graph.c
-  src/symbol_table.c
 )
-#ADD_EXECUTABLE(graph_test
-#  test/comp_graph_tst.c
-#  src/comp_graph.c
-#)
-#ADD_EXECUTABLE(list_test
-#  test/comp_list_tst.c
-#  src/comp_list.c
-#)
-#ADD_EXECUTABLE(dict_test
-#  test/comp_dict_tst.c
-#  src/comp_dict.c
-#  src/symbol_table.c
-#)
-#ADD_EXECUTABLE(tree_test
-#  test/comp_tree_tst.c
-#  src/comp_tree.c
-#)
+
+#set(build_tests yes)
+if(build_tests)
+ADD_EXECUTABLE(graph_test
+  test/comp_graph_tst.c
+  src/comp_graph.c
+)
+ADD_EXECUTABLE(list_test
+  test/comp_list_tst.c
+  src/comp_list.c
+)
+ADD_EXECUTABLE(dict_test
+  test/comp_dict_tst.c
+  src/comp_dict.c
+)
+ADD_EXECUTABLE(tree_test
+  test/comp_tree_tst.c
+  src/comp_tree.c
+)
+endif(build_tests)
+
 TARGET_LINK_LIBRARIES(main ${FLEX_LIBRARIES})
 
 # Use compiler flags for compiling a debug build (with debug symbols, so we can use gdb)
 SET(CMAKE_BUILD_TYPE Debug)
+
+# Additional files to clean during the make clean stage.
+SET(addfiles dict_test list_test graph_test visual_tree.png visual_tree.dot)
+SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${addfiles}")
 

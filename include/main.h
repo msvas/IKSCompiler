@@ -32,3 +32,4 @@
 #define IKS_SIMBOLO_BOOL   5
 
 #endif
+

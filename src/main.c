@@ -5,20 +5,21 @@
 */
 #include "main.h"
 #include "util.h"
-#include "comp_dict.h"
 
 int yylineno;
 
-void yyerror (char const *mensagem)
+void yyerror(char const *mensagem)
 {
 	fprintf (stderr, "%s line: %i\n", mensagem, yylineno);
 }
 
+//TODO: exit(IKS_SYNTAX_OK) or exit(IKS_SYNTAX_SUCESSO)
 int main(char argv, int **argc)
 {
-	//TODO: exit(IKS_SYNTAX_OK) or exit(IKS_SYNTAX_SUCESSO)
+	int r;
 	gv_init("visual_tree.dot");
-	int resultado = yyparse();
+	r = yyparse();
 	gv_close();
-	return resultado;
+	return r;
 }
+

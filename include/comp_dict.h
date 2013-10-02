@@ -49,13 +49,6 @@ comp_dict_item_t *install(const char *key, uint32_t val, uint32_t line);
 void show_dict(FILE *out);
 
 /**
- * Creates a symbol file from dictionary data.
- * @param path: file path.
- * @return 0 on success, -1 otherwise.
- */
-int create_symbol_file(const char *path);
-
-/**
  * Release resources previously allocated for this
  * dictionary.
  */
