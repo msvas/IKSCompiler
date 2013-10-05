@@ -126,20 +126,22 @@ declarations:            global_decl declarations
                         ;
 
  // declarations of the program
-global_decl :            declaration ';'                                        
+global_decl :            type ':' TK_IDENTIFICADOR ';'                                        
                         { 
-                                
+				install($3->key, $3->val, $3->l, tables[0]);
+				printf("GLOBAL %s %i %i\n", $3->key, $3->val, $3->l);      
                         }
-                        |type ':' identificador'['lit_int']' ';'                
-                        { 
-                                
+                        |type ':' TK_IDENTIFICADOR'['lit_int']' ';'                
+                        {
+				install($3->key, $3->val, $3->l, tables[0]);
+				printf("GLOBAL %s %i %i\n", $3->key, $3->val, $3->l);
                         }
                         ;
 declaration :            type ':' TK_IDENTIFICADOR                              
-                        { 
-                                install($3->key, $3->val, $3->l, tables[0]);
-				printf("AAAAA %s %i %i\n", $3->key, $3->val, $3->l);
-                        }
+                        {
+				install($3->key, $3->val, $3->l, tables[1]);
+				printf("FUNC %s %i %i\n", $3->key, $3->val, $3->l);
+			}
                         ;
 
  //declaration of the functions
@@ -147,7 +149,7 @@ parameter_list:          declaration
                         { 
                                 $$ = $1;
                         }
-                        |declaration ',' parameter_list                         
+                        |declaration ',' parameter_list                  
                         {
 
 			}
@@ -378,6 +380,7 @@ term: 			 TK_LIT_INT
 			}
 			|TK_IDENTIFICADOR					
 			{ 
+				if(lookup($1->key, tables[1])) printf("ACHOU\n");
 				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1);
 			}
  			|v_ident				
@@ -548,7 +551,8 @@ bool:	 		 TK_LIT_TRUE
 				$$ = criaNodo(IKS_AST_LITERAL, $1);
 			};
 identificador: 		 TK_IDENTIFICADOR
-			{ 
+			{
+				if(lookup($1->key, tables[1])) { printf("ACHOU\n"); }
 				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1);
 			};
 v_ident:		 identificador '[' expr ']'					
