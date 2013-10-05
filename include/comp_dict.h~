@@ -30,7 +30,7 @@ typedef struct dict {
  * @return pointer to the related entry if found, NULL
  * otherwise.
  */
-comp_dict_item_t *lookup(const char *k, comp_dict_t *dicttab);
+comp_dict_item_t *lookup(const char *k, static comp_dict_t *dicttab);
 
 /**
  * Put (key, val) in dicttab
@@ -40,19 +40,19 @@ comp_dict_item_t *lookup(const char *k, comp_dict_t *dicttab);
  * @return on success a pointer to the new entry is
  * returned, NULL otherwise.
  */
-comp_dict_item_t *install(const char *key, uint32_t val, uint32_t line, comp_dict_t *dicttab);
+comp_dict_item_t *install(const char *key, uint32_t val, uint32_t line, static comp_dict_t *dicttab);
 
 /**
  * Display all entries (key, val) in the dictionary
  * @param out: output stream
  */
-void show_dict(FILE *out, comp_dict_t *dicttab);
+void show_dict(FILE *out, static comp_dict_t *dicttab);
 
 /**
  * Release resources previously allocated for this
  * dictionary.
  */
-void free_dict(comp_dict_t *dicttab);
+void free_dict(static comp_dict_t *dicttab);
 
 #endif /* __COMPT_DICT_H__ */
 

@@ -16,9 +16,9 @@
 // Question1: how to enlarge the hashtable during compiling process?
 
 //! Dictionary table
-//static comp_dict_t *dicttab = NULL;
+static comp_dict_t *dicttab = NULL;
 
-comp_dict_item_t *lookup(const char *k, comp_dict_t *dicttab)
+comp_dict_item_t *lookup(const char *k)
 {
 	comp_dict_item_t *dip;
 
@@ -34,23 +34,23 @@ comp_dict_item_t *lookup(const char *k, comp_dict_t *dicttab)
 	return NULL; /* not found */
 }
 
-comp_dict_item_t *install(const char *key, uint32_t val, uint32_t line, comp_dict_t *dicttab)
+comp_dict_item_t *install(const char *key, uint32_t val, uint32_t line)
 {
 	comp_dict_item_t *dip;
 
 	/* entry is already there, nothing to do */
-	if ((dip = lookup(key, dicttab)) != NULL)
+	if ((dip = lookup(key)) != NULL)
 		return dip;
 
 	/* not found */
 	dip = (comp_dict_item_t *)malloc(sizeof(*dip));
 	if (dip == NULL) {
-		debug("Could not install (%s, %d)", key, val, dicttab);
+		debug("Could not install (%s, %d)", key, val);
 		return NULL;
 	}
 	dip->key = strdup(key);
 	if (dip->key == NULL) {
-		debug("Could not install (%s, %d)", key, val, dicttab);
+		debug("Could not install (%s, %d)", key, val);
 		free(dip);
 		return NULL;
 	}
@@ -60,7 +60,7 @@ comp_dict_item_t *install(const char *key, uint32_t val, uint32_t line, comp_dic
 		/* first entry */
 		dicttab = malloc(sizeof(*dicttab));
 		if (dicttab == NULL) {
-			debug("Could not install (%s, %d)", key, val, dicttab);
+			debug("Could not install (%s, %d)", key, val);
 			free(dip->key);
 			free(dip);
 			return NULL;
@@ -81,7 +81,7 @@ comp_dict_item_t *install(const char *key, uint32_t val, uint32_t line, comp_dic
 	return dip;
 }
 
-void show_dict(FILE *out, comp_dict_t *dicttab)
+void show_dict(FILE *out)
 {
 	FILE *outstream;
 	comp_dict_item_t *dip;
@@ -93,7 +93,7 @@ void show_dict(FILE *out, comp_dict_t *dicttab)
 	}
 }
 
-void free_dict(comp_dict_t *dicttab)
+void free_dict()
 {
 	comp_dict_item_t *dip;
 	comp_dict_item_t *next;

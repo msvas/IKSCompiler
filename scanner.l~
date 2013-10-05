@@ -60,7 +60,7 @@ return  { yylval.symbol = install(yytext, (TK_PR_RETURN), line_cnt, dict);  debu
   * Special characters. Some of them must be scaped with
   * a backslash (or be the first or last in the list!)
   */
-[,;:()\[\]{}+\-*/<>=!&$] { yylval.symbol = install(yytext, (uint32_t)yytext[0], line_cnt, dict); debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
+[,;:()\[\]{}+\-*/<>=!&$] { yylval.symbol = install(yytext, (uint32_t)yytext[0], line_cnt); debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
 
  /* Relational operators */
 "<="    { yylval.symbol = install(yytext, (TK_OC_LE) , line_cnt, dict); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_LE);     }

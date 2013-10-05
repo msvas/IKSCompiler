@@ -138,7 +138,7 @@ global_decl :            declaration ';'
 declaration :            type ':' TK_IDENTIFICADOR                              
                         { 
                                 install($3->key, $3->val, $3->l, tables[0]);
-				printf("AAAAA %s %i %i\n", $3->key, $3->val, $3->l);
+				printf("AAAAA %s\n", $3->key);
                         }
                         ;
 

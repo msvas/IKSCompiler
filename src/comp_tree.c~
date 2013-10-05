@@ -63,7 +63,7 @@ AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz) //function to insert a
         simple_node *aux;
 
 	if (novoFilho == NULL){
-		//debug("novoFilho == NULL!");
+		debug("novoFilho == NULL!");
 		return raiz;
 	}
 
