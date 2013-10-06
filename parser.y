@@ -115,9 +115,9 @@ declarations:            global_decl declarations
                         { 
                                 $$ = $2;
                         }
-                        |type ':' TK_IDENTIFICADOR '('parameter_list')' function_variables func_body declarations                               
+                        |type ':' TK_IDENTIFICADOR '('parameter_list')'{tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);} function_variables func_body declarations                               
                         { 
-                                tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
+                                
 				printf("GLOBAL %s %i %i\n", $3->key, $3->val, $3->l);
 				tables[1] = NULL;
 				$$ = criaNodo(IKS_AST_FUNCAO, $3, $1);
