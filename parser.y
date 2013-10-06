@@ -453,6 +453,12 @@ attrib:	 		 identificador '=' expr
 			}
 			|identificador '=' lit_string			
 			{ 
+				if($1->definedType != IKS_STRING)
+				{
+					printf("Atribuicao de tipos incompativeis (linha:)\n");
+					exit(IKS_ERROR_UNDECLARED);
+				}				
+				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
@@ -616,13 +622,12 @@ identificador: 		 TK_IDENTIFICADOR
 				}
 				else if(lookup($1->key, tables[0])) {
 					printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
-					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[1])->val);
+					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[0])->val);
 				}
 				else {
 					printf("Variavel %s não foi declarada anteriormente ( linha: %d)\n", $1->key, $1->l);
 					exit(IKS_ERROR_UNDECLARED);
-				}
-				
+				}			
 			};
 v_ident:		 identificador '[' expr ']'					
 			{ 
