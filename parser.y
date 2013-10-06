@@ -116,7 +116,7 @@ declarations:            global_decl declarations
                         { 
                                 $$ = $2;
                         }
-                        |type ':' TK_IDENTIFICADOR '('parameter_list')' 
+                        |type ':' TK_IDENTIFICADOR '('parameter_list')'
 			{
 				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
 			} 
@@ -143,7 +143,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 				}
 				printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
                         }
-                        |type ':' TK_IDENTIFICADOR'['lit_int']' ';'                
+                        |type ':' TK_IDENTIFICADOR'['lit_int']' ';'              
                         {
 				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
 				if(tables[0] == NULL)
@@ -612,15 +612,17 @@ identificador: 		 TK_IDENTIFICADOR
 			{
 				if(lookup($1->key, tables[1])) { 
 					printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val); 
+					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[1])->val);
 				}
 				else if(lookup($1->key, tables[0])) {
 					printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
+					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[1])->val);
 				}
 				else {
 					printf("Variavel %s não foi declarada anteriormente ( linha: %d)\n", $1->key, $1->l);
 					exit(IKS_ERROR_UNDECLARED);
 				}
-				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, 0);
+				
 			};
 v_ident:		 identificador '[' expr ']'					
 			{ 

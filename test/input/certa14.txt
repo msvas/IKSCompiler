@@ -3,6 +3,7 @@ int:variavel_inteira;
 char:variavel_caractere;
 int:minha_funcao (float:k, int:l) 
 float:v1;
+float:v1;
 int:v2;
 {
   a=10;
