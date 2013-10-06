@@ -118,7 +118,7 @@ declarations:            global_decl declarations
                         |type ':' TK_IDENTIFICADOR '('parameter_list')'{tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);} function_variables func_body declarations                               
                         { 
                                 
-				printf("GLOBAL %s %i %i\n", $3->key, $3->val, $3->l);
+				printf("GLOBAL %s %d %d\n", $3->key, $1, $3->l);
 				tables[1] = NULL;
 				$$ = criaNodo(IKS_AST_FUNCAO, $3, $1);
 				$$ = insereNodo($8, $$);
@@ -132,18 +132,18 @@ declarations:            global_decl declarations
 global_decl :            type ':' TK_IDENTIFICADOR ';'                                        
                         { 
 				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
-				printf("GLOBAL %s %i %i\n", $3->key, $3->val, $3->l);      
+				printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
                         }
                         |type ':' TK_IDENTIFICADOR'['lit_int']' ';'                
                         {
 				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
-				printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $3->val, $3->l, $5->tableEntry->key);
+				printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $1, $3->l, $5->tableEntry->key);
                         }
                         ;
 declaration :            type ':' TK_IDENTIFICADOR                              
                         {
 				tables[1] = installTable($3->key, $1, 0, $3->l, tables[1]);
-				printf("FUNC %s %i %i\n", $3->key, $3->val, $3->l);
+				printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
 			}
                         ;
 
@@ -579,7 +579,7 @@ bool:	 		 TK_LIT_TRUE
 identificador: 		 TK_IDENTIFICADOR
 			{
 				if(lookup($1->key, tables[1])) { 
-					printf("ACHOU LOCAL\n"); 
+					printf("ACHOU LOCAL do tipo \n"); 
 				}
 				else if(lookup($1->key, tables[0])) {
 					printf("ACHOU GLOBAL\n");
