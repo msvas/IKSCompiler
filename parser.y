@@ -514,7 +514,6 @@ return:			 TK_PR_RETURN expr
  */
 call_function:		 identificador'('argument_list')'			
 			{ 
-				if(look
 				$$ = criaNodo(IKS_AST_CHAMADA_DE_FUNCAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
