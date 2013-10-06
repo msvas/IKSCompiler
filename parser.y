@@ -139,6 +139,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 				if(tables[0] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
+					exit(IKS_ERROR_DECLARED);
 				}
 				printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
                         }
@@ -148,6 +149,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 				if(tables[0] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
+					exit(IKS_ERROR_DECLARED);
 				}
 				printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $1, $3->l, $5->tableEntry->key);
                         }
@@ -159,6 +161,7 @@ declaration:             type ':' TK_IDENTIFICADOR
 				if(tables[1] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
+					exit(IKS_ERROR_DECLARED);
 				}
 				printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
 			}
