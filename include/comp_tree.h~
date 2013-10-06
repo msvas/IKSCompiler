@@ -29,7 +29,7 @@ AST_TREE* criaArvore(void);
  * @param chave: the value of the new node.
  * @return a pointer to the node.
  */
-AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry, int definedType);
+AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry);
 
 /**
  * Inserts a new node on the tree root

@@ -24,7 +24,7 @@ typedef struct dict {
 	uint32_t cnt;		//!< number of entries
 } comp_dict_t;
 
-comp_dict_t *installTable(const char *key, uint32_t val, uint32_t line, comp_dict_t *dicttab);
+comp_dict_t *installTable(const char *key, uint32_t val, int array, uint32_t line, comp_dict_t *dicttab);
 
 /**
  * Look for s in dicttab

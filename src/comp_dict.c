@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include "comp_dict.h"
 #include "util.h"
+#include "iks_ast.h"
 
 // TODO: maybe we should use a hashtable, it very probably scales better.
 // Question0: how to define the hashtable size (number of elements)?
@@ -34,15 +35,39 @@ comp_dict_item_t *lookup(const char *k, comp_dict_t *dicttab)
 	return NULL; /* not found */
 }
 
-comp_dict_t *installTable(const char *key, uint32_t val, uint32_t line, comp_dict_t *dicttab)
+comp_dict_t *installTable(const char *key, uint32_t val, int array, uint32_t line, comp_dict_t *dicttab)
 {
 	comp_dict_item_t *dip;
+	int size = 0;
 
 	/* entry is already there, nothing to do */
 	if ((dip = lookup(key, dicttab)) != NULL)
 		return dicttab;
 
 	/* not found */
+
+	switch(val) {
+		case IKS_INT:
+			size = 4;
+			break;
+		case IKS_FLOAT:
+			size = 8;
+			break;
+		case IKS_CHAR:
+			size = 1;
+			break;
+		case IKS_STRING:
+			size = strlen(key);
+			break;
+		case IKS_BOOL:
+			size = 1;
+			break;
+	}
+
+	if(array) {
+		size = size*array;
+	}
+
 	dip = (comp_dict_item_t *)malloc(sizeof(*dip));
 	if (dip == NULL) {
 		debug("Could not install (%s, %d)", key, val, dicttab);

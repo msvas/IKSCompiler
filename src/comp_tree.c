@@ -15,7 +15,7 @@ AST_TREE* criaArvore()
         return NULL;
 }
 
-AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
+AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry, int definedType) //create a new node
 {
         AST_TREE* novoNodo;
 
@@ -24,6 +24,7 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
         novoNodo = malloc(sizeof(AST_TREE));
         novoNodo->type = chave;
         novoNodo->tableEntry = tableEntry;
+	novoNodo->definedType = definedType;
         novoNodo->filhos = NULL;
 	/* 
 	 * tipo: deve ser obrigatoriamente um dos valores das constantes
