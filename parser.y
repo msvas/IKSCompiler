@@ -136,11 +136,19 @@ declarations:            global_decl declarations
 global_decl:             type ':' TK_IDENTIFICADOR ';'                                        
                         { 
 				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
+				if(tables[0] == NULL)
+				{
+					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
+				}
 				printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
                         }
                         |type ':' TK_IDENTIFICADOR'['lit_int']' ';'                
                         {
 				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
+				if(tables[0] == NULL)
+				{
+					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
+				}
 				printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $1, $3->l, $5->tableEntry->key);
                         }
                         ;
@@ -148,6 +156,10 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 declaration:             type ':' TK_IDENTIFICADOR                        
                         {
 				tables[1] = installTable($3->key, $1, 0, $3->l, tables[1]);
+				if(tables[1] == NULL)
+				{
+					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
+				}
 				printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
 			}
                         ;
@@ -407,7 +419,8 @@ term: 			 TK_LIT_INT
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[0])->val);
 				}
 				else {
-					printf("NAO ACHOU %s\n", $1->key);
+					printf("Variavel %s não foi declarada anteriormente ( linha: %d)\n", $1->key, $1->l);
+					exit(IKS_ERROR_UNDECLARED);
 				}
 			}
  			|v_ident				
@@ -601,7 +614,8 @@ identificador: 		 TK_IDENTIFICADOR
 					printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 				}
 				else {
-					printf("NAO ACHOU %s\n", $1->key);
+					printf("Variavel %s não foi declarada anteriormente ( linha: %d)\n", $1->key, $1->l);
+					exit(IKS_ERROR_UNDECLARED);
 				}
 				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, 0);
 			};

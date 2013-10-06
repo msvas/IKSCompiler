@@ -112,7 +112,7 @@ comp_dict_item_t *install(const char *key, uint32_t val, uint32_t line, comp_dic
 
 	/* entry is already there, nothing to do */
 	if ((dip = lookup(key, dicttab)) != NULL)
-		return dip;
+		return NULL;
 
 	/* not found */
 	dip = (comp_dict_item_t *)malloc(sizeof(*dip));
