@@ -440,13 +440,25 @@ term: 			 TK_LIT_INT
  * possible attributions
  */
 attrib:	 		 identificador '=' expr		
-			{ 
+			{
+				if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}	
+
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|identificador '=' bool		
-			{ 
+			{
+				if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}
+
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
@@ -455,8 +467,8 @@ attrib:	 		 identificador '=' expr
 			{ 
 				if($1->definedType != IKS_STRING)
 				{
-					printf("Atribuicao de tipos incompativeis (linha:)\n");
-					exit(IKS_ERROR_UNDECLARED);
+					printf("Coercao impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
 				}				
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
@@ -464,7 +476,13 @@ attrib:	 		 identificador '=' expr
 				$$ = insereNodo($3, $$);
 			}
 			|v_ident '=' expr			
-			{ 
+			{
+				if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}
+
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
@@ -622,13 +640,12 @@ identificador: 		 TK_IDENTIFICADOR
 				}
 				else if(lookup($1->key, tables[0])) {
 					printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
-					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[1])->val);
+					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[0])->val);
 				}
 				else {
 					printf("Variavel %s não foi declarada anteriormente ( linha: %d)\n", $1->key, $1->l);
 					exit(IKS_ERROR_UNDECLARED);
-				}
-				
+				}			
 			};
 v_ident:		 identificador '[' expr ']'					
 			{ 

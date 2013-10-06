@@ -303,24 +303,48 @@ arit_expr:		 term
 			}
 			|arit_expr '+' arit_expr			
 			{
+				if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}
+
 				$$ = criaNodo(IKS_AST_ARIM_SOMA, 0, typeDefiner($1->definedType, $3->definedType));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|arit_expr '-' arit_expr				
-			{ 
+			{
+				if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}
+
 				$$ = criaNodo(IKS_AST_ARIM_SUBTRACAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|arit_expr '*' arit_expr				
-			{ 
+			{
+				if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}			
+
 				$$ = criaNodo(IKS_AST_ARIM_MULTIPLICACAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|arit_expr '/' arit_expr				
-			{ 
+			{
+				if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}
+
 				$$ = criaNodo(IKS_AST_ARIM_DIVISAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
@@ -440,13 +464,25 @@ term: 			 TK_LIT_INT
  * possible attributions
  */
 attrib:	 		 identificador '=' expr		
-			{ 
+			{
+				if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}	
+
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|identificador '=' bool		
-			{ 
+			{
+				if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}
+
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
@@ -455,8 +491,8 @@ attrib:	 		 identificador '=' expr
 			{ 
 				if($1->definedType != IKS_STRING)
 				{
-					printf("Atribuicao de tipos incompativeis (linha:)\n");
-					exit(IKS_ERROR_UNDECLARED);
+					printf("Coercao impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
 				}				
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
@@ -464,7 +500,13 @@ attrib:	 		 identificador '=' expr
 				$$ = insereNodo($3, $$);
 			}
 			|v_ident '=' expr			
-			{ 
+			{
+				if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}
+
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);

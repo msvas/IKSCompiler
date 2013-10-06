@@ -5,6 +5,8 @@ int:minha_funcao (float:k, int:l)
 float:v1;
 int:v2;
 {
+  variavel_inteira = variavel_caractere;
+
   a=10;
   v[a+1]=5*b;
 }
