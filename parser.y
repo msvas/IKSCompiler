@@ -122,7 +122,7 @@ declarations:            global_decl declarations
 			} 
 			 function_variables func_body declarations                               
                         {      
-				printf("GLOBAL %s %d %d\n", $3->key, $1, $3->l);
+				//printf("GLOBAL %s %d %d\n", $3->key, $1, $3->l);
 				tables[1] = NULL;
 				$$ = criaNodo(IKS_AST_FUNCAO, $3, $1);
 				$$ = insereNodo($8, $$);
@@ -141,7 +141,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
-				printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
+				//printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
                         }
                         |type ':' TK_IDENTIFICADOR'['lit_int']' ';'              
                         {
@@ -151,7 +151,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
-				printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $1, $3->l, $5->tableEntry->key);
+				//printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $1, $3->l, $5->tableEntry->key);
                         }
                         ;
 
@@ -163,7 +163,7 @@ declaration:             type ':' TK_IDENTIFICADOR
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
-				printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
+				//printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
 			}
                         ;
 
@@ -171,7 +171,7 @@ par_declaration:         type ':' TK_IDENTIFICADOR
                         {
 				tables[1] = installTable($3->key, $1, 0, $3->l, tables[1]);
 				tables[2] = installTable($3->key, $1, 0, $3->l, tables[2]);
-				printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
+				//printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
 			}
                         ;
 
@@ -438,11 +438,11 @@ term: 			 TK_LIT_INT
 			|TK_IDENTIFICADOR					
 			{ 
 				if(lookup($1->key, tables[1])) { 
-					printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val);
+					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[1])->val);
 				}
 				else if(lookup($1->key, tables[0])) {
-					printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
+					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[0])->val);
 				}
 				else {
@@ -663,11 +663,11 @@ bool:	 		 TK_LIT_TRUE
 identificador: 		 TK_IDENTIFICADOR
 			{
 				if(lookup($1->key, tables[1])) { 
-					printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val); 
+					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val); 
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[1])->val);
 				}
 				else if(lookup($1->key, tables[0])) {
-					printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
+					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[0])->val);
 				}
 				else {
