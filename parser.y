@@ -115,7 +115,11 @@ declarations:            global_decl declarations
                         { 
                                 $$ = $2;
                         }
-                        |type ':' TK_IDENTIFICADOR '('parameter_list')'{tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);} function_variables func_body declarations                               
+                        |type ':' TK_IDENTIFICADOR '('parameter_list')' 
+			{
+				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
+			} 
+			 function_variables func_body declarations                               
                         { 
                                 
 				printf("GLOBAL %s %d %d\n", $3->key, $1, $3->l);
@@ -140,7 +144,7 @@ global_decl :            type ':' TK_IDENTIFICADOR ';'
 				printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $1, $3->l, $5->tableEntry->key);
                         }
                         ;
-declaration :            type ':' TK_IDENTIFICADOR                              
+declaration :            type ':' TK_IDENTIFICADOR                        
                         {
 				tables[1] = installTable($3->key, $1, 0, $3->l, tables[1]);
 				printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
@@ -387,14 +391,15 @@ term: 			 TK_LIT_INT
 			{ 
 				if(lookup($1->key, tables[1])) { 
 					printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val);
+					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[1])->val);
 				}
 				else if(lookup($1->key, tables[0])) {
 					printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
+					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[0])->val);
 				}
 				else {
 					printf("NAO ACHOU %s\n", $1->key);
 				}
-				$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, 0);
 			}
  			|v_ident				
 			{ 
