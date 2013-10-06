@@ -69,6 +69,7 @@ comp_dict_t *installTable(const char *key, uint32_t val, const char *arrayString
 	}
 
 	dip = (comp_dict_item_t *)malloc(size);
+		
 	if (dip == NULL) {
 		debug("Could not install (%s, %d)", key, val, dicttab);
 		return NULL;
@@ -99,7 +100,9 @@ comp_dict_t *installTable(const char *key, uint32_t val, const char *arrayString
 
 	/* increment the entries counter */
 	dicttab->cnt++;
-
+	if(arrayString) {
+		dip->vector = 1;
+	}else dip->vector = 0;
 	dip->val = val;
 	dip->l = line;
 

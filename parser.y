@@ -465,6 +465,7 @@ term: 			 TK_LIT_INT
  */
 attrib:	 		 identificador '=' expr		
 			{
+				
 				if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
@@ -477,6 +478,7 @@ attrib:	 		 identificador '=' expr
 			}
 			|identificador '=' bool		
 			{
+				
 				if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
@@ -489,6 +491,7 @@ attrib:	 		 identificador '=' expr
 			}
 			|identificador '=' lit_string			
 			{ 
+				
 				if($1->definedType != IKS_STRING)
 				{
 					printf("Coercao impossivel\n");
@@ -501,6 +504,7 @@ attrib:	 		 identificador '=' expr
 			}
 			|v_ident '=' expr			
 			{
+				
 				if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
