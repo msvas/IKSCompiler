@@ -384,10 +384,10 @@ term: 			 TK_LIT_INT
 			|TK_IDENTIFICADOR					
 			{ 
 				if(lookup($1->key, tables[1])) { 
-					printf("ACHOU LOCAL\n"); 
+					printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val);
 				}
 				else if(lookup($1->key, tables[0])) {
-					printf("ACHOU GLOBAL\n");
+					printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 				}
 				else {
 					printf("NAO ACHOU %s\n", $1->key);
@@ -579,10 +579,10 @@ bool:	 		 TK_LIT_TRUE
 identificador: 		 TK_IDENTIFICADOR
 			{
 				if(lookup($1->key, tables[1])) { 
-					printf("ACHOU LOCAL do tipo \n"); 
+					printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val); 
 				}
 				else if(lookup($1->key, tables[0])) {
-					printf("ACHOU GLOBAL\n");
+					printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 				}
 				else {
 					printf("NAO ACHOU %s\n", $1->key);
