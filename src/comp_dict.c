@@ -42,7 +42,7 @@ comp_dict_t *installTable(const char *key, uint32_t val, const char *arrayString
 	
 	/* entry is already there, nothing to do */
 	if ((dip = lookup(key, dicttab)) != NULL)
-		return dicttab;
+		return NULL;
 
 	/* not found */
 
