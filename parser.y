@@ -17,13 +17,14 @@
 #include "iks_ast.h"
 
 struct comp_tree *root;
-struct dict *tables[2] = {NULL, NULL};
+struct dict *tables[3] = {NULL, NULL, NULL};
 
 %}
 
 %type<ast> body
 %type<ast> global_decl
 %type<ast> declaration
+%type<ast> par_declaration
 %type<ast> declarations
 %type<ast> parameter_list
 %type<ast> function_variables
@@ -120,8 +121,7 @@ declarations:            global_decl declarations
 				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
 			} 
 			 function_variables func_body declarations                               
-                        { 
-                                
+                        {      
 				printf("GLOBAL %s %d %d\n", $3->key, $1, $3->l);
 				tables[1] = NULL;
 				$$ = criaNodo(IKS_AST_FUNCAO, $3, $1);
@@ -133,7 +133,7 @@ declarations:            global_decl declarations
                         ;
 
  // declarations of the program
-global_decl :            type ':' TK_IDENTIFICADOR ';'                                        
+global_decl:             type ':' TK_IDENTIFICADOR ';'                                        
                         { 
 				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
 				printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
@@ -144,19 +144,28 @@ global_decl :            type ':' TK_IDENTIFICADOR ';'
 				printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $1, $3->l, $5->tableEntry->key);
                         }
                         ;
-declaration :            type ':' TK_IDENTIFICADOR                        
+
+declaration:             type ':' TK_IDENTIFICADOR                        
                         {
 				tables[1] = installTable($3->key, $1, 0, $3->l, tables[1]);
 				printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
 			}
                         ;
 
+par_declaration:         type ':' TK_IDENTIFICADOR               
+                        {
+				tables[1] = installTable($3->key, $1, 0, $3->l, tables[1]);
+				tables[2] = installTable($3->key, $1, 0, $3->l, tables[2]);
+				printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
+			}
+                        ;
+
  //declaration of the functions
-parameter_list:          declaration                                            
+parameter_list:          par_declaration                                          
                         { 
                                 $$ = $1;
                         }
-                        |declaration ',' parameter_list
+                        |par_declaration ',' parameter_list
                         {
 
 			}
