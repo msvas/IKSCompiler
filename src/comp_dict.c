@@ -35,11 +35,11 @@ comp_dict_item_t *lookup(const char *k, comp_dict_t *dicttab)
 	return NULL; /* not found */
 }
 
-comp_dict_t *installTable(const char *key, uint32_t val, int array, uint32_t line, comp_dict_t *dicttab)
+comp_dict_t *installTable(const char *key, uint32_t val, const char *arrayString, uint32_t line, comp_dict_t *dicttab)
 {
 	comp_dict_item_t *dip;
 	int size = 0;
-
+	
 	/* entry is already there, nothing to do */
 	if ((dip = lookup(key, dicttab)) != NULL)
 		return dicttab;
@@ -64,11 +64,11 @@ comp_dict_t *installTable(const char *key, uint32_t val, int array, uint32_t lin
 			break;
 	}
 
-	if(array) {
-		size = size*array;
+	if(arrayString) {
+		size = size*atoi(arrayString);
 	}
 
-	dip = (comp_dict_item_t *)malloc(sizeof(*dip));
+	dip = (comp_dict_item_t *)malloc(size);
 	if (dip == NULL) {
 		debug("Could not install (%s, %d)", key, val, dicttab);
 		return NULL;
@@ -162,6 +162,40 @@ void show_dict(FILE *out, comp_dict_t *dicttab)
 
 	for (dip = dicttab->fep; dip != NULL; dip = dip->next) {
 		fprintf(outstream, "%d: (%d, %s)\n", dip->l, dip->val, dip->key);
+	}
+}
+
+int typeDefiner(int firstType, int secondType)
+{
+	if(firstType == IKS_INT && secondType == IKS_INT) {
+		return IKS_INT;
+	}
+	else if (firstType == IKS_FLOAT && secondType == IKS_FLOAT) {
+		return IKS_FLOAT;
+	}
+	else if (firstType == IKS_BOOL && secondType == IKS_BOOL) {
+		return IKS_BOOL;
+	}
+	else if (firstType == IKS_FLOAT && secondType == IKS_INT) {
+		return IKS_FLOAT;
+	}
+	else if (firstType == IKS_INT && secondType == IKS_FLOAT) {
+		return IKS_FLOAT;
+	}
+	else if (firstType == IKS_BOOL && secondType == IKS_INT) {
+		return IKS_INT;
+	}
+	else if (firstType == IKS_INT && secondType == IKS_BOOL) {
+		return IKS_INT;
+	}
+	else if (firstType == IKS_FLOAT && secondType == IKS_BOOL) {
+		return IKS_FLOAT;
+	}
+	else if (firstType == IKS_BOOL && secondType == IKS_FLOAT) {
+		return IKS_FLOAT;
+	}
+	else {
+		return 0;
 	}
 }
 

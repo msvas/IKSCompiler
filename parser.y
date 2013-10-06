@@ -273,36 +273,37 @@ arit_expr:		 term
 			{ 
 				$$ = $2;
 			}
-			|arit_expr '+' arit_expr				
-			{ 
-				$$ = criaNodo(IKS_AST_ARIM_SOMA, 0, 0);
+			|arit_expr '+' arit_expr			
+			{
+				$$ = criaNodo(IKS_AST_ARIM_SOMA, 0, typeDefiner($1->definedType, $3->definedType));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|arit_expr '-' arit_expr				
 			{ 
-				$$ = criaNodo(IKS_AST_ARIM_SUBTRACAO, 0, 0);
+				$$ = criaNodo(IKS_AST_ARIM_SUBTRACAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|arit_expr '*' arit_expr				
 			{ 
-				$$ = criaNodo(IKS_AST_ARIM_MULTIPLICACAO, 0, 0);
+				$$ = criaNodo(IKS_AST_ARIM_MULTIPLICACAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|arit_expr '/' arit_expr				
 			{ 
-				$$ = criaNodo(IKS_AST_ARIM_DIVISAO, 0, 0);
+				$$ = criaNodo(IKS_AST_ARIM_DIVISAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|'-' arit_expr
 			{
-				$$ = criaNodo(IKS_AST_ARIM_INVERSAO, 0, 0);
+				$$ = criaNodo(IKS_AST_ARIM_INVERSAO, 0, $2->definedType);
 				$$ = insereNodo($2, $$);
 			}
 			;
+
 
 /*
  * logical operations
@@ -313,58 +314,59 @@ log_expr:		 '('log_expr')'
 			}	
 			|term TK_OC_AND term					
 			{ 
-				$$ = criaNodo(IKS_AST_LOGICO_E, 0, 0);
+				$$ = criaNodo(IKS_AST_LOGICO_E, 0, IKS_BOOL);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_OR term					
 			{ 
-				$$ = criaNodo(IKS_AST_LOGICO_OU, 0, 0);
+				$$ = criaNodo(IKS_AST_LOGICO_OU, 0, IKS_BOOL);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_LE arit_expr				
 			{ 
-				$$ = criaNodo(IKS_AST_LOGICO_COMP_LE, 0, 0);
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_LE, 0, IKS_BOOL);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_GE arit_expr				
 			{ 
-				$$ = criaNodo(IKS_AST_LOGICO_COMP_GE, 0, 0);
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_GE, 0, IKS_BOOL);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_EQ arit_expr				
 			{ 
-				$$ = criaNodo(IKS_AST_LOGICO_COMP_IGUAL, 0, 0);
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_IGUAL, 0, IKS_BOOL);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_NE arit_expr				
 			{ 
-				$$ = criaNodo(IKS_AST_LOGICO_COMP_DIF, 0, 0);
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_DIF, 0, IKS_BOOL);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term '<' term						
 			{ 
-				$$ = criaNodo(IKS_AST_LOGICO_COMP_L, 0, 0);
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_L, 0, IKS_BOOL);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term '>' term						
 			{ 
-				$$ = criaNodo(IKS_AST_LOGICO_COMP_G, 0, 0);
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_G, 0, IKS_BOOL);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			| '!' term
 			{
-				$$ = criaNodo(IKS_AST_LOGICO_COMP_NEGACAO, 0, 0);
+				$$ = criaNodo(IKS_AST_LOGICO_COMP_NEGACAO, 0, IKS_BOOL);
 				$$ = insereNodo($2, $$);
 			}
 			;
+
 
 /*
  * term can be a number or a variable.
@@ -512,6 +514,7 @@ return:			 TK_PR_RETURN expr
  */
 call_function:		 identificador'('argument_list')'			
 			{ 
+				if(look
 				$$ = criaNodo(IKS_AST_CHAMADA_DE_FUNCAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
