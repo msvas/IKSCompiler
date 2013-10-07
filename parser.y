@@ -18,6 +18,7 @@
 
 struct comp_tree *root;
 struct dict *tables[3] = {NULL, NULL, NULL};
+char functionName[30];
 
 %}
 
@@ -116,18 +117,22 @@ declarations:            global_decl declarations
                         { 
                                 $$ = $2;
                         }
-                        |type ':' TK_IDENTIFICADOR '('parameter_list')'
+                        |type ':' TK_IDENTIFICADOR
+			{
+				strcpy(functionName, $3->key);
+			}
+			 '('parameter_list')'
 			{
 				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
 			} 
-			 function_variables func_body declarations                               
-                        {      
+			 function_variables func_body declarations
+			{
 				//printf("GLOBAL %s %d %d\n", $3->key, $1, $3->l);
 				tables[1] = NULL;
 				$$ = criaNodo(IKS_AST_FUNCAO, $3, $1);
-				$$ = insereNodo($8, $$);
-				$$ = insereNodo($9, $$);
-                        }
+				$$ = insereNodo($10, $$);
+				$$ = insereNodo($11, $$);
+			}
                         |                                                       
                         { $$ = NULL; }
                         ;
@@ -170,7 +175,8 @@ declaration:             type ':' TK_IDENTIFICADOR
 par_declaration:         type ':' TK_IDENTIFICADOR               
                         {
 				tables[1] = installTable($3->key, $1, 0, $3->l, tables[1]);
-				tables[2] = installTable($3->key, $1, 0, $3->l, tables[2]);
+				tables[2] = installParam(functionName, $1, 0, $3->l, tables[2]);
+				//show_dict(tables[2]);
 				//printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
 			}
                         ;
