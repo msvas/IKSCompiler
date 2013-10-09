@@ -49,7 +49,7 @@ char functionName[30];
 %type<ast> argument_list
 %type<type> type
 %type<ast> lit_int
-%type<ast> lit_string
+//%type<ast> lit_string
 %type<ast> identificador
 %type<ast> v_ident
 
@@ -433,6 +433,10 @@ term: 			 TK_LIT_INT
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_INT);
 			}
+			|TK_LIT_STRING
+			{ 
+				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_STRING);
+			}
 			|TK_LIT_FLOAT						
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_FLOAT);
@@ -460,7 +464,7 @@ term: 			 TK_LIT_INT
 			{ 
 				$$ = $1;
 			}
-			|call_function						
+			|call_function				
 			{ 
 				$$ = $1;
 			}
@@ -495,7 +499,7 @@ attrib:	 		 identificador '=' expr
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
-			|identificador '=' lit_string			
+			/*|identificador '=' lit_string			
 			{ 
 				
 				if($1->definedType != IKS_STRING)
@@ -507,7 +511,7 @@ attrib:	 		 identificador '=' expr
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
-			}
+			}*/
 			|v_ident '=' expr			
 			{
 				
@@ -581,11 +585,7 @@ output_list: 		 output_element
 				$$ = insereNodo($3, $1);
 			}
 			;
-output_element:		 TK_LIT_STRING						
-			{ 
-				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_STRING);
-			}
-			|arit_expr						
+output_element:		 arit_expr						
 			{ 
 				$$ = $1;
 			}
@@ -654,10 +654,10 @@ lit_int: 		 TK_LIT_INT
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_INT);
 			};
-lit_string: 		 TK_LIT_STRING
+/*lit_string: 		 TK_LIT_STRING
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_STRING);
-			};
+			};*/
 bool:	 		 TK_LIT_TRUE
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_BOOL);
