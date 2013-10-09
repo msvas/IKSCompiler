@@ -688,3 +688,19 @@ v_ident:		 identificador '[' expr ']'
 				$$ = insereNodo($3, $$);
 			};
 %%
+
+#define _GNU_SOURCE
+#include <stdio.h>
+
+extern int column;
+extern int yylineno;
+
+int yyerror(char *s)
+{
+	char *str;
+	fflush(stdout);
+	asprintf(&str, "line %d: %s", yylineno, s);
+	printf("\n%*s\n%*s\n", column, "^", column, str);
+	free(str);
+}
+

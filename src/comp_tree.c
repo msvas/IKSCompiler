@@ -19,7 +19,7 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry, int definedType) //c
 {
         AST_TREE* novoNodo;
 
-	debug("criando nodo chave = %d", chave);
+	debug("Criando nodo. Chave %d (%s)", chave, get_ast_node_type_str(chave));
 
         novoNodo = malloc(sizeof(AST_TREE));
         novoNodo->type = chave;
@@ -45,13 +45,13 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry, int definedType) //c
 		case IKS_AST_LITERAL:
 		case IKS_AST_FUNCAO:
 			if (tableEntry == NULL) {
-				debug("Error! tableEntry is NULL! Should not be! (chave = %d)", chave);
+				debug("ERROR! tableEntry is NULL! Should not be! Chave %d (%s)", chave, get_ast_node_type_str(chave));
 				return NULL;
 			}
 			gv_declare(chave, novoNodo, tableEntry->key);
 			break;
 		default:
-			//debug("tableEntry is NULL! Ok! (chave = %d)", chave);
+			//debug("tableEntry is NULL! Ok! Chave %d (%s)", chave, get_ast_node_type_str(chave));
 			gv_declare(chave, novoNodo, NULL);
 			break;
 	}
