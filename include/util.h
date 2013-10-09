@@ -29,16 +29,5 @@
 /* Array size macro */
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
-/**
- * Checks if a file exist.
- * @param path: file path.
- * return 1 if file exists, 0 otherwise.
- */
-static int file_exists(const char *path)
-{
-	struct stat s;
-	return (stat(path, &s) == 0);
-}
-
 #endif /* __UTIL_H__ */
 
