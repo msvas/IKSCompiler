@@ -1,6 +1,7 @@
 *.swp
 *.o
 *.cmake
+*~
 lex.yy*
 cscope*
 Doxyfile*
