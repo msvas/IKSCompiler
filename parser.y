@@ -309,7 +309,17 @@ arit_expr:		 term
 			}
 			|arit_expr '+' arit_expr			
 			{
-				if(!(typeDefiner($1->definedType, $3->definedType)))
+				if($1->definedType == IKS_STRING || $3->definedType == IKS_STRING)
+				{
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($1->definedType == IKS_CHAR || $3->definedType == IKS_CHAR)
+				{
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
 					exit(IKS_ERROR_WRONG_TYPE);
@@ -321,7 +331,17 @@ arit_expr:		 term
 			}
 			|arit_expr '-' arit_expr				
 			{
-				if(!(typeDefiner($1->definedType, $3->definedType)))
+				if($1->definedType == IKS_STRING || $3->definedType == IKS_STRING)
+				{
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($1->definedType == IKS_CHAR || $3->definedType == IKS_CHAR)
+				{
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
 					exit(IKS_ERROR_WRONG_TYPE);
@@ -333,11 +353,21 @@ arit_expr:		 term
 			}
 			|arit_expr '*' arit_expr				
 			{
-				if(!(typeDefiner($1->definedType, $3->definedType)))
+				if($1->definedType == IKS_STRING || $3->definedType == IKS_STRING)
+				{
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($1->definedType == IKS_CHAR || $3->definedType == IKS_CHAR)
+				{
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
 					exit(IKS_ERROR_WRONG_TYPE);
-				}			
+				}		
 
 				$$ = criaNodo(IKS_AST_ARIM_MULTIPLICACAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$ = insereNodo($1, $$);
@@ -345,7 +375,17 @@ arit_expr:		 term
 			}
 			|arit_expr '/' arit_expr				
 			{
-				if(!(typeDefiner($1->definedType, $3->definedType)))
+				if($1->definedType == IKS_STRING || $3->definedType == IKS_STRING)
+				{
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($1->definedType == IKS_CHAR || $3->definedType == IKS_CHAR)
+				{
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
 					exit(IKS_ERROR_WRONG_TYPE);
@@ -357,6 +397,17 @@ arit_expr:		 term
 			}
 			|'-' arit_expr
 			{
+				if($2->definedType == IKS_STRING)
+				{
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($2->definedType == IKS_CHAR)
+				{
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+
 				$$ = criaNodo(IKS_AST_ARIM_INVERSAO, 0, $2->definedType);
 				$$ = insereNodo($2, $$);
 			}
@@ -600,11 +651,11 @@ return:			 TK_PR_RETURN expr
 /*
  * Call function command
  */
-call_function:		 identificador'('argument_list')'			
-			{ 
-				$$ = criaNodo(IKS_AST_CHAMADA_DE_FUNCAO, 0, 0);
+call_function:		 identificador '('argument_list')'			
+			{
+				$$ = criaNodo(IKS_AST_CHAMADA_DE_FUNCAO, 0, lookup($1->tableEntry->key, tables[0])->val);
 				$$ = insereNodo($1, $$);
-				$$ = insereNodo($3, $$);
+				$$ = insereNodo($3, $$);				
 			}
 			;
 
@@ -665,7 +716,7 @@ bool:	 		 TK_LIT_TRUE
 			|TK_LIT_FALSE
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_BOOL);
-			};
+			};			
 identificador: 		 TK_IDENTIFICADOR
 			{
 				if(lookup($1->key, tables[1])) { 
