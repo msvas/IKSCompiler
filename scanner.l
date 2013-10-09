@@ -17,8 +17,8 @@ void comment(void);
 
 %option yylineno
 
- /* int: an optional '-' signal followed by a digit that is optionally followed by zero or more digits */
-INT    (-*[[:digit:]])[[:digit:]]*
+ /* int: a digit that is optionally followed by zero or more digits */
+INT    ([[:digit:]])[[:digit:]]*
  /* character: starts with ''' that must not be directly followed by ''' or a new line (\n). The first part does't match the scape symbol which is treated in the second part */
 CHAR   '([^'\\\n]|\\.)'
  /* string: starts with a '"', accept everything scaped by '\' or everything that is not a '"' and then it ends with a '"' */
