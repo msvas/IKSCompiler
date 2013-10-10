@@ -784,7 +784,15 @@ identificador: 		 TK_IDENTIFICADOR
 			};
 v_ident:		 identificador '[' expr ']'					
 			{ 
-				if(lookup($1->tableEntry->key, tables[1])) { 
+				if($3->definedType == IKS_STRING) { 
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($3->definedType == IKS_CHAR) { 
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if(lookup($1->tableEntry->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->tableEntry->key, tables[1])->val); 
 					$$ = criaNodo(IKS_AST_VETOR_INDEXADO, (lookup($1->tableEntry->key, tables[1])), (lookup($1->tableEntry->key, tables[1]))->val);
 					$$ = insereNodo($1, $$);
