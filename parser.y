@@ -129,14 +129,15 @@ declarations:            global_decl declarations
 			}
 			 '('parameter_list')'
 			{
-				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
+				if($6!=NULL)
+					tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
 			} 
 			 function_variables func_body declarations
 			{
 				//printf("GLOBAL %s %d %d\n", $3->key, $1, $3->l);
 				tables[1] = NULL;
 				$$ = criaNodo(IKS_AST_FUNCAO, $3, $1);
-				$$ = insereNodo($10, $$);
+			 	$$ = insereNodo($10, $$);
 				$$ = insereNodo($11, $$);
 			}
                         |                                                       
@@ -156,13 +157,14 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
                         }
                         |type ':' TK_IDENTIFICADOR'['lit_int']' ';'              
                         {
-				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
+				tables[0] = installTable($3->key, $1, $5->tableEntry->key, $3->l, tables[0]);
 				if(tables[0] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
 				//printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $1, $3->l, $5->tableEntry->key);
+				//show_dict(tables[0]);
                         }
                         ;
 
@@ -513,7 +515,7 @@ term: 			 TK_LIT_INT
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[0])->val);
 				}
 				else {
-					printf("Variavel %s não foi declarada anteriormente ( linha: %d)\n", $1->key, $1->l);
+					printf("Variavel %s não foi declarada anteriormente (linha: %d)\n", $1->key, $1->l);
 					exit(IKS_ERROR_UNDECLARED);
 				}
 			}
@@ -532,24 +534,44 @@ term: 			 TK_LIT_INT
  */
 attrib:	 		 identificador '=' expr		
 			{
-				if(!(typeDefiner($1->definedType, $3->definedType)))
+				if($1->definedType == IKS_STRING || $3->definedType == IKS_STRING)
+				{
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($1->definedType == IKS_CHAR || $3->definedType == IKS_CHAR)
+				{
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
 					exit(IKS_ERROR_WRONG_TYPE);
 				}
-
+				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|identificador '=' bool		
 			{
-				if(!(typeDefiner($1->definedType, $3->definedType)))
+				if($1->definedType == IKS_STRING || $3->definedType == IKS_STRING)
+				{
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($1->definedType == IKS_CHAR || $3->definedType == IKS_CHAR)
+				{
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}				
+				else if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
 					exit(IKS_ERROR_WRONG_TYPE);
 				}
-
+				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
@@ -562,14 +584,24 @@ attrib:	 		 identificador '=' expr
 					printf("Coercao impossivel\n");
 					exit(IKS_ERROR_STRING_TO_X);
 				}				
-				
+				printf("popopo");
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}*/
 			|v_ident '=' expr			
 			{
-				if($1->tableEntry->array == 0)
+				if($1->definedType == IKS_STRING || $3->definedType == IKS_STRING)
+				{
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($1->definedType == IKS_CHAR || $3->definedType == IKS_CHAR)
+				{
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if($1->tableEntry->array == 0)
 				{
 					printf("Deve ser variavel");
 					exit(IKS_ERROR_VARIABLE);
@@ -579,7 +611,7 @@ attrib:	 		 identificador '=' expr
 					printf("Tipos incompativeis\n");
 					exit(IKS_ERROR_WRONG_TYPE);
 				}
-
+				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
@@ -736,7 +768,7 @@ identificador: 		 TK_IDENTIFICADOR
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[0])), lookup($1->key, tables[0])->val);
 				}
 				else {
-					printf("Variavel %s não foi declarada anteriormente ( linha: %d)\n", $1->key, $1->l);
+					printf("Variavel %s não foi declarada anteriormente (linha: %d)\n", $1->key, $1->l);
 					exit(IKS_ERROR_UNDECLARED);
 				}			
 			};
@@ -755,7 +787,7 @@ v_ident:		 identificador '[' expr ']'
 					$$ = insereNodo($3, $$);
 				}
 				else {
-					printf("Variavel %s não foi declarada anteriormente ( linha: %d)\n", $1->tableEntry->key, $1->tableEntry->l);
+					printf("Variavel %s não foi declarada anteriormente (linha: %d)\n", $1->tableEntry->key, $1->tableEntry->l);
 					exit(IKS_ERROR_UNDECLARED);
 				}			
 			};

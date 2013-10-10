@@ -28,7 +28,7 @@ comp_dict_item_t *lookup(const char *k, comp_dict_t *dicttab)
 		return NULL;
 
 	for (dip = dicttab->fep; dip != NULL; dip = dip->next) {
-		if (strcmp(k, dip->key) != 0)
+		if (strcmp(k, dip->key) != 0) 
 			continue;
 		return dip; /* found */
 	}
