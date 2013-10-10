@@ -146,9 +146,11 @@ comp_dict_t *installTable(const char *key, uint32_t val, const char *arrayString
 	/* increment the entries counter */
 	dicttab->cnt++;
 
-	/*if(arrayString) {
-		dip->vector = 1;
-	}else dip->vector = 0;*/
+	if(arrayString != NULL) {
+		dip->array = 1;
+	}
+	else
+		dip->array = 0;
 
 	dip->val = val;
 	dip->l = line;

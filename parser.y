@@ -118,7 +118,13 @@ declarations:            global_decl declarations
                                 $$ = $2;
                         }
                         |type ':' TK_IDENTIFICADOR
-			{
+			{			
+				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
+				if(tables[0] == NULL)
+				{
+					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n", $3->key, $3->l);
+					exit(IKS_ERROR_DECLARED);
+				}
 				strcpy(functionName, $3->key);
 			}
 			 '('parameter_list')'
@@ -526,12 +532,11 @@ term: 			 TK_LIT_INT
  */
 attrib:	 		 identificador '=' expr		
 			{
-				
 				if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
 					exit(IKS_ERROR_WRONG_TYPE);
-				}	
+				}
 
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$ = insereNodo($1, $$);
@@ -539,7 +544,6 @@ attrib:	 		 identificador '=' expr
 			}
 			|identificador '=' bool		
 			{
-				
 				if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
@@ -565,8 +569,12 @@ attrib:	 		 identificador '=' expr
 			}*/
 			|v_ident '=' expr			
 			{
-				
-				if(!(typeDefiner($1->definedType, $3->definedType)))
+				if($1->tableEntry->array == 0)
+				{
+					printf("Deve ser variavel");
+					exit(IKS_ERROR_VARIABLE);
+				}
+				else if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
 					exit(IKS_ERROR_WRONG_TYPE);
@@ -721,11 +729,11 @@ identificador: 		 TK_IDENTIFICADOR
 			{
 				if(lookup($1->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val); 
-					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[1])->val);
+					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[1])), lookup($1->key, tables[1])->val);
 				}
 				else if(lookup($1->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
-					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[0])->val);
+					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[0])), lookup($1->key, tables[0])->val);
 				}
 				else {
 					printf("Variavel %s não foi declarada anteriormente ( linha: %d)\n", $1->key, $1->l);
@@ -734,9 +742,22 @@ identificador: 		 TK_IDENTIFICADOR
 			};
 v_ident:		 identificador '[' expr ']'					
 			{ 
-				$$ = criaNodo(IKS_AST_VETOR_INDEXADO, NULL, 0);
-				$$ = insereNodo($1, $$);
-				$$ = insereNodo($3, $$);
+				if(lookup($1->tableEntry->key, tables[1])) { 
+					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->tableEntry->key, tables[1])->val); 
+					$$ = criaNodo(IKS_AST_VETOR_INDEXADO, (lookup($1->tableEntry->key, tables[1])), (lookup($1->tableEntry->key, tables[1]))->val);
+					$$ = insereNodo($1, $$);
+					$$ = insereNodo($3, $$);
+				}
+				else if(lookup($1->tableEntry->key, tables[0])) {
+					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->tableEntry->key, tables[0])->val);
+					$$ = criaNodo(IKS_AST_VETOR_INDEXADO, (lookup($1->tableEntry->key, tables[0])), (lookup($1->tableEntry->key, tables[0]))->val);
+					$$ = insereNodo($1, $$);
+					$$ = insereNodo($3, $$);
+				}
+				else {
+					printf("Variavel %s não foi declarada anteriormente ( linha: %d)\n", $1->tableEntry->key, $1->tableEntry->l);
+					exit(IKS_ERROR_UNDECLARED);
+				}			
 			};
 %%
 

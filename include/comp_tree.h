@@ -17,6 +17,7 @@ typedef struct comp_tree {
         struct dict_item *tableEntry;
         int type;
 	int definedType;
+	char coercion;
 }AST_TREE;
 /**
  * Creates a tree.
