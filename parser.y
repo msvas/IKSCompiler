@@ -544,6 +544,11 @@ attrib:	 		 identificador '=' expr
 					printf("Coercao de char impossivel\n");
 					exit(IKS_ERROR_CHAR_TO_X);
 				}
+				else if($1->tableEntry->array == 1)
+				{
+					printf("Deve ser vetor");
+					exit(IKS_ERROR_VECTOR);
+				}
 				else if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
@@ -565,7 +570,12 @@ attrib:	 		 identificador '=' expr
 				{
 					printf("Coercao de char impossivel\n");
 					exit(IKS_ERROR_CHAR_TO_X);
-				}				
+				}
+				else if($1->tableEntry->array == 1)
+				{
+					printf("Deve ser vetor");
+					exit(IKS_ERROR_VECTOR);
+				}			
 				else if(!(typeDefiner($1->definedType, $3->definedType)))
 				{
 					printf("Tipos incompativeis\n");
