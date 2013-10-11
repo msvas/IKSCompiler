@@ -535,12 +535,12 @@ term: 			 TK_LIT_INT
  */
 attrib:	 		 identificador '=' expr		
 			{
-				if($1->definedType == IKS_STRING || $3->definedType == IKS_STRING)
+				if($3->definedType == IKS_STRING)
 				{
 					printf("Coercao de string impossivel\n");
 					exit(IKS_ERROR_STRING_TO_X);
 				}
-				else if($1->definedType == IKS_CHAR || $3->definedType == IKS_CHAR)
+				else if($3->definedType == IKS_CHAR)
 				{
 					printf("Coercao de char impossivel\n");
 					exit(IKS_ERROR_CHAR_TO_X);
@@ -562,12 +562,12 @@ attrib:	 		 identificador '=' expr
 			}
 			|identificador '=' bool		
 			{
-				if($1->definedType == IKS_STRING || $3->definedType == IKS_STRING)
+				if($3->definedType == IKS_STRING)
 				{
 					printf("Coercao de string impossivel\n");
 					exit(IKS_ERROR_STRING_TO_X);
 				}
-				else if($1->definedType == IKS_CHAR || $3->definedType == IKS_CHAR)
+				else if($3->definedType == IKS_CHAR)
 				{
 					printf("Coercao de char impossivel\n");
 					exit(IKS_ERROR_CHAR_TO_X);
@@ -602,12 +602,12 @@ attrib:	 		 identificador '=' expr
 			}*/
 			|v_ident '=' expr			
 			{
-				if($1->definedType == IKS_STRING || $3->definedType == IKS_STRING)
+				if($3->definedType == IKS_STRING)
 				{
 					printf("Coercao de string impossivel\n");
 					exit(IKS_ERROR_STRING_TO_X);
 				}
-				else if($1->definedType == IKS_CHAR || $3->definedType == IKS_CHAR)
+				else if($3->definedType == IKS_CHAR)
 				{
 					printf("Coercao de char impossivel\n");
 					exit(IKS_ERROR_CHAR_TO_X);
