@@ -132,13 +132,16 @@ declarations:            global_decl declarations
 				if($6!=NULL)
 					tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
 			} 
-			 function_variables func_body declarations
+			 function_variables func_body
+			{
+				tables[1] = NULL;
+			}
+			 declarations
 			{
 				//printf("GLOBAL %s %d %d\n", $3->key, $1, $3->l);
-				tables[1] = NULL;
 				$$ = criaNodo(IKS_AST_FUNCAO, $3, $1);
 			 	$$ = insereNodo($10, $$);
-				$$ = insereNodo($11, $$);
+				$$ = insereNodo($12, $$);
 			}
                         |                                                       
                         { $$ = NULL; }
