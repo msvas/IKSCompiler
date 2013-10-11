@@ -157,7 +157,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
                         }
                         |type ':' TK_IDENTIFICADOR'['lit_int']' ';'              
                         {
-				tables[0] = installTable($3->key, $1, $5->tableEntry->key, $3->l, tables[0]);
+				tables[0] = installTable($3->key, $1, atoi($5->tableEntry->key), $3->l, tables[0]);
 				if(tables[0] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
@@ -177,6 +177,7 @@ declaration:             type ':' TK_IDENTIFICADOR
 					exit(IKS_ERROR_DECLARED);
 				}
 				//printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
+				//show_dict(tables[1]);
 			}
                         ;
 

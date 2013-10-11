@@ -80,7 +80,7 @@ comp_dict_t *installParam(const char *key, uint32_t val, const char *arrayString
 	return dicttab;
 }
 
-comp_dict_t *installTable(const char *key, uint32_t val, const char *arrayString, uint32_t line, comp_dict_t *dicttab)
+comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_dict_t *dicttab)
 {
 	comp_dict_item_t *dip;
 	int size = 0;
@@ -110,16 +110,17 @@ comp_dict_t *installTable(const char *key, uint32_t val, const char *arrayString
 	}
 
 	if(arrayString) {
-		size = size*atoi(arrayString);
+		size = size*arrayString;
 	}
-
-	dip = (comp_dict_item_t *)malloc(size);
+	
+	dip = (comp_dict_item_t *)malloc(size*(sizeof(*dip)));
 		
 	if (dip == NULL) {
 		debug("Could not install (%s, %d)", key, val, dicttab);
 		return NULL;
 	}
 	dip->key = strdup(key);
+	
 	if (dip->key == NULL) {
 		debug("Could not install (%s, %d)", key, val, dicttab);
 		free(dip);
@@ -146,8 +147,8 @@ comp_dict_t *installTable(const char *key, uint32_t val, const char *arrayString
 	/* increment the entries counter */
 	dicttab->cnt++;
 
-	if(arrayString != NULL) {
-		dip->array = 1;
+	if(arrayString) {
+		dip->array = 1; printf("oi");
 	}
 	else
 		dip->array = 0;

@@ -27,7 +27,7 @@ typedef struct dict {
 
 comp_dict_t *installParam(const char *key, uint32_t val, const char *arrayString, uint32_t line, comp_dict_t *dicttab);
 
-comp_dict_t *installTable(const char *key, uint32_t val, const char *arrayString, uint32_t line, comp_dict_t *dicttab);
+comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_dict_t *dicttab);
 
 /**
  * Look for s in dicttab
