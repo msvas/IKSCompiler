@@ -14,8 +14,8 @@ rm -f $REPORT
 #test existance
 if [ ! -x $BIN ]
 then
-   echo "# Executable $BIN not found."
-   continue
+	echo -e >&2 "\033[41mExecutable $BIN not found. Aborting.\033[40m"
+	exit 1
 fi
 
 check_if_command_exists () {
