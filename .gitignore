@@ -2,6 +2,8 @@
 *.o
 *.cmake
 *~
+*.dot
+*.png
 lex.yy*
 cscope*
 Doxyfile*
@@ -9,4 +11,4 @@ build/
 CMakeFiles/
 latex/
 html/
-
+report

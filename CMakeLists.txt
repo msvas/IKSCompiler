@@ -47,6 +47,6 @@ TARGET_LINK_LIBRARIES(main ${FLEX_LIBRARIES})
 SET(CMAKE_BUILD_TYPE Debug)
 
 # Additional files to clean during the make clean stage.
-SET(addfiles dict_test list_test graph_test visual_tree.png visual_tree.dot)
+SET(addfiles dict_test list_test graph_test visual_tree.png visual_tree.dot ../report ../visual_tree.dot ../visual_tree.png)
 SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${addfiles}")
 
