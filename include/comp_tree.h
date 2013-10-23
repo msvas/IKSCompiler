@@ -10,6 +10,7 @@
 #include "comp_simplelist.h"
 #include "comp_dict.h"
 #include "gv.h"
+#include "comp_list.h"
 
 //! Definition of a graph node structure
 typedef struct comp_tree {
@@ -18,6 +19,7 @@ typedef struct comp_tree {
         int type;
 	int definedType;
 	char coercion;
+	comp_list_node *parametersList;
 }AST_TREE;
 /**
  * Creates a tree.

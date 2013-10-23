@@ -25,9 +25,9 @@ char functionName[30];
 %type<ast> body
 %type<ast> global_decl
 %type<ast> declaration
-%type<ast> par_declaration
+%type<parameters> par_declaration
 %type<ast> declarations
-%type<ast> parameter_list
+%type<parameters> parameter_list
 %type<ast> function_variables
 %type<ast> func_body
 %type<ast> cmd_block
@@ -57,6 +57,7 @@ char functionName[30];
 {
 	struct comp_tree *ast;	
 	comp_dict_item_t* symbol;
+	struct comp_list_t *parameters;
 	uint32_t type;
 };
  
@@ -129,8 +130,9 @@ declarations:            global_decl declarations
 			}
 			 '('parameter_list')'
 			{
-				if($6!=NULL)
+				if($6!=NULL) {
 					tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
+					}
 			} 
 			 function_variables func_body
 			{
