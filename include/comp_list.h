@@ -4,13 +4,16 @@
  * @brief  List structures and manipulation functions prototypes.
  */
 
+#include <stdint.h>
+
 #ifndef __COMP_LIST_H__
 #define __COMP_LIST_H__
 
 //! Structure that defines a list node
 typedef struct comp_list_t {
 	struct comp_list_t *proximo; //!< next entry
-	int chave;			//!< node data content
+	int chave;		//!< node data content
+	char *nome;
 	struct comp_list_t *anterior; //!< previous entry
 } comp_list_node;
 
@@ -25,7 +28,7 @@ comp_list_node* criaLista(void);
  * @param chave: node key.
  * @return pointer to the node created.
  */
-comp_list_node* criaNodoLista(int chave);
+comp_list_node* criaNodoLista(char *key, uint32_t val);
 
 /**
  * Insert the node into the list.

@@ -12,13 +12,13 @@
 #include <math.h>
 #include "comp_dict.h"
 #include "comp_tree.h"
+#include "comp_list.h"
 #include "util.h"
 #include "parser.h"
 #include "iks_ast.h"
 
 struct comp_tree *root;
 struct dict *tables[3] = {NULL, NULL, NULL};
-char functionName[30];
 
 %}
 
@@ -126,13 +126,12 @@ declarations:            global_decl declarations
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n", $3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
-				strcpy(functionName, $3->key);
 			}
 			 '('parameter_list')'
 			{
-				if($6!=NULL) {
+				/*if($6!=NULL) {
 					tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
-					}
+				}*/
 			} 
 			 function_variables func_body
 			{
@@ -144,6 +143,8 @@ declarations:            global_decl declarations
 				$$ = criaNodo(IKS_AST_FUNCAO, $3, $1);
 			 	$$ = insereNodo($10, $$);
 				$$ = insereNodo($12, $$);
+				$$->parametersList = $6;
+				//imprimeLista($$->parametersList);
 			}
                         |                                                       
                         { $$ = NULL; }
@@ -189,7 +190,7 @@ declaration:             type ':' TK_IDENTIFICADOR
 par_declaration:         type ':' TK_IDENTIFICADOR               
                         {
 				tables[1] = installTable($3->key, $1, 0, $3->l, tables[1]);
-				tables[2] = installParam(functionName, $1, 0, $3->l, tables[2]);
+				$$ = criaNodoLista($3->key, $1);
 				//show_dict(tables[2]);
 				//printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
 			}
@@ -202,7 +203,7 @@ parameter_list:          par_declaration
                         }
                         |par_declaration ',' parameter_list
                         {
-
+				$$ = concatenaListas($1, $3);
 			}
                         |                                                       
                         { $$ = NULL; }

@@ -35,51 +35,6 @@ comp_dict_item_t *lookup(const char *k, comp_dict_t *dicttab)
 	return NULL; /* not found */
 }
 
-comp_dict_t *installParam(const char *key, uint32_t val, const char *arrayString, uint32_t line, comp_dict_t *dicttab)
-{
-	comp_dict_item_t *dip;
-
-	/* not found */
-
-	dip = (comp_dict_item_t *)malloc(sizeof(*dip));
-		
-	if (dip == NULL) {
-		debug("Could not install (%s, %d)", key, val, dicttab);
-		return NULL;
-	}
-	dip->key = strdup(key);
-	if (dip->key == NULL) {
-		debug("Could not install (%s, %d)", key, val, dicttab);
-		free(dip);
-		return NULL;
-	}
-	dip->next = NULL;
-
-	if (dicttab == NULL) {
-		/* first entry */
-		dicttab = malloc(sizeof(*dicttab));
-		if (dicttab == NULL) {
-			debug("Could not install (%s, %d)", key, val, dicttab);
-			free(dip->key);
-			free(dip);
-			return NULL;
-		}
-		dicttab->fep = dip;
-		dicttab->lep = dip;
-	} else {
-		dicttab->lep->next = dip;
-		dicttab->lep = dip;
-	}
-
-	/* increment the entries counter */
-	dicttab->cnt++;
-
-	dip->val = val;
-	dip->l = line;
-
-	return dicttab;
-}
-
 comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_dict_t *dicttab)
 {
 	comp_dict_item_t *dip;
@@ -148,7 +103,7 @@ comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32
 	dicttab->cnt++;
 
 	if(arrayString) {
-		dip->array = 1; printf("oi");
+		dip->array = 1; //printf("oi");
 	}
 	else
 		dip->array = 0;

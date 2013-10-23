@@ -19,7 +19,7 @@ typedef struct comp_tree {
         int type;
 	int definedType;
 	char coercion;
-	comp_list_node *parametersList;
+	struct comp_list_t *parametersList;
 }AST_TREE;
 /**
  * Creates a tree.
