@@ -8,6 +8,7 @@
 #define __COMPT_DICT_H__
 
 #include <stdint.h>
+#include "comp_list.h"
 
 //! Dictionary element data
 typedef struct dict_item {
@@ -16,6 +17,7 @@ typedef struct dict_item {
 	uint32_t val;		//!< value associated to the key (token name)
 	uint32_t l;		//!< line number the entry was found
 	char array;
+	struct comp_list_t *parameters;
 } comp_dict_item_t;
 
 //! Dictionary
@@ -25,9 +27,7 @@ typedef struct dict {
 	uint32_t cnt;		//!< number of entries
 } comp_dict_t;
 
-comp_dict_t *installParam(const char *key, uint32_t val, const char *arrayString, uint32_t line, comp_dict_t *dicttab);
-
-comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_dict_t *dicttab);
+comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_list_node *parameters, comp_dict_t *dicttab);
 
 /**
  * Look for s in dicttab

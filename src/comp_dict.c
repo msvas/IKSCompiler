@@ -35,7 +35,7 @@ comp_dict_item_t *lookup(const char *k, comp_dict_t *dicttab)
 	return NULL; /* not found */
 }
 
-comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_dict_t *dicttab)
+comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_list_node *parameters, comp_dict_t *dicttab)
 {
 	comp_dict_item_t *dip;
 	int size = 0;
@@ -75,6 +75,7 @@ comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32
 		return NULL;
 	}
 	dip->key = strdup(key);
+	dip->parameters = parameters;
 	
 	if (dip->key == NULL) {
 		debug("Could not install (%s, %d)", key, val, dicttab);

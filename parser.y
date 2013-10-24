@@ -120,18 +120,16 @@ declarations:            global_decl declarations
                         }
                         |type ':' TK_IDENTIFICADOR
 			{			
-				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
+
+			}
+			 '('parameter_list')'
+			{
+				tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0]);
 				if(tables[0] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n", $3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
-			}
-			 '('parameter_list')'
-			{
-				/*if($6!=NULL) {
-					tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
-				}*/
 			} 
 			 function_variables func_body
 			{
@@ -153,7 +151,7 @@ declarations:            global_decl declarations
  // declarations of the program
 global_decl:             type ':' TK_IDENTIFICADOR ';'                                        
                         { 
-				tables[0] = installTable($3->key, $1, 0, $3->l, tables[0]);
+				tables[0] = installTable($3->key, $1, 0, $3->l, NULL, tables[0]);
 				if(tables[0] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
@@ -163,7 +161,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
                         }
                         |type ':' TK_IDENTIFICADOR'['lit_int']' ';'              
                         {
-				tables[0] = installTable($3->key, $1, atoi($5->tableEntry->key), $3->l, tables[0]);
+				tables[0] = installTable($3->key, $1, atoi($5->tableEntry->key), $3->l, NULL, tables[0]);
 				if(tables[0] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
@@ -176,7 +174,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 
 declaration:             type ':' TK_IDENTIFICADOR                        
                         {
-				tables[1] = installTable($3->key, $1, 0, $3->l, tables[1]);
+				tables[1] = installTable($3->key, $1, 0, $3->l, NULL, tables[1]);
 				if(tables[1] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
@@ -189,7 +187,7 @@ declaration:             type ':' TK_IDENTIFICADOR
 
 par_declaration:         type ':' TK_IDENTIFICADOR               
                         {
-				tables[1] = installTable($3->key, $1, 0, $3->l, tables[1]);
+				tables[1] = installTable($3->key, $1, 0, $3->l, NULL, tables[1]);
 				$$ = criaNodoLista($3->key, $1);
 				//show_dict(tables[2]);
 				//printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
