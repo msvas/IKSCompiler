@@ -47,4 +47,4 @@ AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz);
  */
 void imprimeArvore(AST_TREE* raiz);
 
-AST_TREE* checkTree(AST_TREE* root);
+char* checkTree(AST_TREE* root);

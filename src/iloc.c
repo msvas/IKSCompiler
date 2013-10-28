@@ -14,21 +14,10 @@
 
 int lastReg = 0;
 
-void genVariable(AST_TREE *varNode)
+char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 {
-	char newInstr[50];
-	comp_program *newNode;
+	char *tempName;
 
-	sprintf(newInstr, "loadI %p => r%i", varNode->tableEntry->content, newReg());
-	newNode = createNode(newInstr);
-	
-	printf("loadI %p => rX", varNode->tableEntry->content);
-	
-	//printf("store rX => rY(%p)", varNode->tableEntry->content);
-}
-
-void codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
-{
 	switch (astNode->type) {
 		case IKS_AST_PROGRAMA:
 			break;
@@ -51,17 +40,21 @@ void codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 		case IKS_AST_BLOCO:
 			break;
 		case IKS_AST_IDENTIFICADOR:
-			genVariable(astNode);
+			tempName = genVariable(astNode);
 			break;
 		case IKS_AST_LITERAL:
 			break;
 		case IKS_AST_ARIM_SOMA:
+			tempName = genArit("add", arg1, arg2);
 			break;
 		case IKS_AST_ARIM_SUBTRACAO:
+			tempName = genArit("sub", arg1, arg2);
 			break;
 		case IKS_AST_ARIM_MULTIPLICACAO:
+			tempName = genArit("mult", arg1, arg2);
 			break;
 		case IKS_AST_ARIM_DIVISAO:
+			tempName = genArit("div", arg1, arg2);
 			break;
 		case IKS_AST_ARIM_INVERSAO:
 			break;
@@ -88,6 +81,40 @@ void codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 		case IKS_AST_CHAMADA_DE_FUNCAO:
 			break;
 	}
+	return tempName;
+}
+
+char* genVariable(AST_TREE *varNode)
+{
+	char newInstr[50];
+	comp_program *newNode;
+	char* reg;
+
+	reg = regChar(newReg());
+
+	sprintf(newInstr, "loadI %p => %s", varNode->tableEntry->content, reg);
+	newNode = createNode(newInstr);
+	
+	printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
+	
+	//printf("store rX => rY(%p)", varNode->tableEntry->content);
+
+	return reg;
+}
+
+char* genArit(char *operation, char *arg1, char *arg2)
+{
+	char newInstr[50];
+	comp_program *newNode;
+	char* reg;
+
+	reg = regChar(newReg());
+	sprintf(newInstr, "%s %s, %s => %s", operation, arg1, arg2, reg);
+	newNode = createNode(newInstr);
+
+	printf("\n%s %s, %s => %s\n", operation, arg1, arg2, reg);
+
+	return reg;
 }
 
 int newReg()
@@ -96,11 +123,15 @@ int newReg()
 	return lastReg;
 }
 
-void genArit(char *operation, char *arg1, char *arg2, char *arg3)
+char* regChar(int reg)
 {
-	char *op;
+	char* newName;
 
-	op = strcat(operation, arg1);
+	newName = malloc(5*sizeof(char*));
+
+	sprintf(newName, "r%i", reg);
+
+	return newName;
 }
 
 /*AST_TREE* checkTree(AST_TREE* root)
