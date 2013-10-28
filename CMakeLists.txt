@@ -20,6 +20,7 @@ ADD_EXECUTABLE(main
   src/comp_tree.c
   src/comp_graph.c
   src/iloc.c
+  src/comp_programlist.c
 )
 
 #set(build_tests yes)

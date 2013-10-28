@@ -112,7 +112,7 @@ AST_TREE* checkTree(AST_TREE* root)
         while (aux != NULL)
         {
 		checkTree(aux->filho);
-		//codeGen(aux->filho);		
+		codeGen(aux->filho, 0, 0, 0);		
 
 		debug("tipo: %d\n", aux->filho->type);
 		if(aux->filho->tableEntry)

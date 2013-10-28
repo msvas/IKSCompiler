@@ -9,8 +9,23 @@
 #include <string.h>
 #include "iks_ast.h"
 #include "comp_tree.h"
+#include "iloc.h"
+#include "comp_programlist.h"
 
 int lastReg = 0;
+
+void genVariable(AST_TREE *varNode)
+{
+	char newInstr[50];
+	comp_program *newNode;
+
+	sprintf(newInstr, "loadI %p => r%i", varNode->tableEntry->content, newReg());
+	newNode = createNode(newInstr);
+	
+	printf("loadI %p => rX", varNode->tableEntry->content);
+	
+	//printf("store rX => rY(%p)", varNode->tableEntry->content);
+}
 
 void codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 {
@@ -36,6 +51,7 @@ void codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 		case IKS_AST_BLOCO:
 			break;
 		case IKS_AST_IDENTIFICADOR:
+			genVariable(astNode);
 			break;
 		case IKS_AST_LITERAL:
 			break;
@@ -85,12 +101,6 @@ void genArit(char *operation, char *arg1, char *arg2, char *arg3)
 	char *op;
 
 	op = strcat(operation, arg1);
-}
-
-void genVariable(AST_TREE *varNode)
-{
-	printf("loadI %p => rX", varNode->tableEntry->content);
-	printf("store rX => rY(%p)", varNode->tableEntry->content);
 }
 
 /*AST_TREE* checkTree(AST_TREE* root)
