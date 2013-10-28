@@ -24,17 +24,19 @@ simple_node* simpleInsert(simple_node* Node, simple_node* List)
 	aux = List;
 
 	if(aux == NULL)	
+	{
+		List = Node;
+	}
+	else	
+	{
+		while(aux->proximo != NULL && aux!=NULL)
 		{
-			List = Node;
-		}else	{
-				while(aux->proximo != NULL && aux!=NULL)
-				{
-					aux = aux->proximo;
-				}
-				aux->proximo = Node;
-				Node->proximo = NULL;
-				
-			}
+			aux = aux->proximo;
+		}
+		aux->proximo = Node;
+		Node->proximo = NULL;
+		
+	}
 	return List;
 }
 

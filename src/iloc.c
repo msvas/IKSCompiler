@@ -46,7 +46,25 @@ void codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 
 void genArit(char *operation, char *arg1, char *arg2, char *arg3)
 {
+	char *op;
+
+	op = strcat(operation, arg1);
 }
+
+AST_TREE* checkTree(AST_TREE* root)
+ {
+        simple_node* aux;
+        aux = root->filhos;
+
+        debug("%d filhos: ", raiz->type);
+        while (aux->proximo != NULL)
+        {
+		checkTree(aux->filho);
+                debug("%d ", aux->filho->type);
+                aux = aux->proximo;
+        }
+	return NULL;
+ }
 
 
 

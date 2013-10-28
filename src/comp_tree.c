@@ -101,3 +101,20 @@ void imprimeArvore(AST_TREE* raiz) //print function: used to view all the tree, 
                         aux=aux->proximo;
                 }
  }
+
+AST_TREE* checkTree(AST_TREE* root)
+ {
+        simple_node* aux;
+        aux = root->filhos;
+
+        //debug("conteudo: %s\n", root->tableEntry->key);
+        while (aux != NULL)
+        {
+		checkTree(aux->filho);
+		debug("tipo: %d\n", aux->filho->type);
+		if(aux->filho->tableEntry->key)
+                	debug("conteudo: %s\n", aux->filho->tableEntry->key);
+                aux = aux->proximo;
+        }
+	return NULL;
+ }

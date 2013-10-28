@@ -106,7 +106,10 @@ struct dict *tables[3] = {NULL, NULL, NULL};
  * Program definition
  */
 program:                 body                                           
-                        { root = $1; }
+                        { 
+				root = $1; 
+				checkTree(root); 
+			}
                         ;
 body:                    declarations
                         { 
