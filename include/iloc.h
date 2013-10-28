@@ -7,6 +7,8 @@ char* genVariable(AST_TREE *varNode);
 
 char* genArit(char *operation, char *arg1, char *arg2);
 
+char* genAttrib(char *arg1, char *arg2);
+
 int newReg();
 
 char* regChar(int reg);

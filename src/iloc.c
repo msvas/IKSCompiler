@@ -34,6 +34,7 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 		case IKS_AST_OUTPUT:
 			break;
 		case IKS_AST_ATRIBUICAO:
+			tempName = genAttrib(arg1, arg2);
 			break;
 		case IKS_AST_RETURN:
 			break;
@@ -116,6 +117,22 @@ char* genArit(char *operation, char *arg1, char *arg2)
 
 	return reg;
 }
+
+char* genAttrib(char *arg1, char *arg2)
+{
+	char newInstr[50];
+	comp_program *newNode;
+	char* reg;
+
+	reg = regChar(newReg());
+	sprintf(newInstr, "i2i %s => %s", arg2, arg1);
+	printf("\ni2i %s => %s\n", arg2, arg1);
+	newNode = createNode(newInstr);
+	
+	sprintf(newInstr, "i2i %s => %s", arg1, reg);
+	printf("\ni2i %s => %s\n", arg1, reg);
+}
+
 
 int newReg()
 {
