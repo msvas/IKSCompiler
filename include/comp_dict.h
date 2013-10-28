@@ -17,6 +17,7 @@ typedef struct dict_item {
 	uint32_t val;		//!< value associated to the key (token name)
 	uint32_t l;		//!< line number the entry was found
 	char array;
+	char *content;
 	struct comp_list_t *parameters;
 } comp_dict_item_t;
 

@@ -68,7 +68,7 @@ comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32
 		size = size*arrayString;
 	}
 	
-	dip = (comp_dict_item_t *)malloc(size*(sizeof(*dip)));
+	dip = (comp_dict_item_t *)malloc(sizeof(*dip));
 		
 	if (dip == NULL) {
 		debug("Could not install (%s, %d)", key, val, dicttab);
@@ -76,6 +76,9 @@ comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32
 	}
 	dip->key = strdup(key);
 	dip->parameters = parameters;
+	dip->content = malloc(size);
+
+	//printf("\n%p\n", dip->content);
 	
 	if (dip->key == NULL) {
 		debug("Could not install (%s, %d)", key, val, dicttab);

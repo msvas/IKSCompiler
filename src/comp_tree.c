@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "comp_tree.h"
 #include "util.h"
+#include "iloc.h"
 
 
 AST_TREE* criaArvore()
@@ -111,6 +112,8 @@ AST_TREE* checkTree(AST_TREE* root)
         while (aux != NULL)
         {
 		checkTree(aux->filho);
+		//codeGen(aux->filho);		
+
 		debug("tipo: %d\n", aux->filho->type);
 		if(aux->filho->tableEntry)
                 	debug("conteudo: %s\n", aux->filho->tableEntry->key);

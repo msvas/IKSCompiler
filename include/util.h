@@ -13,7 +13,7 @@
 #include <unistd.h>
 
 //! Enable/Disable debugs.
-#define DEBUG_ON
+//#define DEBUG_ON
 #ifdef DEBUG_ON
 /**
  * Print utility that prints file and line. Useful for debug. It can replace
