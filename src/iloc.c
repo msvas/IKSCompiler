@@ -16,7 +16,7 @@ int lastReg = 0;
 
 char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 {
-	char *tempName;
+	char *tempName = NULL;
 
 	switch (astNode->type) {
 		case IKS_AST_PROGRAMA:
@@ -82,6 +82,7 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 		case IKS_AST_CHAMADA_DE_FUNCAO:
 			break;
 	}
+	//printf("CC:%s\n", tempName);
 	return tempName;
 }
 

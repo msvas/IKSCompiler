@@ -9,6 +9,7 @@
 #include "comp_tree.h"
 #include "util.h"
 #include "iloc.h"
+#include "comp_programlist.h"
 
 
 AST_TREE* criaArvore()
@@ -103,32 +104,39 @@ void imprimeArvore(AST_TREE* raiz) //print function: used to view all the tree, 
                 }
  }
 
-char* checkTree(AST_TREE* root)
+ARGS checkTree(AST_TREE* root)
 {
-        simple_node* aux;
-        aux = root->filhos;
+        simple_node* aux = NULL;
 	int i = 0;
-	char* arg1 = NULL;
-	char* arg2 = NULL;
-	char* arg3 = NULL;
-	char* charAux;
-	char* nodeReg;
+	char* charAux = NULL;
+	ARGS threeArgs;
+	ARGS nodeReg;
+
+	if(root != NULL)	
+		aux = root->filhos;
+
+	nodeReg.arg1 = NULL;
+	nodeReg.arg2 = NULL;
+	nodeReg.arg3 = NULL;
 
         //debug("conteudo: %s\n", root->tableEntry->key);
         while (aux != NULL)
         {
+		//printf("aaa");
 		nodeReg = checkTree(aux->filho);
-		charAux = codeGen(aux->filho, arg1, arg2, arg3);
+		charAux = codeGen(aux->filho, nodeReg.arg1, nodeReg.arg2, nodeReg.arg1);
+
+		//printf("AAA:%s\n", charAux);
 
 		switch (i) {
 			case 0:
-				arg1 = charAux;
+				threeArgs.arg1 = charAux;
 				break;
 			case 1:
-				arg2 = charAux;
+				threeArgs.arg2 = charAux;
 				break;
 			case 2:
-				arg3 = charAux;
+				threeArgs.arg3 = charAux;
 				break;
 		}		
 
@@ -139,5 +147,6 @@ char* checkTree(AST_TREE* root)
                 aux = aux->proximo;
 		i++;
         }
-	return nodeReg;
+
+	return threeArgs;
 }

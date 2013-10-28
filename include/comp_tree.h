@@ -20,7 +20,14 @@ typedef struct comp_tree {
 	int definedType;
 	char coercion;
 	struct comp_list_t *parametersList;
-}AST_TREE;
+} AST_TREE;
+
+typedef struct link_args {
+	char* arg1;
+	char* arg2;
+	char* arg3;
+} ARGS;
+
 /**
  * Creates a tree.
  * @return a pointer to the node.
@@ -47,4 +54,4 @@ AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz);
  */
 void imprimeArvore(AST_TREE* raiz);
 
-char* checkTree(AST_TREE* root);
+ARGS checkTree(AST_TREE* root);

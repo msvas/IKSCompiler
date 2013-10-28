@@ -107,7 +107,7 @@ struct dict *tables[3] = {NULL, NULL, NULL};
  */
 program:                 body                                           
                         { 
-				root = $1; 
+				root = $1;
 				checkTree(root); 
 			}
                         ;
