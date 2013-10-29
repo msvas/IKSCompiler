@@ -25,6 +25,7 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 		case IKS_AST_FUNCAO:
 			break;
 		case IKS_AST_IF_ELSE:
+			tempName = genIf(arg1, arg2, arg3);
 			break;
 		case IKS_AST_DO_WHILE:
 			break;
@@ -109,6 +110,20 @@ char* genVariable(AST_TREE *varNode)
 	return reg;
 }
 
+char* genIf(char *arg1, char *arg2, char *arg3)
+{
+	char* newInstr;
+	char* reg;
+
+	newInstr = malloc(50*sizeof(char*));
+
+	reg = regChar(newReg());
+	sprintf(newInstr, "cbr %s => %s, %s", arg1, arg2, arg3);
+	insertNode(newInstr);
+
+	return reg;
+}
+
 char* genAritLog(char *operation, char *arg1, char *arg2)
 {
 	char* newInstr;
@@ -141,19 +156,22 @@ char* genAnd()
 
 char* genAttrib(char *arg1, char *arg2)
 {
-	char* newInstr;
+	char* newInstr1;
+	char* newInstr2;
 	char* reg;
 
-	newInstr = malloc(50*sizeof(char*));
+	newInstr1 = malloc(50*sizeof(char*));
 
 	reg = regChar(newReg());
-	sprintf(newInstr, "i2i %s => %s", arg2, arg1);
+	sprintf(newInstr1, "i2i %s => %s", arg2, arg1);
 	//printf("\ni2i %s => %s\n", arg2, arg1);
-	insertNode(newInstr);
+	insertNode(newInstr1);
+
+	newInstr2 = malloc(50*sizeof(char*));
 	
-	sprintf(newInstr, "i2i %s => %s", arg1, reg);
+	sprintf(newInstr2, "i2i %s => %s", arg1, reg);
 	//printf("\ni2i %s => %s\n", arg1, reg);
-	insertNode(newInstr);
+	insertNode(newInstr2);
 }
 
 
