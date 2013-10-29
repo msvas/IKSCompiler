@@ -1,6 +1,8 @@
 
 #include "iks_ast.h"
 
+char* genConst(AST_TREE *varNode);
+
 char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3);
 
 char* genVariable(AST_TREE *varNode);

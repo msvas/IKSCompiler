@@ -46,6 +46,7 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 			tempName = genVariable(astNode);
 			break;
 		case IKS_AST_LITERAL:
+			tempName = genConst(astNode);
 			break;
 		case IKS_AST_ARIM_SOMA:
 			tempName = genAritLog("add", arg1, arg2);
@@ -68,16 +69,22 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 			tempName = genAritLog("or", arg1, arg2);
 			break;
 		case IKS_AST_LOGICO_COMP_DIF:
+			tempName = genAritLog("cmp_NE", arg1, arg2);
 			break;
 		case IKS_AST_LOGICO_COMP_IGUAL:
+			tempName = genAritLog("cmp_EQ", arg1, arg2);
 			break;
 		case IKS_AST_LOGICO_COMP_LE:
+			tempName = genAritLog("cmp_LE", arg1, arg2);
 			break;
 		case IKS_AST_LOGICO_COMP_GE:
+			tempName = genAritLog("cmp_GE", arg1, arg2);
 			break;
 		case IKS_AST_LOGICO_COMP_L:
+			tempName = genAritLog("cmp_LT", arg1, arg2);
 			break;
 		case IKS_AST_LOGICO_COMP_G:
+			tempName = genAritLog("cmp_GT", arg1, arg2);
 			break;
 		case IKS_AST_LOGICO_COMP_NEGACAO:
 			break;
@@ -91,6 +98,21 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 	return tempName;
 }
 
+char* genConst(AST_TREE *varNode)
+{
+	char* newInstr;
+	char* reg;
+
+	newInstr = malloc(50*sizeof(char*));
+
+	reg = regChar(newReg());
+
+	sprintf(newInstr, "loadI %s => %s", varNode->tableEntry->key, reg);
+	insertNode(newInstr);
+
+	return reg;
+}
+
 char* genVariable(AST_TREE *varNode)
 {
 	char* newInstr;
@@ -100,7 +122,7 @@ char* genVariable(AST_TREE *varNode)
 
 	reg = regChar(newReg());
 
-	sprintf(newInstr, "loadI %p => %s", varNode->tableEntry->content, reg);
+	sprintf(newInstr, "load %p => %s", varNode->tableEntry->content, reg);
 	insertNode(newInstr);
 	
 	//printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
