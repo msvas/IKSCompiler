@@ -36,7 +36,7 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 		case IKS_AST_OUTPUT:
 			break;
 		case IKS_AST_ATRIBUICAO:
-			tempName = genAttrib(arg1, arg2);
+			tempName = genAttrib(astNode, arg1, arg2);
 			break;
 		case IKS_AST_RETURN:
 			break;
@@ -122,7 +122,7 @@ char* genVariable(AST_TREE *varNode)
 
 	reg = regChar(newReg());
 
-	sprintf(newInstr, "load %p => %s", varNode->tableEntry->content, reg);
+	sprintf(newInstr, "loadI %p => %s", varNode->tableEntry->content, reg);
 	insertNode(newInstr);
 	
 	//printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
@@ -176,24 +176,29 @@ char* genAnd()
 
 	
 
-char* genAttrib(char *arg1, char *arg2)
+char* genAttrib(AST_TREE *varNode, char *arg1, char *arg2)
 {
 	char* newInstr1;
-	char* newInstr2;
+	//char* newInstr2;
+	char* newInstr3;
 	char* reg;
 
 	newInstr1 = malloc(50*sizeof(char*));
 
 	reg = regChar(newReg());
-	sprintf(newInstr1, "i2i %s => %s", arg2, arg1);
+	sprintf(newInstr1, "i2i %s => %s", arg2, reg);
 	//printf("\ni2i %s => %s\n", arg2, arg1);
 	insertNode(newInstr1);
 
-	newInstr2 = malloc(50*sizeof(char*));
-	
-	sprintf(newInstr2, "i2i %s => %s", arg1, reg);
+	/*newInstr2 = malloc(50*sizeof(char*));
+	sprintf(newInstr2, "loadI %p => %s", varNode->filhos->filho->tableEntry->content, reg);
 	//printf("\ni2i %s => %s\n", arg1, reg);
-	insertNode(newInstr2);
+	insertNode(newInstr2);*/
+
+	newInstr3 = malloc(50*sizeof(char*));
+	sprintf(newInstr3, "store %s => %s", reg, arg1);
+	//printf("\ni2i %s => %s\n", arg2, arg1);
+	insertNode(newInstr3);
 }
 
 

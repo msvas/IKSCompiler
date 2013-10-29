@@ -13,7 +13,7 @@ char* genAritLog(char *operation, char *arg1, char *arg2);
 
 char* genAnd();
 
-char* genAttrib(char *arg1, char *arg2);
+char* genAttrib(AST_TREE *varNode, char *arg1, char *arg2);
 
 int newReg();
 
