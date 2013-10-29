@@ -13,6 +13,7 @@
 #include "comp_programlist.h"
 
 int lastReg = 0;
+int lastLbl = 0;
 
 char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 {
@@ -83,21 +84,23 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 			break;
 	}
 	//printf("CC:%s\n", tempName);
+	//printList();
 	return tempName;
 }
 
 char* genVariable(AST_TREE *varNode)
 {
-	char newInstr[50];
-	comp_program *newNode;
+	char* newInstr;
 	char* reg;
+
+	newInstr = malloc(50*sizeof(char*));
 
 	reg = regChar(newReg());
 
 	sprintf(newInstr, "loadI %p => %s", varNode->tableEntry->content, reg);
-	newNode = createNode(newInstr);
+	insertNode(newInstr);
 	
-	printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
+	//printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
 	
 	//printf("store rX => rY(%p)", varNode->tableEntry->content);
 
@@ -106,32 +109,35 @@ char* genVariable(AST_TREE *varNode)
 
 char* genArit(char *operation, char *arg1, char *arg2)
 {
-	char newInstr[50];
-	comp_program *newNode;
+	char* newInstr;
 	char* reg;
+
+	newInstr = malloc(50*sizeof(char*));
 
 	reg = regChar(newReg());
 	sprintf(newInstr, "%s %s, %s => %s", operation, arg1, arg2, reg);
-	newNode = createNode(newInstr);
+	insertNode(newInstr);
 
-	printf("\n%s %s, %s => %s\n", operation, arg1, arg2, reg);
+	//printf("\n%s %s, %s => %s\n", operation, arg1, arg2, reg);
 
 	return reg;
 }
 
 char* genAttrib(char *arg1, char *arg2)
 {
-	char newInstr[50];
-	comp_program *newNode;
+	char* newInstr;
 	char* reg;
+
+	newInstr = malloc(50*sizeof(char*));
 
 	reg = regChar(newReg());
 	sprintf(newInstr, "i2i %s => %s", arg2, arg1);
-	printf("\ni2i %s => %s\n", arg2, arg1);
-	newNode = createNode(newInstr);
+	//printf("\ni2i %s => %s\n", arg2, arg1);
+	insertNode(newInstr);
 	
 	sprintf(newInstr, "i2i %s => %s", arg1, reg);
-	printf("\ni2i %s => %s\n", arg1, reg);
+	//printf("\ni2i %s => %s\n", arg1, reg);
+	insertNode(newInstr);
 }
 
 
@@ -139,6 +145,12 @@ int newReg()
 {
 	lastReg++;
 	return lastReg;
+}
+
+int newLbl()
+{
+	lastLbl++;
+	return lastLbl;
 }
 
 char* regChar(int reg)

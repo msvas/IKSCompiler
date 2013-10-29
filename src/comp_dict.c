@@ -78,7 +78,7 @@ comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32
 	dip->parameters = parameters;
 	dip->content = malloc(size);
 
-	//printf("\n%p\n", dip->content);
+	//printf("\n%s %p\n", key, dip->content);
 	
 	if (dip->key == NULL) {
 		debug("Could not install (%s, %d)", key, val, dicttab);

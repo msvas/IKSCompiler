@@ -16,6 +16,7 @@
 #include "util.h"
 #include "parser.h"
 #include "iks_ast.h"
+#include "comp_programlist.h"
 
 struct comp_tree *root;
 struct dict *tables[3] = {NULL, NULL, NULL};
@@ -108,7 +109,8 @@ struct dict *tables[3] = {NULL, NULL, NULL};
 program:                 body                                           
                         { 
 				root = $1;
-				checkTree(root); 
+				checkTree(root);
+				printList();
 			}
                         ;
 body:                    declarations
@@ -160,7 +162,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
-				//printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
+				printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
                         }
                         |type ':' TK_IDENTIFICADOR'['lit_int']' ';'              
                         {
@@ -516,11 +518,11 @@ term: 			 TK_LIT_INT
 			{ 
 				if(lookup($1->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val);
-					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[1])->val);
+					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[1])), lookup($1->key, tables[1])->val);
 				}
 				else if(lookup($1->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
-					$$ = criaNodo(IKS_AST_IDENTIFICADOR, $1, lookup($1->key, tables[0])->val);
+					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[0])), lookup($1->key, tables[0])->val);
 				}
 				else {
 					printf("Variavel %s não foi declarada anteriormente (linha: %d)\n", $1->key, $1->l);

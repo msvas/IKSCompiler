@@ -11,4 +11,6 @@ char* genAttrib(char *arg1, char *arg2);
 
 int newReg();
 
+int newLbl();
+
 char* regChar(int reg);

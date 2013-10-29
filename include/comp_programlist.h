@@ -26,7 +26,7 @@ comp_program* createNode(char *instruction);
  * @param inicioLista: pointer to the first node in the list.
  * @return pointer to the first node in the list.
  */
-comp_program* insertNode(comp_program* novoNodo, comp_program* inicioLista);
+comp_program* insertNode(char *instruction);
 
 /**
  * Excludes the node from the list.
@@ -34,7 +34,7 @@ comp_program* insertNode(comp_program* novoNodo, comp_program* inicioLista);
  * @param inicioLista: pointer to the first node in the list.
  * @return pointer to the list beginning.
  */
-comp_program* deleteNode(comp_program* nodoExcluido, comp_program* inicioLista);
+comp_program* deleteNode(comp_program* nodoExcluido);
 
 /**
  * Concatenates two lists.
@@ -48,5 +48,5 @@ comp_program* joinLists(comp_program* primeiraLista, comp_program* segundaLista)
  * Prints all the keys in the list.
  * @param inicioLista: pointer to the first node in the list.
  */
-void printList(comp_program* inicioLista);
+void printList();
 

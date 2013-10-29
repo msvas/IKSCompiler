@@ -9,6 +9,8 @@
 #include <stdint.h>
 #include "comp_programlist.h"
 
+comp_program* outputIloc = NULL;
+
 comp_program* createList()
 {
 	return NULL;
@@ -20,40 +22,47 @@ comp_program* createNode(char *instruction)
 
 	newInstr = malloc(sizeof(comp_program*));
 	newInstr->instruction = instruction;
+	newInstr->next = NULL;
+	newInstr->previous = NULL;
+
+	//printf("\nInserindo %s\n", newInstr->instruction);
 
 	return newInstr;
 }
 
-comp_program* insertNode(comp_program* newInstr, comp_program* list)
+comp_program* insertNode(char *instruction)
 {
 	comp_program* aux;
-	
-	aux = list;
+	comp_program *newInstr;
 
-	if(aux==NULL) {
-		aux = newInstr;
-		list = newInstr;
+	newInstr = createNode(instruction);
+	
+	aux = outputIloc;
+
+	if(aux == NULL) {
+		//aux = newInstr;
+		outputIloc = newInstr;
+		//printf("\nInicio %s\n", newInstr->instruction);
 	}
 	else {
-		while(aux->next!=NULL && aux!=NULL) {
+		while(aux->next != NULL && aux!=NULL) {
+			//printf("\nLista %s\n", aux->instruction);
 			aux = aux->next;
 		}
-		aux->next = newInstr;
 		newInstr->previous = aux;
+		aux->next = newInstr;
 		newInstr->next = NULL;
-		aux = newInstr;
+		//printf("\nMeio %s\n", newInstr->instruction);
 	}
-
-	free(aux);
-	return list;
+	return outputIloc;
 }
 
-comp_program* deleteNode(comp_program* nodoExcluido, comp_program* inicioLista)
+comp_program* deleteNode(comp_program* nodoExcluido)
 {
 	comp_program* auxProx;
 	comp_program* auxAnt;
 
-	auxProx = inicioLista;
+	auxProx = outputIloc;
 
 	if(auxProx != nodoExcluido) {	
 		while(auxProx->next!=nodoExcluido && auxProx->next!=NULL) {
@@ -72,12 +81,12 @@ comp_program* deleteNode(comp_program* nodoExcluido, comp_program* inicioLista)
 	else {
 		auxProx = auxProx->next;
 		auxProx->previous = NULL;
-		inicioLista = auxProx;
+		outputIloc = auxProx;
 	}
 	free(auxProx);
 	free(auxAnt);
 	free(nodoExcluido);
-	return inicioLista;
+	return outputIloc;
 }
 
 comp_program* joinLists(comp_program* primeiraLista, comp_program* segundaLista)
@@ -100,13 +109,13 @@ comp_program* joinLists(comp_program* primeiraLista, comp_program* segundaLista)
 	return primeiraLista;
 }
 
-void printList(comp_program* inicioLista)
+void printList()
 {
 	comp_program* aux;
 
-	aux = inicioLista;
+	aux = outputIloc;
 
-	while(aux!=NULL) {
+	while(aux != NULL) {
 		printf("\nlista: %s\n", aux->instruction);
 		aux = aux->next;
 	}
