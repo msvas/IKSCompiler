@@ -47,22 +47,24 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 		case IKS_AST_LITERAL:
 			break;
 		case IKS_AST_ARIM_SOMA:
-			tempName = genArit("add", arg1, arg2);
+			tempName = genAritLog("add", arg1, arg2);
 			break;
 		case IKS_AST_ARIM_SUBTRACAO:
-			tempName = genArit("sub", arg1, arg2);
+			tempName = genAritLog("sub", arg1, arg2);
 			break;
 		case IKS_AST_ARIM_MULTIPLICACAO:
-			tempName = genArit("mult", arg1, arg2);
+			tempName = genAritLog("mult", arg1, arg2);
 			break;
 		case IKS_AST_ARIM_DIVISAO:
-			tempName = genArit("div", arg1, arg2);
+			tempName = genAritLog("div", arg1, arg2);
 			break;
 		case IKS_AST_ARIM_INVERSAO:
 			break;
 		case IKS_AST_LOGICO_E:
+			tempName = genAritLog("and", arg1, arg2);
 			break;
 		case IKS_AST_LOGICO_OU:
+			tempName = genAritLog("or", arg1, arg2);
 			break;
 		case IKS_AST_LOGICO_COMP_DIF:
 			break;
@@ -107,7 +109,7 @@ char* genVariable(AST_TREE *varNode)
 	return reg;
 }
 
-char* genArit(char *operation, char *arg1, char *arg2)
+char* genAritLog(char *operation, char *arg1, char *arg2)
 {
 	char* newInstr;
 	char* reg;
@@ -122,6 +124,20 @@ char* genArit(char *operation, char *arg1, char *arg2)
 
 	return reg;
 }
+
+char* genAnd()
+{
+	char* newInstr;
+	char* lblT;
+	char* lblF;
+	char* lblAux;
+
+	lblT = lblChar(newLbl());
+	lblF = lblChar(newLbl());
+	lblAux = lblChar(newLbl());
+}
+
+	
 
 char* genAttrib(char *arg1, char *arg2)
 {
@@ -160,6 +176,17 @@ char* regChar(int reg)
 	newName = malloc(5*sizeof(char*));
 
 	sprintf(newName, "r%i", reg);
+
+	return newName;
+}
+
+char* lblChar(int lbl)
+{
+	char* newName;
+
+	newName = malloc(5*sizeof(char*));
+
+	sprintf(newName, "L%i", lbl);
 
 	return newName;
 }
