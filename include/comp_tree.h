@@ -12,6 +12,15 @@
 #include "gv.h"
 #include "comp_list.h"
 
+typedef struct gen_code {
+	char* name;
+	char* code;
+	char* begin;
+	char* next;
+	char* t;
+	char* f;
+} ILOC;
+
 //! Definition of a graph node structure
 typedef struct comp_tree {
         struct comp_simplelist_t *filhos;
@@ -19,6 +28,7 @@ typedef struct comp_tree {
         int type;
 	int definedType;
 	char coercion;
+	ILOC nodeIloc;
 	struct comp_list_t *parametersList;
 } AST_TREE;
 
