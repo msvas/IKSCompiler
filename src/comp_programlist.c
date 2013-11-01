@@ -120,7 +120,7 @@ void printList()
 		aux = aux->next;
 	}
 }
-<<<<<<< HEAD
+
 
 void createOutputFile()
 {
@@ -151,5 +151,4 @@ void createOutputFile()
 	fclose(output);
 
 }
-=======
->>>>>>> a80b2e786de2553567ba86e4fee484278a5b9869
+
