@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include "comp_tree.h"
 #include "util.h"
+#include "iloc.h"
+#include "comp_programlist.h"
 
 
 AST_TREE* criaArvore()
@@ -15,15 +17,16 @@ AST_TREE* criaArvore()
         return NULL;
 }
 
-AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
+AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry, int definedType) //create a new node
 {
         AST_TREE* novoNodo;
 
-	debug("criando nodo chave = %d", chave);
+	debug("Criando nodo. Chave %d (%s)", chave, get_ast_node_type_str(chave));
 
         novoNodo = malloc(sizeof(AST_TREE));
         novoNodo->type = chave;
         novoNodo->tableEntry = tableEntry;
+	novoNodo->definedType = definedType;
         novoNodo->filhos = NULL;
 	/* 
 	 * tipo: deve ser obrigatoriamente um dos valores das constantes
@@ -44,13 +47,13 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry) //create a new node
 		case IKS_AST_LITERAL:
 		case IKS_AST_FUNCAO:
 			if (tableEntry == NULL) {
-				debug("Error! tableEntry is NULL! Should not be! (chave = %d)", chave);
+				debug("ERROR! tableEntry is NULL! Should not be! Chave %d (%s)", chave, get_ast_node_type_str(chave));
 				return NULL;
 			}
 			gv_declare(chave, novoNodo, tableEntry->key);
 			break;
 		default:
-			debug("tableEntry is NULL! Ok! (chave = %d)", chave);
+			//debug("tableEntry is NULL! Ok! Chave %d (%s)", chave, get_ast_node_type_str(chave));
 			gv_declare(chave, novoNodo, NULL);
 			break;
 	}
@@ -63,7 +66,7 @@ AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz) //function to insert a
         simple_node *aux;
 
 	if (novoFilho == NULL){
-		debug("novoFilho == NULL!");
+		//debug("novoFilho == NULL!");
 		return raiz;
 	}
 
@@ -100,3 +103,50 @@ void imprimeArvore(AST_TREE* raiz) //print function: used to view all the tree, 
                         aux=aux->proximo;
                 }
  }
+
+ARGS checkTree(AST_TREE* root)
+{
+        simple_node* aux = NULL;
+	int i = 0;
+	char* charAux = NULL;
+	ARGS threeArgs;
+	ARGS nodeReg;
+
+	if(root != NULL)	
+		aux = root->filhos;
+
+	nodeReg.arg1 = NULL;
+	nodeReg.arg2 = NULL;
+	nodeReg.arg3 = NULL;
+
+        //debug("conteudo: %s\n", root->tableEntry->key);
+        while (aux != NULL)
+        {
+		//printf("aaa");
+		nodeReg = checkTree(aux->filho);
+		charAux = codeGen(aux->filho, nodeReg.arg1, nodeReg.arg2, nodeReg.arg1);
+
+		//printf("AAA:%s\n", charAux);
+
+		switch (i) {
+			case 0:
+				threeArgs.arg1 = charAux;
+				break;
+			case 1:
+				threeArgs.arg2 = charAux;
+				break;
+			case 2:
+				threeArgs.arg3 = charAux;
+				break;
+		}		
+
+		debug("tipo: %d\n", aux->filho->type);
+		if(aux->filho->tableEntry)
+                	debug("conteudo: %s\n", aux->filho->tableEntry->key);
+
+                aux = aux->proximo;
+		i++;
+        }
+
+	return threeArgs;
+}

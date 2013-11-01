@@ -1,0 +1,9 @@
+bool:num1;
+bool:num2;
+bool:resultado;
+
+int: main()
+{
+	if(num1 && num2) then
+		resultado = true;
+}

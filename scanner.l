@@ -9,95 +9,84 @@
 #include "util.h"
 #include "parser.h"
 
-uint32_t line_cnt = 1;
+//#define SCANNER_DEBUG_ON
+
+struct dict *dict = NULL;
+void count(void);
+void comment(void);
+void dbg(void);
 %}
+
 %option yylineno
- /* int: an optional '-' signal followed by a digit that is optionally followed by zero or more digits */
-INT    (-*[[:digit:]])[[:digit:]]*
+
+ /* int: a digit that is optionally followed by zero or more digits */
+INT    ([[:digit:]])[[:digit:]]*
  /* character: starts with ''' that must not be directly followed by ''' or a new line (\n). The first part does't match the scape symbol which is treated in the second part */
 CHAR   '([^'\\\n]|\\.)'
  /* string: starts with a '"', accept everything scaped by '\' or everything that is not a '"' and then it ends with a '"' */
 STRING \"(\\.|[^"])*\"  
 ID     (_|[[:alpha:]])(_|[[:alnum:]])*
 
- /* This is a condition, when the scanner matches "/*" below it starts this condition */
-%x comment0
+ /* This is a condition, when the scanner matches "//" below it starts this condition */
 %x comment1
 
 %%
 
  /* Handle C style comments like this one */
-"/*"     BEGIN(comment0);
-<comment0>[^*\n]*                     /* Consume anything that is not a '*' */
-<comment0>"*"+[^*/\n]*                /* Ignore '*'s not followed by '/'s */
-<comment0>\n             ++line_cnt;  /* Commented lines are still lines. Count them. */
-<comment0>"*"+"/"        BEGIN(0);    /* End of comment found. Go back to initial condition and try to match a rule from begining (could be BEGIN(INITIAL) instead of BEGIN(0)). */
-
+"/*"     { comment(); }
 "//"     BEGIN(comment1);             /* start comment1 condition */
 <comment1>[^\n]+                      /* ignore everything on this line */
-<comment1>\n             ++line_cnt; BEGIN(0);
+<comment1>\n          		; BEGIN(0);
 
  /* Line counting */
-\n ++line_cnt;
+\n ;
 
  /* Reserved words */
-int     { yylval.symbol = install(yytext, (TK_PR_INT)   , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INT);    }
-float   { yylval.symbol = install(yytext, (TK_PR_FLOAT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_FLOAT);  }
-bool    { yylval.symbol = install(yytext, (TK_PR_BOOL)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_BOOL);   }
-char    { yylval.symbol = install(yytext, (TK_PR_CHAR)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_CHAR);   }
-string  { yylval.symbol = install(yytext, (TK_PR_STRING), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_STRING); }
-if      { yylval.symbol = install(yytext, (TK_PR_IF)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_IF);     }
-then    { yylval.symbol = install(yytext, (TK_PR_THEN)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_THEN);   }
-else    { yylval.symbol = install(yytext, (TK_PR_ELSE)  , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_ELSE);   }
-while   { yylval.symbol = install(yytext, (TK_PR_WHILE) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_WHILE);  }
-do      { yylval.symbol = install(yytext, (TK_PR_DO)    , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_DO);     }
-input   { yylval.symbol = install(yytext, (TK_PR_INPUT) , line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_INPUT);  }
-output  { yylval.symbol = install(yytext, (TK_PR_OUTPUT), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_OUTPUT); }
-return  { yylval.symbol = install(yytext, (TK_PR_RETURN), line_cnt);  debug("%s found at line %d", yytext, line_cnt); return (TK_PR_RETURN); }
+int     { count(); yylval.symbol = install(yytext, (TK_PR_INT)   , yylineno, dict);  dbg(); return (TK_PR_INT);    }
+float   { count(); yylval.symbol = install(yytext, (TK_PR_FLOAT) , yylineno, dict);  dbg(); return (TK_PR_FLOAT);  }
+bool    { count(); yylval.symbol = install(yytext, (TK_PR_BOOL)  , yylineno, dict);  dbg(); return (TK_PR_BOOL);   }
+char    { count(); yylval.symbol = install(yytext, (TK_PR_CHAR)  , yylineno, dict);  dbg(); return (TK_PR_CHAR);   }
+string  { count(); yylval.symbol = install(yytext, (TK_PR_STRING), yylineno, dict);  dbg(); return (TK_PR_STRING); }
+if      { count(); yylval.symbol = install(yytext, (TK_PR_IF)    , yylineno, dict);  dbg(); return (TK_PR_IF);     }
+then    { count(); yylval.symbol = install(yytext, (TK_PR_THEN)  , yylineno, dict);  dbg(); return (TK_PR_THEN);   }
+else    { count(); yylval.symbol = install(yytext, (TK_PR_ELSE)  , yylineno, dict);  dbg(); return (TK_PR_ELSE);   }
+while   { count(); yylval.symbol = install(yytext, (TK_PR_WHILE) , yylineno, dict);  dbg(); return (TK_PR_WHILE);  }
+do      { count(); yylval.symbol = install(yytext, (TK_PR_DO)    , yylineno, dict);  dbg(); return (TK_PR_DO);     }
+input   { count(); yylval.symbol = install(yytext, (TK_PR_INPUT) , yylineno, dict);  dbg(); return (TK_PR_INPUT);  }
+output  { count(); yylval.symbol = install(yytext, (TK_PR_OUTPUT), yylineno, dict);  dbg(); return (TK_PR_OUTPUT); }
+return  { count(); yylval.symbol = install(yytext, (TK_PR_RETURN), yylineno, dict);  dbg(); return (TK_PR_RETURN); }
 
  /* 
   * Special characters. Some of them must be scaped with
   * a backslash (or be the first or last in the list!)
   */
-[,;:()\[\]{}+\-*/<>=!&$] { yylval.symbol = install(yytext, (uint32_t)yytext[0], line_cnt); debug("%c found at line %d", yytext[0], line_cnt); return yytext[0]; }
+[,;:()\[\]{}+\-*/<>=!&$] { count(); yylval.symbol = install(yytext, (uint32_t)yytext[0], yylineno, dict); dbg(); return yytext[0]; }
 
  /* Relational operators */
-"<="    { yylval.symbol = install(yytext, (TK_OC_LE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_LE);     }
-">="    { yylval.symbol = install(yytext, (TK_OC_GE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_GE);     }
-"=="    { yylval.symbol = install(yytext, (TK_OC_EQ) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_EQ);     }
-"!="    { yylval.symbol = install(yytext, (TK_OC_NE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_NE);     }
-"&&"    { yylval.symbol = install(yytext, (TK_OC_AND), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_AND);    }
-"||"    { yylval.symbol = install(yytext, (TK_OC_OR) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_OC_OR);     }
+"<="    { count(); yylval.symbol = install(yytext, (TK_OC_LE) , yylineno, dict); dbg(); return (TK_OC_LE);     }
+">="    { count(); yylval.symbol = install(yytext, (TK_OC_GE) , yylineno, dict); dbg(); return (TK_OC_GE);     }
+"=="    { count(); yylval.symbol = install(yytext, (TK_OC_EQ) , yylineno, dict); dbg(); return (TK_OC_EQ);     }
+"!="    { count(); yylval.symbol = install(yytext, (TK_OC_NE) , yylineno, dict); dbg(); return (TK_OC_NE);     }
+"&&"    { count(); yylval.symbol = install(yytext, (TK_OC_AND), yylineno, dict); dbg(); return (TK_OC_AND);    }
+"||"    { count(); yylval.symbol = install(yytext, (TK_OC_OR) , yylineno, dict); dbg(); return (TK_OC_OR);     }
 
  /* Literals */
-{INT}                 { yylval.symbol = install(yytext, (TK_LIT_INT)  , line_cnt); debug("%d found at line %d", atoi(yytext), line_cnt); return (TK_LIT_INT); }
-{INT}+"."[[:digit:]]+ { yylval.symbol = install(yytext, (TK_LIT_FLOAT), line_cnt); debug("%f found at line %d", atof(yytext), line_cnt); return (TK_LIT_FLOAT); }
-"false"               { yylval.symbol = install(yytext, (TK_LIT_FALSE), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_FALSE); }
-"true"                { yylval.symbol = install(yytext, (TK_LIT_TRUE) , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_TRUE); }
-
- /* TODO: remove ' and " from char and string respectively */
-{CHAR}                { yylval.symbol = install(yytext, (TK_LIT_CHAR)  , line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_CHAR); }
-{STRING}              { yylval.symbol = install(yytext, (TK_LIT_STRING), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_LIT_STRING); }
+{INT}                 { count(); yylval.symbol = install(yytext, (TK_LIT_INT)  , yylineno, dict); dbg(); return (TK_LIT_INT); }
+{INT}+"."[[:digit:]]+ { count(); yylval.symbol = install(yytext, (TK_LIT_FLOAT), yylineno, dict); dbg(); return (TK_LIT_FLOAT); }
+"false"               { count(); yylval.symbol = install(yytext, (TK_LIT_FALSE), yylineno, dict); dbg(); return (TK_LIT_FALSE); }
+"true"                { count(); yylval.symbol = install(yytext, (TK_LIT_TRUE) , yylineno, dict); dbg(); return (TK_LIT_TRUE); }
+{CHAR}                { count(); yylval.symbol = install(yytext, (TK_LIT_CHAR)  , yylineno, dict); dbg(); return (TK_LIT_CHAR); }
+{STRING}              { count(); yylval.symbol = install(yytext, (TK_LIT_STRING), yylineno, dict); dbg(); return (TK_LIT_STRING); }
 
  /* Identifier */
-{ID}                  { yylval.symbol = install(yytext, (TK_IDENTIFICADOR), line_cnt); debug("%s found at line %d", yytext, line_cnt); return (TK_IDENTIFICADOR); }
+{ID}                  { count(); yylval.symbol = install(yytext, (TK_IDENTIFICADOR), yylineno, dict); dbg(); return (TK_IDENTIFICADOR); }
 
 [ \t]+               /* ignore white spaces */
 
  /* Did not match any of above regex */
-.                     { debug("Invalid expression %s found in line %d", yytext, line_cnt); return (TOKEN_ERRO); }
+.                     { printf("Invalid expression %s found in line %d\n", yytext, yylineno); return (TOKEN_ERRO); }
 
- /* TODO: implement line and colum counters */
 %%
-
-/**
- * Get the current line number
- * @return current line number
- */
-int get_line(void)
-{
-	return line_cnt;
-}
 
 /**
  * Set flex input
@@ -105,8 +94,8 @@ int get_line(void)
  * Note:
  * On success the given file is used as input, otherwise
  * stdin.
+ * See also: yyrestart(yyin) (info flex --vi-keys)
  */
-//TODO: maybe use yyrestart(yyin) (see: info flex --vi-keys)
 void set_yyin(char *infile)
 {
 	int r = 0;
@@ -114,10 +103,47 @@ void set_yyin(char *infile)
 
 	f = fopen(infile, "r");
 	if (!f) {
-		debug("Could not open %s (%s), using stdin.", infile, strerror(errno));
+		printf("Could not open %s (%s), using stdin.\n", infile, strerror(errno));
 		yyin = stdin;
 	} else {
 		yyin = f;
 	}
 }
 
+void comment()
+{
+	char c;
+	char c1;
+
+loop:
+	while ((c = input()) != '*' && c != 0); /* consume all chars until '*' */
+
+	if ((c1 = input()) != '/' && c != 0) {
+		unput(c1);
+		goto loop;
+	}
+}
+
+int column = 0;
+
+void count()
+{
+	int i;
+	for (i = 0; yytext[i] != '\0'; i++) {
+		if (yytext[i] == '\n') {
+			column = 0;
+		} else if (yytext[i] == '\t') {
+			column += 8 - (column % 8);
+		} else {
+			column++;
+		}
+	}
+	ECHO;
+}
+
+void dbg()
+{
+#ifdef SCANNER_DEBUG_ON
+	printf(" \"%s\" found at line %d\n", yytext, yylineno);
+#endif
+}

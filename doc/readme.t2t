@@ -68,6 +68,7 @@ sudo apt-get install flex
 sudo apt-get install cmake
 sudo apt-get install g++
 sudo apt-get install doxygen
+sudo apt-get install valgrind
 
 
 == Git ==

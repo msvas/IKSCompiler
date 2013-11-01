@@ -10,13 +10,24 @@
 #include "comp_simplelist.h"
 #include "comp_dict.h"
 #include "gv.h"
+#include "comp_list.h"
 
 //! Definition of a graph node structure
 typedef struct comp_tree {
         struct comp_simplelist_t *filhos;
         struct dict_item *tableEntry;
         int type;
-}AST_TREE;
+	int definedType;
+	char coercion;
+	struct comp_list_t *parametersList;
+} AST_TREE;
+
+typedef struct link_args {
+	char* arg1;
+	char* arg2;
+	char* arg3;
+} ARGS;
+
 /**
  * Creates a tree.
  * @return a pointer to the node.
@@ -28,7 +39,7 @@ AST_TREE* criaArvore(void);
  * @param chave: the value of the new node.
  * @return a pointer to the node.
  */
-AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry);
+AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry, int definedType);
 
 /**
  * Inserts a new node on the tree root
@@ -42,3 +53,5 @@ AST_TREE* insereNodo(AST_TREE* novoFilho, AST_TREE* raiz);
  * @param raiz: tree's root
  */
 void imprimeArvore(AST_TREE* raiz);
+
+ARGS checkTree(AST_TREE* root);

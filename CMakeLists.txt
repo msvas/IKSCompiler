@@ -19,6 +19,8 @@ ADD_EXECUTABLE(main
   src/comp_simplelist.c
   src/comp_tree.c
   src/comp_graph.c
+  src/iloc.c
+  src/comp_programlist.c
 )
 
 #set(build_tests yes)
@@ -47,6 +49,6 @@ TARGET_LINK_LIBRARIES(main ${FLEX_LIBRARIES})
 SET(CMAKE_BUILD_TYPE Debug)
 
 # Additional files to clean during the make clean stage.
-SET(addfiles dict_test list_test graph_test visual_tree.png visual_tree.dot)
+SET(addfiles dict_test list_test graph_test visual_tree.png visual_tree.dot ../report ../visual_tree.dot ../visual_tree.png)
 SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${addfiles}")
 

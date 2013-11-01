@@ -50,6 +50,17 @@ static char *get_unique_fname()
 }
 
 /**
+ * Checks if a file exist.
+ * @param path: file path.
+ * return 1 if file exists, 0 otherwise.
+ */
+static int file_exists(const char *path)
+{
+	struct stat s;
+	return (stat(path, &s) == 0);
+}
+
+/**
  * Creates a symbol table file.
  * @param path: file path.
  * return 0 on success, -1 on error.

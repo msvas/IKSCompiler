@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "comp_list.h"
 
 comp_list_node* criaLista()
@@ -13,12 +14,13 @@ comp_list_node* criaLista()
 	return NULL;
 }
 
-comp_list_node* criaNodoLista(int chave)
+comp_list_node* criaNodoLista(char *key, uint32_t val)
 {
 	comp_list_node *novoNodo;
 
 	novoNodo = malloc(sizeof(comp_list_node));
-	novoNodo->chave = chave;
+	novoNodo->chave = val;
+	novoNodo->nome = key;
 	novoNodo->proximo = NULL;
 	novoNodo->anterior = NULL;
 
@@ -105,7 +107,7 @@ void imprimeLista(comp_list_node* inicioLista)
 	aux = inicioLista;
 
 	while(aux!=NULL) {
-		printf("%i\n", aux->chave);
+		printf("\nlista: %s\n", aux->nome);
 		aux = aux->proximo;
 	}
 }
