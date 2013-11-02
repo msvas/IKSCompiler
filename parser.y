@@ -33,6 +33,9 @@ struct dict *tables[3] = {NULL, NULL, NULL};
 %type<ast> function_variables
 %type<ast> func_body
 %type<ast> cmd_block
+%type<ast> cmd_flow
+%type<ast> cmd_list_f
+%type<ast> cmd_block_f
 %type<ast> cmd_list
 %type<ast> cmd
 %type<ast> expr
@@ -239,8 +242,22 @@ cmd_block:		 '{' cmd_list '}'
 				$$ = insereNodo($2, $$);
 			}
 			;
- 
+cmd_block_f:		 '{' cmd_list_f '}'					
+			{ 
+				$$ = criaNodo(IKS_AST_BLOCO, 0, 0);
+				$$ = insereNodo($2, $$);
+			}
+			;
 cmd_list:		 cmd cmd_list						
+			{ 
+				$$ = insereNodo($2, $1);
+			}
+ 			| 							
+			{ 
+				$$ = NULL;
+			}
+ 			;
+cmd_list_f:		 cmd_flow cmd_list_f					
 			{ 
 				$$ = insereNodo($2, $1);
 			}
@@ -252,6 +269,27 @@ cmd_list:		 cmd cmd_list
  /*
   * Types of commands
   */
+cmd_flow:		 attrib					
+			{ 
+				$$ = $1;
+			}
+			|attrib ';'						
+			{ 
+				$$ = $1;
+			}
+			|flow 					
+			{ 
+				$$ = $1;
+			}
+			|cmd_block_f						
+			{ 
+				$$ = $1;
+			}
+			|cmd_block_f ';'						
+			{ 
+				$$ = $1;
+			}
+			;
 cmd:			 attrib					
 			{ 
 				$$ = $1;
@@ -723,7 +761,7 @@ attrib:	 		 identificador '=' expr
  /*
   * Control flow description
   */
-flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
+flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd_flow
 			{
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0, 0);
 				$$->regs.next = lblChar(newLbl());
@@ -731,12 +769,12 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 				$3->regs.f = $$->regs.next;
 				$6->regs.next = $$->regs.next;
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "%s\ncbr %s => %s, %s\n%s:\n %s\n%s: \n", $3->regs.code, $3->regs.local, $3->regs.t, $$->regs.next, $3->regs.t, $6->regs.code, $$->regs.next);
+				sprintf($$->regs.code, "%s\ncbr %s => %s, %s\n%s:\n%s\n%s: \n", $3->regs.code, $3->regs.local, $3->regs.t, $$->regs.next, $3->regs.t, $6->regs.code, $$->regs.next);
 				insertNode($$->regs.code);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
-			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd	
+			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd_flow TK_PR_ELSE cmd_flow	
 			{ 
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0, 0);
 				$$->regs.next = lblChar(newLbl());
@@ -751,7 +789,7 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 				$$ = insereNodo($6, $$);
 				$$ = insereNodo($8, $$);
 			}
- 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd			
+ 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd_flow			
 			{ 
 				$$ = criaNodo(IKS_AST_WHILE_DO, 0, 0);
 				$$->regs.next = lblChar(newLbl());
@@ -765,7 +803,7 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
- 			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'	';'
+ 			|TK_PR_DO cmd_flow TK_PR_WHILE '(' expr ')'	';'
 			{ 
 				$$ = criaNodo(IKS_AST_DO_WHILE, 0, 0);
 				$$->regs.next = lblChar(newLbl());
