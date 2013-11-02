@@ -57,7 +57,7 @@ struct dict *tables[3] = {NULL, NULL, NULL};
 //%type<ast> lit_string
 %type<ast> identificador
 %type<ast> v_ident
-
+%type<ast> m_ident
 %union
 {
 	struct comp_tree *ast;	
@@ -179,6 +179,15 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 				//printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $1, $3->l, $5->tableEntry->key);
 				//show_dict(tables[0]);
                         }
+			|type ':' TK_IDENTIFICADOR'['lit_int']' '['lit_int']' ';' 
+			{
+				tables[0] = installTable($3->key, $1, (atoi($5->tableEntry->key) + atoi($8->tableEntry->key)), $3->l, NULL, tables[0]);
+				if(tables[0] == NULL)
+				{
+					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
+					exit(IKS_ERROR_DECLARED);
+				}
+			}
                         ;
 
 declaration:             type ':' TK_IDENTIFICADOR                        
@@ -642,6 +651,9 @@ term: 			 TK_LIT_INT
  			|v_ident				
 			{ 
 				$$ = $1;
+			}|m_ident				
+			{ 
+				$$ = $1;
 			}
 			|call_function				
 			{ 
@@ -759,6 +771,33 @@ attrib:	 		 identificador '=' expr
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
+			|m_ident '=' expr
+			{
+				if($3->definedType == IKS_STRING)
+				{
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($3->definedType == IKS_CHAR)
+				{
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if($1->tableEntry->array == 0)
+				{
+					printf("Deve ser variavel");
+					exit(IKS_ERROR_VARIABLE);
+				}
+				else if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}
+				
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+			}
 			;
  
  /*
@@ -835,6 +874,12 @@ input: 			 TK_PR_INPUT identificador
 				$$ = criaNodo(IKS_AST_INPUT, 0, 0);
 				$$ = insereNodo($2, $$);
 			}
+			|TK_PR_INPUT m_ident
+			{
+				$$ = criaNodo(IKS_AST_INPUT, 0, 0);
+				$$ = insereNodo($2, $$);
+			}
+			
 			;
 output: 		 TK_PR_OUTPUT output_list				
 			{ 
@@ -986,6 +1031,37 @@ v_ident:		 identificador '[' expr ']'
 					exit(IKS_ERROR_UNDECLARED);
 				}			
 			};
+
+m_ident:		identificador '[' expr ']' '[' expr ']'
+			{
+				if($3->definedType == IKS_STRING) { 
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($3->definedType == IKS_CHAR) { 
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if(lookup($1->tableEntry->key, tables[1])) { 
+					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->tableEntry->key, tables[1])->val); 
+					$$ = criaNodo(IKS_AST_MATRIZ_INDEXADO, (lookup($1->tableEntry->key, tables[1])), (lookup($1->tableEntry->key, tables[1]))->val);
+					$$ = insereNodo($1, $$);
+					$$ = insereNodo($3, $$);
+					$$ = insereNodo($6, $$);
+				}
+				else if(lookup($1->tableEntry->key, tables[0])) {
+					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->tableEntry->key, tables[0])->val);
+					$$ = criaNodo(IKS_AST_MATRIZ_INDEXADO, (lookup($1->tableEntry->key, tables[0])), (lookup($1->tableEntry->key, tables[0]))->val);
+					$$ = insereNodo($1, $$);
+					$$ = insereNodo($3, $$);
+					$$ = insereNodo($6, $$);
+				}
+				else {
+					printf("Variavel %s não foi declarada anteriormente (linha: %d)\n", $1->tableEntry->key, $1->tableEntry->l);
+					exit(IKS_ERROR_UNDECLARED);
+				}	
+			};
+			
 %%
 
 #define _GNU_SOURCE
