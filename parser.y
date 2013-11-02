@@ -768,6 +768,15 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
  			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'	';'
 			{ 
 				$$ = criaNodo(IKS_AST_DO_WHILE, 0, 0);
+				$$->regs.next = lblChar(newLbl());
+				$$->regs.begin = lblChar(newLbl());
+				$2->regs.next = $$->regs.begin;
+				$5->regs.f = $$->regs.next;
+				$5->regs.t = $$->regs.begin;
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s:\n%s\n%s\ncbr %s => %s, %s\n%s:\n", $$->regs.begin, $2->regs.code, $5->regs.code, $5->regs.local, $5->regs.t, $5->regs.f, $$->regs.next);
+				insertNode($$->regs.code);
+
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($5, $$);
 			}
