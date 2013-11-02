@@ -122,7 +122,6 @@ ARGS checkTree(AST_TREE* root)
         //debug("conteudo: %s\n", root->tableEntry->key);
         while (aux != NULL)
         {
-		//printf("aaa");
 		nodeReg = checkTree(aux->filho);
 		charAux = codeGen(aux->filho, nodeReg.arg1, nodeReg.arg2, nodeReg.arg1);
 

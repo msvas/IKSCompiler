@@ -19,7 +19,7 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 {
 	char *tempName = NULL;
 
-	switch (astNode->type) {
+	/*switch (astNode->type) {
 		case IKS_AST_PROGRAMA:
 			break;
 		case IKS_AST_FUNCAO:
@@ -94,7 +94,7 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 			break;
 	}
 	//printf("CC:%s\n", tempName);
-	//printList();
+	//printList();*/
 	return tempName;
 }
 
@@ -113,14 +113,11 @@ char* genConst(AST_TREE *varNode)
 	return reg;
 }
 
-char* genVariable(AST_TREE *varNode)
+char* genVariable(AST_TREE *varNode, char* reg)
 {
 	char* newInstr;
-	char* reg;
 
 	newInstr = malloc(50*sizeof(char*));
-
-	reg = regChar(newReg());
 
 	sprintf(newInstr, "loadI %p => %s", varNode->tableEntry->content, reg);
 	insertNode(newInstr);
@@ -129,7 +126,7 @@ char* genVariable(AST_TREE *varNode)
 	
 	//printf("store rX => rY(%p)", varNode->tableEntry->content);
 
-	return reg;
+	return newInstr;
 }
 
 char* genIf(AST_TREE *varNode, char *arg1, char *arg2, char *arg3)
@@ -140,7 +137,7 @@ char* genIf(AST_TREE *varNode, char *arg1, char *arg2, char *arg3)
 	newInstr = malloc(50*sizeof(char*));
 
 	reg = regChar(newReg());
-	sprintf(newInstr, "cbr %s => %s, %s", arg1, arg2, arg3);
+	sprintf(newInstr, "cbr %s => 0, %s", arg1, varNode->regs.next);
 	insertNode(newInstr);
 
 	return reg;

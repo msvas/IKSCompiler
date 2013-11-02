@@ -321,7 +321,6 @@ expr: 			 arit_expr
 arit_expr:		 term							
 			{ 
 				$$ = $1;
-				$$->regs.local = $1->tableEntry->key;
 			}
 			|'('arit_expr')'					
 			{ 
@@ -347,6 +346,7 @@ arit_expr:		 term
 
 				$$ = criaNodo(IKS_AST_ARIM_SOMA, 0, typeDefiner($1->definedType, $3->definedType));
 				$$->regs.local = regChar(newReg());
+				$$->regs.code = codeGen($$, $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -542,10 +542,14 @@ term: 			 TK_LIT_INT
 				if(lookup($1->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[1])), lookup($1->key, tables[1])->val);
+					$$->regs.local = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local);
 				}
 				else if(lookup($1->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[0])), lookup($1->key, tables[0])->val);
+					$$->regs.local = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local);
 				}
 				else {
 					printf("Variavel %s não foi declarada anteriormente (linha: %d)\n", $1->key, $1->l);
@@ -670,11 +674,13 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 			{
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0, 0);
 				$$->regs.next = lblChar(newLbl());
-				$3->regs.t = lblChar(newLbl());;
+				$3->regs.t = lblChar(newLbl());
 				$3->regs.f = $$->regs.next;
 				$6->regs.next = $$->regs.next;
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s: %s\n", $3->regs.code, $3->regs.t, $6->regs.code);
 			}
 			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd	
 			{ 

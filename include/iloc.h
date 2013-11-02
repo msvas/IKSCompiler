@@ -5,7 +5,7 @@ char* genConst(AST_TREE *varNode);
 
 char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3);
 
-char* genVariable(AST_TREE *varNode);
+char* genVariable(AST_TREE *varNode, char* reg);
 
 char* genIf(AST_TREE *varNode, char *arg1, char *arg2, char *arg3);
 

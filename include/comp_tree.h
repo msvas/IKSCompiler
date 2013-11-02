@@ -18,6 +18,7 @@ typedef struct nodeRegs {
 	char* next;
 	char* begin;
 	char* local;
+	char* code;
 } ILOC;
 
 //! Definition of a graph node structure
