@@ -711,7 +711,8 @@ attrib:	 		 identificador '=' expr
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$->regs.local = regChar(newReg());
-				$$->regs.code = genAttrib($1->regs.value, $3->regs.local, $$->regs.local);
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s", $3->regs.code, genAttrib($1->regs.value, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
@@ -927,13 +928,13 @@ bool:	 		 TK_LIT_TRUE
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_BOOL);
 				$$->regs.local = regChar(newReg());
-				$$->regs.code = genBool(1);
+				$$->regs.code = genBool(1, $$->regs.local);
 			}
 			|TK_LIT_FALSE
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_BOOL);
 				$$->regs.local = regChar(newReg());
-				$$->regs.code = genBool(0);
+				$$->regs.code = genBool(0, $$->regs.local);
 			};			
 identificador: 		 TK_IDENTIFICADOR
 			{

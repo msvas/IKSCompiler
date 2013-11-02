@@ -13,7 +13,7 @@ char* genAritLog(char *operation, char *arg1, char *arg2, char *reg);
 
 char* genAnd();
 
-char* genBool(int value);
+char* genBool(int value, char* reg);
 
 char* genAttrib(char *arg1, char *arg2, char *reg);
 

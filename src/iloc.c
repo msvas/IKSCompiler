@@ -162,12 +162,12 @@ char* genAnd()
 	lblAux = lblChar(newLbl());
 }
 
-char* genBool(int value)
+char* genBool(int value, char* reg)
 {
 	char *instr;
 	
 	instr = malloc(sizeof(char*));
-	sprintf(instr, "%i", value);
+	sprintf(instr, "loadI %i => %s", value, reg);
 
 	return instr;
 }	
