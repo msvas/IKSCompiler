@@ -4,5 +4,5 @@ int:resultado;
 
 int: main()
 {
-	resultado = num1 + num2;
+	resultado = 10 + num2;
 }

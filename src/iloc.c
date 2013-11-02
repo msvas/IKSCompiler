@@ -101,19 +101,21 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 char* genConst(char* value, char* reg)
 {
 	char* newInstr;
+	
+	newInstr = malloc(50*sizeof(char*));
 
 	sprintf(newInstr, "loadI %s => %s", value, reg);
 
 	return newInstr;
 }
 
-char* genVariable(AST_TREE *varNode, char* reg)
+char* genVariable(AST_TREE *varNode, char* reg, char* auxReg)
 {
 	char* newInstr;
 
 	newInstr = malloc(50*sizeof(char*));
-
-	sprintf(newInstr, "loadI %p => %s", varNode->tableEntry->content, reg);
+	
+	sprintf(newInstr, "loadI %p => %s\nload %s => %s", varNode->tableEntry->content, auxReg, auxReg, reg);
 	
 	//printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
 	

@@ -166,7 +166,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
-				printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
+				//printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
                         }
                         |type ':' TK_IDENTIFICADOR'['lit_int']' ';'              
                         {
@@ -622,14 +622,16 @@ term: 			 TK_LIT_INT
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[1])), lookup($1->key, tables[1])->val);
 					$$->regs.local = regChar(newReg());
-					$$->regs.code = genVariable($$, $$->regs.local);
+					$$->regs.value = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local, $$->regs.value);
 					insertNode($$->regs.code);
 				}
 				else if(lookup($1->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[0])), lookup($1->key, tables[0])->val);
 					$$->regs.local = regChar(newReg());
-					$$->regs.code = genVariable($$, $$->regs.local);
+					$$->regs.value = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local, $$->regs.value);
 					insertNode($$->regs.code);
 				}
 				else {
@@ -676,7 +678,7 @@ attrib:	 		 identificador '=' expr
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "%s\n%s", $3->regs.code, genAttrib($1->regs.local, $3->regs.local, $$->regs.local));
+				sprintf($$->regs.code, "%s\n%s", $3->regs.code, genAttrib($1->regs.value, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
@@ -709,7 +711,7 @@ attrib:	 		 identificador '=' expr
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$->regs.local = regChar(newReg());
-				$$->regs.code = genAttrib($1->regs.local, $3->regs.local, $$->regs.local);
+				$$->regs.code = genAttrib($1->regs.value, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
@@ -939,14 +941,16 @@ identificador: 		 TK_IDENTIFICADOR
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val); 
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[1])), lookup($1->key, tables[1])->val);
 					$$->regs.local = regChar(newReg());
-					$$->regs.code = genVariable($$, $$->regs.local);
+					$$->regs.value = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local, $$->regs.value);
 					insertNode($$->regs.code);
 				}
 				else if(lookup($1->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[0])), lookup($1->key, tables[0])->val);
 					$$->regs.local = regChar(newReg());
-					$$->regs.code = genVariable($$, $$->regs.local);
+					$$->regs.value = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local, $$->regs.value);
 					insertNode($$->regs.code);
 				}
 				else {

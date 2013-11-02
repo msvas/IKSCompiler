@@ -18,6 +18,7 @@ typedef struct nodeRegs {
 	char* next;
 	char* begin;
 	char* local;
+	char* value;
 	char* code;
 } ILOC;
 
