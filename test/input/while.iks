@@ -1,0 +1,8 @@
+bool:num1;
+bool:num2;
+bool:resultado;
+
+int: main()
+{
+	while(num1>num2) do resultado = true;		
+}
