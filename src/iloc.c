@@ -174,24 +174,14 @@ char* genAnd()
 char* genAttrib(char *arg1, char *arg2, char *reg)
 {
 	char* newInstr1;
-	//char* newInstr2;
-	char* newInstr3;
 	
 	newInstr1 = malloc(50*sizeof(char*));
 
-	sprintf(newInstr1, "i2i %s => %s", arg2, reg);
+	sprintf(newInstr1, "i2i %s => %s\nstore %s => %s", arg2, reg, reg, arg1);
 	//printf("\ni2i %s => %s\n", arg2, arg1);
 	insertNode(newInstr1);
 
-	/*newInstr2 = malloc(50*sizeof(char*));
-	sprintf(newInstr2, "loadI %p => %s", varNode->filhos->filho->tableEntry->content, reg);
-	//printf("\ni2i %s => %s\n", arg1, reg);
-	insertNode(newInstr2);*/
-
-	newInstr3 = malloc(50*sizeof(char*));
-	sprintf(newInstr3, "store %s => %s", reg, arg1);
-	//printf("\ni2i %s => %s\n", arg2, arg1);
-	insertNode(newInstr3);
+	return newInstr1;
 }
 
 

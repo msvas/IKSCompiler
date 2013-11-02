@@ -255,10 +255,12 @@ cmd_list:		 cmd cmd_list
 cmd:			 attrib					
 			{ 
 				$$ = $1;
+				//printf("\nJJJJJJ %s\n", $$->regs.code);
 			}
 			|attrib ';'						
 			{ 
 				$$ = $1;
+				//printf("\nJJJJJJ %s\n", $$->regs.code);
 			}
  			|flow 					
 			{ 
@@ -602,6 +604,7 @@ attrib:	 		 identificador '=' expr
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = genAttrib($1->regs.local, $3->regs.local, $$->regs.local);
+				printf("\nJJJJJJ %s\n", $$->regs.code);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 				
@@ -688,7 +691,8 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "%s\n%s: %s\n", $3->regs.code, $3->regs.t, $6->regs.code);
+				sprintf($$->regs.code, "%s\ncbr %s => %s, %s\n%s:\n %s\n%s: \n", $3->regs.code, $3->regs.local, $3->regs.t, $$->regs.next, $3->regs.t, $6->regs.code, $$->regs.next);
+				insertNode($$->regs.code);
 			}
 			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd	
 			{ 
