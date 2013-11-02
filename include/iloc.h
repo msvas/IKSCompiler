@@ -7,7 +7,7 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3);
 
 char* genVariable(AST_TREE *varNode);
 
-char* genIf(char *arg1, char *arg2, char *arg3);
+char* genIf(AST_TREE *varNode, char *arg1, char *arg2, char *arg3);
 
 char* genAritLog(char *operation, char *arg1, char *arg2);
 

@@ -25,7 +25,7 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 		case IKS_AST_FUNCAO:
 			break;
 		case IKS_AST_IF_ELSE:
-			tempName = genIf(arg1, arg2, arg3);
+			tempName = genIf(astNode, arg1, arg2, arg3);
 			break;
 		case IKS_AST_DO_WHILE:
 			break;
@@ -132,7 +132,7 @@ char* genVariable(AST_TREE *varNode)
 	return reg;
 }
 
-char* genIf(char *arg1, char *arg2, char *arg3)
+char* genIf(AST_TREE *varNode, char *arg1, char *arg2, char *arg3)
 {
 	char* newInstr;
 	char* reg;

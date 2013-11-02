@@ -17,6 +17,7 @@
 #include "parser.h"
 #include "iks_ast.h"
 #include "comp_programlist.h"
+#include "iloc.h"
 
 struct comp_tree *root;
 struct dict *tables[3] = {NULL, NULL, NULL};
@@ -320,6 +321,7 @@ expr: 			 arit_expr
 arit_expr:		 term							
 			{ 
 				$$ = $1;
+				$$->regs.local = $1->tableEntry->key;
 			}
 			|'('arit_expr')'					
 			{ 
@@ -344,6 +346,7 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_SOMA, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->regs.local = regChar(newReg());
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -366,6 +369,7 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_SUBTRACAO, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->regs.local = regChar(newReg());
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -388,6 +392,7 @@ arit_expr:		 term
 				}		
 
 				$$ = criaNodo(IKS_AST_ARIM_MULTIPLICACAO, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->regs.local = regChar(newReg());
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -410,6 +415,7 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_DIVISAO, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->regs.local = regChar(newReg());
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -427,6 +433,7 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_INVERSAO, 0, $2->definedType);
+				$$->regs.local = regChar(newReg());
 				$$ = insereNodo($2, $$);
 			}
 			;
@@ -442,12 +449,24 @@ log_expr:		 '('log_expr')'
 			|term TK_OC_AND term					
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_E, 0, IKS_BOOL);
+				$$->regs.t = lblChar(newLbl());
+				$$->regs.f = lblChar(newLbl());
+				$1->regs.t = $$->regs.t;
+				$1->regs.f = lblChar(newLbl());
+				$3->regs.t = $$->regs.t;
+				$3->regs.f = $$->regs.f;
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_OR term					
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_OU, 0, IKS_BOOL);
+				$$->regs.t = lblChar(newLbl());
+				$$->regs.f = lblChar(newLbl());
+				$1->regs.t = lblChar(newLbl());
+				$1->regs.f = $$->regs.f;
+				$3->regs.t = $$->regs.t;
+				$3->regs.f = $$->regs.f;
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -490,6 +509,10 @@ log_expr:		 '('log_expr')'
 			| '!' term
 			{
 				$$ = criaNodo(IKS_AST_LOGICO_COMP_NEGACAO, 0, IKS_BOOL);
+				$$->regs.t = lblChar(newLbl());
+				$$->regs.f = lblChar(newLbl());
+				$2->regs.t = $$->regs.t;
+				$2->regs.f = $$->regs.f;
 				$$ = insereNodo($2, $$);
 			}
 			;
@@ -566,8 +589,10 @@ attrib:	 		 identificador '=' expr
 				}
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
+				$1->regs.local = $3->regs.local;
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
+				
 			}
 			|identificador '=' bool		
 			{
@@ -642,8 +667,12 @@ attrib:	 		 identificador '=' expr
   * Control flow description
   */
 flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd			
-			{ 
+			{
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0, 0);
+				$$->regs.next = lblChar(newLbl());
+				$3->regs.t = lblChar(newLbl());;
+				$3->regs.f = $$->regs.next;
+				$6->regs.next = $$->regs.next;
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
