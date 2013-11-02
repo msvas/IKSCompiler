@@ -143,20 +143,18 @@ char* genIf(AST_TREE *varNode, char *arg1, char *arg2, char *arg3)
 	return reg;
 }
 
-char* genAritLog(char *operation, char *arg1, char *arg2)
+char* genAritLog(char *operation, char *arg1, char *arg2, char *reg)
 {
 	char* newInstr;
-	char* reg;
 
 	newInstr = malloc(50*sizeof(char*));
 
-	reg = regChar(newReg());
 	sprintf(newInstr, "%s %s, %s => %s", operation, arg1, arg2, reg);
 	insertNode(newInstr);
 
 	//printf("\n%s %s, %s => %s\n", operation, arg1, arg2, reg);
 
-	return reg;
+	return newInstr;
 }
 
 char* genAnd()
@@ -173,16 +171,14 @@ char* genAnd()
 
 	
 
-char* genAttrib(AST_TREE *varNode, char *arg1, char *arg2)
+char* genAttrib(char *arg1, char *arg2, char *reg)
 {
 	char* newInstr1;
 	//char* newInstr2;
 	char* newInstr3;
-	char* reg;
-
+	
 	newInstr1 = malloc(50*sizeof(char*));
 
-	reg = regChar(newReg());
 	sprintf(newInstr1, "i2i %s => %s", arg2, reg);
 	//printf("\ni2i %s => %s\n", arg2, arg1);
 	insertNode(newInstr1);

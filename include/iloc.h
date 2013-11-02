@@ -9,11 +9,11 @@ char* genVariable(AST_TREE *varNode, char* reg);
 
 char* genIf(AST_TREE *varNode, char *arg1, char *arg2, char *arg3);
 
-char* genAritLog(char *operation, char *arg1, char *arg2);
+char* genAritLog(char *operation, char *arg1, char *arg2, char *reg);
 
 char* genAnd();
 
-char* genAttrib(AST_TREE *varNode, char *arg1, char *arg2);
+char* genAttrib(char *arg1, char *arg2, char *reg);
 
 int newReg();
 

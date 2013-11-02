@@ -110,7 +110,7 @@ struct dict *tables[3] = {NULL, NULL, NULL};
 program:                 body                                           
                         { 
 				root = $1;
-				checkTree(root);
+				//checkTree(root);
 				printList();
 			}
                         ;
@@ -346,7 +346,7 @@ arit_expr:		 term
 
 				$$ = criaNodo(IKS_AST_ARIM_SOMA, 0, typeDefiner($1->definedType, $3->definedType));
 				$$->regs.local = regChar(newReg());
-				$$->regs.code = codeGen($$, $1->regs.local, $3->regs.local, $$->regs.local);
+				$$->regs.code = genAritLog("add", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -370,6 +370,7 @@ arit_expr:		 term
 
 				$$ = criaNodo(IKS_AST_ARIM_SUBTRACAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("sub", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -393,6 +394,7 @@ arit_expr:		 term
 
 				$$ = criaNodo(IKS_AST_ARIM_MULTIPLICACAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("mult", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -416,6 +418,7 @@ arit_expr:		 term
 
 				$$ = criaNodo(IKS_AST_ARIM_DIVISAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("div", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -449,24 +452,28 @@ log_expr:		 '('log_expr')'
 			|term TK_OC_AND term					
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_E, 0, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
 				$$->regs.t = lblChar(newLbl());
 				$$->regs.f = lblChar(newLbl());
 				$1->regs.t = $$->regs.t;
 				$1->regs.f = lblChar(newLbl());
 				$3->regs.t = $$->regs.t;
 				$3->regs.f = $$->regs.f;
+				$$->regs.code = genAritLog("and", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_OR term					
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_OU, 0, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
 				$$->regs.t = lblChar(newLbl());
 				$$->regs.f = lblChar(newLbl());
 				$1->regs.t = lblChar(newLbl());
 				$1->regs.f = $$->regs.f;
 				$3->regs.t = $$->regs.t;
 				$3->regs.f = $$->regs.f;
+				$$->regs.code = genAritLog("or", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -593,7 +600,8 @@ attrib:	 		 identificador '=' expr
 				}
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
-				$1->regs.local = $3->regs.local;
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAttrib($1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 				
@@ -817,10 +825,14 @@ identificador: 		 TK_IDENTIFICADOR
 				if(lookup($1->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val); 
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[1])), lookup($1->key, tables[1])->val);
+					$$->regs.local = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local);
 				}
 				else if(lookup($1->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[0])), lookup($1->key, tables[0])->val);
+					$$->regs.local = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local);
 				}
 				else {
 					printf("Variavel %s não foi declarada anteriormente (linha: %d)\n", $1->key, $1->l);
