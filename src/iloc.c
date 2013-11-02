@@ -98,19 +98,13 @@ char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 	return tempName;
 }
 
-char* genConst(AST_TREE *varNode)
+char* genConst(char* value, char* reg)
 {
 	char* newInstr;
-	char* reg;
 
-	newInstr = malloc(50*sizeof(char*));
+	sprintf(newInstr, "loadI %s => %s", value, reg);
 
-	reg = regChar(newReg());
-
-	sprintf(newInstr, "loadI %s => %s", varNode->tableEntry->key, reg);
-	insertNode(newInstr);
-
-	return reg;
+	return newInstr;
 }
 
 char* genVariable(AST_TREE *varNode, char* reg)
@@ -120,7 +114,6 @@ char* genVariable(AST_TREE *varNode, char* reg)
 	newInstr = malloc(50*sizeof(char*));
 
 	sprintf(newInstr, "loadI %p => %s", varNode->tableEntry->content, reg);
-	insertNode(newInstr);
 	
 	//printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
 	
@@ -138,7 +131,6 @@ char* genIf(AST_TREE *varNode, char *arg1, char *arg2, char *arg3)
 
 	reg = regChar(newReg());
 	sprintf(newInstr, "cbr %s => 0, %s", arg1, varNode->regs.next);
-	insertNode(newInstr);
 
 	return reg;
 }
@@ -150,7 +142,6 @@ char* genAritLog(char *operation, char *arg1, char *arg2, char *reg)
 	newInstr = malloc(50*sizeof(char*));
 
 	sprintf(newInstr, "%s %s, %s => %s", operation, arg1, arg2, reg);
-	insertNode(newInstr);
 
 	//printf("\n%s %s, %s => %s\n", operation, arg1, arg2, reg);
 
@@ -169,7 +160,15 @@ char* genAnd()
 	lblAux = lblChar(newLbl());
 }
 
+char* genBool(int value)
+{
+	char *instr;
 	
+	instr = malloc(sizeof(char*));
+	sprintf(instr, "%i", value);
+
+	return instr;
+}	
 
 char* genAttrib(char *arg1, char *arg2, char *reg)
 {
@@ -179,7 +178,6 @@ char* genAttrib(char *arg1, char *arg2, char *reg)
 
 	sprintf(newInstr1, "i2i %s => %s\nstore %s => %s", arg2, reg, reg, arg1);
 	//printf("\ni2i %s => %s\n", arg2, arg1);
-	insertNode(newInstr1);
 
 	return newInstr1;
 }
