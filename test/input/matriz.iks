@@ -1,0 +1,21 @@
+int:matriz[10][10];
+int:entrada[10][20];
+int:indice;
+int:main()
+{
+	indice=0;
+
+	matriz[4][5] = 10;
+	while(indice<9)do
+	{
+		//input entrada[indice][indice];
+		indice = indice + 1;
+	}
+	indice = 0;
+	
+	while(indice<9)do
+	{
+		matriz[indice][indice] = (4 * entrada[indice][2*indice]);
+	}
+
+}

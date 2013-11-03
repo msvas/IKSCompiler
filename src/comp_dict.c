@@ -65,6 +65,7 @@ comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32
 	}
 
 	if(arrayString) {
+		
 		size = size*arrayString;
 	}
 	
@@ -77,6 +78,7 @@ comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32
 	dip->key = strdup(key);
 	dip->parameters = parameters;
 	dip->content = malloc(size);
+	dip->array = arrayString;
 
 	//printf("\n%s %p\n", key, dip->content);
 	

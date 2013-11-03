@@ -24,3 +24,5 @@ int newLbl();
 char* regChar(int reg);
 
 char* lblChar(int lbl);
+
+char* v_genAttrib(char *arg1, char *arg2, char *reg, int indice);
