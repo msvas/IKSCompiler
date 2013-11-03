@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include "comp_programlist.h"
@@ -133,9 +134,11 @@ void createOutputFile()
 		if(output)
 			{
 				while(aux != NULL)
-					{
-						fprintf(output,"%s",aux->instruction);
-						fprintf(output,"\n");
+					{if(aux->instruction)
+						{					
+							fprintf(output,"%s",aux->instruction);
+							fprintf(output,"\n");
+						}
 						aux = aux->next;
 					}
 			}

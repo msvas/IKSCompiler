@@ -115,6 +115,7 @@ program:                 body
 				root = $1;
 				//checkTree(root);
 				printList();
+				createOutputFile();
 			}
                         ;
 body:                    declarations
@@ -1078,4 +1079,3 @@ int yyerror(char *s)
 	printf("\n%*s\n%*s\n", column, "^", column, str);
 	free(str);
 }
-
