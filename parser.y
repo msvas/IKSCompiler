@@ -1027,14 +1027,30 @@ v_ident:		 identificador '[' expr ']'
 				else if(lookup($1->tableEntry->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->tableEntry->key, tables[1])->val); 
 					$$ = criaNodo(IKS_AST_VETOR_INDEXADO, (lookup($1->tableEntry->key, tables[1])), (lookup($1->tableEntry->key, tables[1]))->val);
-					$$->tableEntry->array = atoi($3->tableEntry->key);
+					switch($1->tableEntry->val)
+					{
+					case IKS_INT: 	$$->tableEntry->array = 4*atoi($3->tableEntry->key);break;	     
+					case IKS_FLOAT: $$->tableEntry->array = 8*atoi($3->tableEntry->key);break;		     
+					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key);break;    
+					case IKS_STRING: $$->tableEntry->array = strlen($1->tableEntry->key)*atoi($3->tableEntry->key);break;		     
+					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key);break;
+					}
 					$$ = insereNodo($1, $$);
 					$$ = insereNodo($3, $$);
 				}
 				else if(lookup($1->tableEntry->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->tableEntry->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_VETOR_INDEXADO, (lookup($1->tableEntry->key, tables[0])), (lookup($1->tableEntry->key, tables[0]))->val);
-					$$->tableEntry->array = atoi($3->tableEntry->key);
+					switch($1->tableEntry->val)
+					{
+					case IKS_INT: 	$$->tableEntry->array = 4*atoi($3->tableEntry->key);break;	     
+					case IKS_FLOAT: $$->tableEntry->array = 8*atoi($3->tableEntry->key);break;		     
+					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key);break;    
+					case IKS_STRING: $$->tableEntry->array = strlen($1->tableEntry->key)*atoi($3->tableEntry->key);break;		     
+					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key);break;
+					}
+
+					
 					$$ = insereNodo($1, $$);
 					$$ = insereNodo($3, $$);
 				}
@@ -1057,7 +1073,14 @@ m_ident:		identificador '[' expr ']' '[' expr ']'
 				else if(lookup($1->tableEntry->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->tableEntry->key, tables[1])->val); 
 					$$ = criaNodo(IKS_AST_MATRIZ_INDEXADO, (lookup($1->tableEntry->key, tables[1])), (lookup($1->tableEntry->key, tables[1]))->val);
-					$$->tableEntry->array = atoi($3->tableEntry->key) * atoi($6->tableEntry->key);
+					switch($1->tableEntry->val)
+					{
+					case IKS_INT: 	$$->tableEntry->array = (atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key)))*4;break; 	     
+					case IKS_FLOAT: $$->tableEntry->array = (atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key))) * 8;break; 		     
+					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key));break;  
+					case IKS_STRING: $$->tableEntry->array = (atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key))) * strlen($1->tableEntry->key);break;		     
+					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key));break; 
+					}
 					$$ = insereNodo($1, $$);
 					$$ = insereNodo($3, $$);
 					$$ = insereNodo($6, $$);
@@ -1065,7 +1088,14 @@ m_ident:		identificador '[' expr ']' '[' expr ']'
 				else if(lookup($1->tableEntry->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->tableEntry->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_MATRIZ_INDEXADO, (lookup($1->tableEntry->key, tables[0])), (lookup($1->tableEntry->key, tables[0]))->val);
-					$$->tableEntry->array = atoi($3->tableEntry->key) * atoi($6->tableEntry->key);
+					switch($1->tableEntry->val)
+					{
+					case IKS_INT: 	$$->tableEntry->array = 4*(atoi($3->tableEntry->key) * atoi($6->tableEntry->key));break;	     
+					case IKS_FLOAT: $$->tableEntry->array = 8*(atoi($3->tableEntry->key) * atoi($6->tableEntry->key));break;		     
+					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key) * atoi($6->tableEntry->key);break;   
+					case IKS_STRING: $$->tableEntry->array = strlen($1->tableEntry->key)*(atoi($3->tableEntry->key) * atoi($6->tableEntry->key));break;		     
+					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key) * atoi($6->tableEntry->key);break;
+					}
 					$$ = insereNodo($1, $$);
 					$$ = insereNodo($3, $$);
 					$$ = insereNodo($6, $$);

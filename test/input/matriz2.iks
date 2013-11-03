@@ -1,5 +1,5 @@
-int:matriz[8][3];
+int:matriz[8][24];
 int:main()
 {
-	matriz[3][2] = 7;
+	matriz[3][20] = 7;
 }
