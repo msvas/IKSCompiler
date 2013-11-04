@@ -243,7 +243,7 @@ func_body:               '{' cmd_list '}'
                                 $$ = $2;
                         }
                         ;
- /* 
+ /* l
   * A command block is a group of commands
   */
 cmd_block:		 '{' cmd_list '}'					
@@ -395,6 +395,7 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_SOMA, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->value = $1->value + $3->value;
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = genAritLog("add", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
@@ -421,6 +422,7 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_SUBTRACAO, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->value = $1->value - $3->value;
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = genAritLog("sub", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
@@ -447,6 +449,7 @@ arit_expr:		 term
 				}		
 
 				$$ = criaNodo(IKS_AST_ARIM_MULTIPLICACAO, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->value = $1->value * $3->value;
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = genAritLog("mult", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
@@ -473,6 +476,7 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_DIVISAO, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->value = $1->value / $3->value;
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = genAritLog("div", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
@@ -494,6 +498,7 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_INVERSAO, 0, $2->definedType);
+				$$->value = - $2->value;
 				$$->regs.local = regChar(newReg());
 				$$ = insereNodo($2, $$);
 			}
@@ -601,6 +606,7 @@ log_expr:		 '('log_expr')'
 term: 			 TK_LIT_INT						
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_INT);
+				$$->value = atoi($1->key);
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = genConst($1->key, $$->regs.local);
 				insertNode($$->regs.code);
@@ -615,6 +621,7 @@ term: 			 TK_LIT_INT
 			|TK_LIT_FLOAT						
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_FLOAT);
+				$$->value = atoi($1->key);
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = genConst($1->key, $$->regs.local);
 				insertNode($$->regs.code);
@@ -770,9 +777,9 @@ attrib:	 		 identificador '=' expr
 				}
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
-				//$$->regs.local = regChar(newReg());
-				//$$->regs.code = malloc(50*sizeof(char*));
-				//sprintf($$->regs.code, "%s\n%s", $3->regs.code, v_genAttrib($1->regs.value, $3->regs.local, $$->regs.local, $1->tableEntry->array));
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s", $3->regs.code, v_genAttrib($1->regs.value, $3->regs.local, $$->regs.local, $1->tableEntry->array));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 				
@@ -803,9 +810,9 @@ attrib:	 		 identificador '=' expr
 				}
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
-				//$$->regs.local = regChar(newReg());
-				//$$->regs.code = malloc(50*sizeof(char*));
-				//sprintf($$->regs.code, "%s\n%s", $3->regs.code, v_genAttrib($1->regs.value, $3->regs.local, $$->regs.local, $1->tableEntry->array));
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s", $3->regs.code, v_genAttrib($1->regs.value, $3->regs.local, $$->regs.local, $1->tableEntry->array));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -1029,29 +1036,50 @@ v_ident:		 identificador '[' expr ']'
 				else if(lookup($1->tableEntry->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->tableEntry->key, tables[1])->val); 
 					$$ = criaNodo(IKS_AST_VETOR_INDEXADO, (lookup($1->tableEntry->key, tables[1])), (lookup($1->tableEntry->key, tables[1]))->val);
-					/*switch((lookup($1->tableEntry->key, tables[1]))->val)
+					switch((lookup($1->tableEntry->key, tables[1]))->val)
 					{
-						case IKS_INT: 	$$->tableEntry->array = 4*atoi($3->tableEntry->key);break;	     
-						case IKS_FLOAT: $$->tableEntry->array = 8*atoi($3->tableEntry->key);break;		     
-						case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key);break;    
-						case IKS_STRING: $$->tableEntry->array = strlen($1->tableEntry->key)*atoi($3->tableEntry->key);break;		     
-						case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key);break;
-					}*/
+						case IKS_INT: 	
+							$$->tableEntry->array = 4*$3->value;
+							break;	     
+						case IKS_FLOAT: 
+							$$->tableEntry->array = 8*$3->value;
+							break;		     
+						case IKS_CHAR: 	
+							$$->tableEntry->array = $3->value;
+							break;    
+						case IKS_STRING: 
+							$$->tableEntry->array = strlen($1->tableEntry->key)*$3->value;
+							break;		     
+						case IKS_BOOL: 
+							$$->tableEntry->array = $3->value;
+							break;
+					}
+					$$->regs.value = $1->regs.value;
 					$$ = insereNodo($1, $$);
 					$$ = insereNodo($3, $$);
 				}
 				else if(lookup($1->tableEntry->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->tableEntry->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_VETOR_INDEXADO, (lookup($1->tableEntry->key, tables[0])), (lookup($1->tableEntry->key, tables[0]))->val);
-					/*switch((lookup($1->tableEntry->key, tables[0]))->val)
+					switch((lookup($1->tableEntry->key, tables[1]))->val)
 					{
-					case IKS_INT: 	$$->tableEntry->array = 4*atoi($3->tableEntry->key);break;	     
-					case IKS_FLOAT: $$->tableEntry->array = 8*atoi($3->tableEntry->key);break;		     
-					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key);break;    
-					case IKS_STRING: $$->tableEntry->array = strlen($1->tableEntry->key)*atoi($3->tableEntry->key);break;		     
-					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key);break;
-					}*/
-
+						case IKS_INT: 	
+							$$->tableEntry->array = 4*$3->value;
+							break;	     
+						case IKS_FLOAT: 
+							$$->tableEntry->array = 8*$3->value;
+							break;		     
+						case IKS_CHAR: 	
+							$$->tableEntry->array = $3->value;
+							break;    
+						case IKS_STRING: 
+							$$->tableEntry->array = strlen($1->tableEntry->key)*$3->value;
+							break;		     
+						case IKS_BOOL: 
+							$$->tableEntry->array = $3->value;
+							break;
+					}
+					$$->regs.value = $1->regs.value;
 					
 					$$ = insereNodo($1, $$);
 					$$ = insereNodo($3, $$);
@@ -1075,14 +1103,26 @@ m_ident:		identificador '[' expr ']' '[' expr ']'
 				else if(lookup($1->tableEntry->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->tableEntry->key, tables[1])->val); 
 					$$ = criaNodo(IKS_AST_MATRIZ_INDEXADO, (lookup($1->tableEntry->key, tables[1])), (lookup($1->tableEntry->key, tables[1]))->val);
-					/*switch((lookup($1->tableEntry->key, tables[1]))->val)
+					switch((lookup($1->tableEntry->key, tables[1]))->val)
 					{
-					case IKS_INT: 	$$->tableEntry->array = (atoi($3->tableEntry->key)*(2+ atoi($6->tableEntry->key)))*4;break; 	     
-					case IKS_FLOAT: $$->tableEntry->array = (atoi($3->tableEntry->key)*(2+ atoi($6->tableEntry->key))) * 8;break; 		     
-					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key)*(2+ atoi($6->tableEntry->key));break;  
-					case IKS_STRING: $$->tableEntry->array = (atoi($3->tableEntry->key)*(2+ atoi($6->tableEntry->key))) * strlen($1->tableEntry->key);break;		     
-					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key));break; 
-					}*/
+						case IKS_INT: 	
+							$$->tableEntry->array = (($3->value)*(2+$6->value))*4;
+							break; 	     
+						case IKS_FLOAT: 
+							$$->tableEntry->array = ($3->value*(2+$6->value))*8;
+							break; 		     
+						case IKS_CHAR: 	
+							$$->tableEntry->array = $3->value*(2+$6->value);
+							break;  
+						case IKS_STRING: 
+							$$->tableEntry->array = (($3->value)*(2+$6->value))*strlen($1->tableEntry->key);
+							break;		     
+						case IKS_BOOL: 
+							$$->tableEntry->array = $3->value*(2+$6->value);
+							break; 
+					}
+					$$->regs.value = $1->regs.value;
+
 					$$ = insereNodo($1, $$);
 					$$ = insereNodo($3, $$);
 					$$ = insereNodo($6, $$);
@@ -1090,14 +1130,25 @@ m_ident:		identificador '[' expr ']' '[' expr ']'
 				else if(lookup($1->tableEntry->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->tableEntry->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_MATRIZ_INDEXADO, (lookup($1->tableEntry->key, tables[0])), (lookup($1->tableEntry->key, tables[0]))->val);
-					/*switch((lookup($1->tableEntry->key, tables[0]))->val)
+					switch((lookup($1->tableEntry->key, tables[0]))->val)
 					{
-					case IKS_INT: 	$$->tableEntry->array = 4*(atoi($3->tableEntry->key)*atoi($6->tableEntry->key));break;	     
-					case IKS_FLOAT: $$->tableEntry->array = 8*(atoi($3->tableEntry->key)*atoi($6->tableEntry->key));break;		     
-					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key) * atoi($6->tableEntry->key);break;   
-					case IKS_STRING: $$->tableEntry->array = strlen($1->tableEntry->key)*(atoi($3->tableEntry->key)*atoi($6->tableEntry->key));break;		     
-					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key) * atoi($6->tableEntry->key);break;
-					}*/
+						case IKS_INT: 	
+							$$->tableEntry->array = (($3->value)*(2+$6->value))*4;
+							break; 	     
+						case IKS_FLOAT: 
+							$$->tableEntry->array = ($3->value*(2+$6->value))*8;
+							break; 		     
+						case IKS_CHAR: 	
+							$$->tableEntry->array = $3->value*(2+$6->value);
+							break;  
+						case IKS_STRING: 
+							$$->tableEntry->array = (($3->value)*(2+$6->value))*strlen($1->tableEntry->key);
+							break;		     
+						case IKS_BOOL: 
+							$$->tableEntry->array = $3->value*(2+$6->value);
+							break; 
+					}
+					$$->regs.value = $1->regs.value;
 					$$ = insereNodo($1, $$);
 					$$ = insereNodo($3, $$);
 					$$ = insereNodo($6, $$);

@@ -30,6 +30,7 @@ typedef struct comp_tree {
 	int definedType;
 	char coercion;
 	ILOC regs;
+	int value;
 	struct comp_list_t *parametersList;
 } AST_TREE;
 

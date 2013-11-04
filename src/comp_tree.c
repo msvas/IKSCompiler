@@ -28,6 +28,7 @@ AST_TREE* criaNodo(int chave, comp_dict_item_t* tableEntry, int definedType) //c
         novoNodo->tableEntry = tableEntry;
 	novoNodo->definedType = definedType;
         novoNodo->filhos = NULL;
+	novoNodo->value = 0;
 	/* 
 	 * tipo: deve ser obrigatoriamente um dos valores das constantes
 	 * declaradas no arquivo iks_ast.h

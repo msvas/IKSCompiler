@@ -190,7 +190,7 @@ char* v_genAttrib(char *arg1, char *arg2, char *reg, int indice)
 	
 	newInstr1 = malloc(50*sizeof(char*));
 
-	sprintf(newInstr1, "i2i %s => %s\nstoreAI %s => %i,%s", arg2, reg, reg, indice, arg1);
+	sprintf(newInstr1, "i2i %s => %s\nstoreAI %s => %i, %s", arg2, reg, reg, indice, arg1);
 	//printf("\ni2i %s => %s\n", arg2, arg1);
 
 	return newInstr1;
