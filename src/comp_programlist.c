@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include "comp_programlist.h"
@@ -116,7 +117,41 @@ void printList()
 	aux = outputIloc;
 
 	while(aux != NULL) {
-		printf("\nlista: %s\n", aux->instruction);
+		 if(aux->instruction!=NULL) printf("\n%s", aux->instruction);
 		aux = aux->next;
 	}
 }
+
+
+void createOutputFile()
+{
+	comp_program* aux;
+	FILE* output;
+	if(outputIloc)
+		{
+		aux = outputIloc;
+		output = fopen("code.iloc","w");
+		if(output)
+			{
+				while(aux != NULL)
+					{if(aux->instruction)
+						{					
+							fprintf(output,"%s",aux->instruction);
+							fprintf(output,"\n");
+						}
+						aux = aux->next;
+					}
+			}
+		else
+			{printf("Código não foi gerado corretamente");
+			return;
+			}
+		}
+	else
+		{printf("Código não foi gerado corretamente");
+		return;}
+	
+	fclose(output);
+
+}
+

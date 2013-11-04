@@ -50,3 +50,6 @@ comp_program* joinLists(comp_program* primeiraLista, comp_program* segundaLista)
  */
 void printList();
 
+void createOutputFile();
+
+

@@ -138,7 +138,7 @@ void count()
 			column++;
 		}
 	}
-	ECHO;
+	//ECHO;
 }
 
 void dbg()

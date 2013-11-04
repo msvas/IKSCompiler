@@ -17,6 +17,7 @@
 #include "parser.h"
 #include "iks_ast.h"
 #include "comp_programlist.h"
+#include "iloc.h"
 
 struct comp_tree *root;
 struct dict *tables[3] = {NULL, NULL, NULL};
@@ -32,6 +33,9 @@ struct dict *tables[3] = {NULL, NULL, NULL};
 %type<ast> function_variables
 %type<ast> func_body
 %type<ast> cmd_block
+%type<ast> cmd_flow
+%type<ast> cmd_list_f
+%type<ast> cmd_block_f
 %type<ast> cmd_list
 %type<ast> cmd
 %type<ast> expr
@@ -53,7 +57,7 @@ struct dict *tables[3] = {NULL, NULL, NULL};
 //%type<ast> lit_string
 %type<ast> identificador
 %type<ast> v_ident
-
+%type<ast> m_ident
 %union
 {
 	struct comp_tree *ast;	
@@ -109,8 +113,9 @@ struct dict *tables[3] = {NULL, NULL, NULL};
 program:                 body                                           
                         { 
 				root = $1;
-				checkTree(root);
+				//checkTree(root);
 				printList();
+				//createOutputFile();
 			}
                         ;
 body:                    declarations
@@ -162,10 +167,10 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
-				printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
+				//printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);      
                         }
                         |type ':' TK_IDENTIFICADOR'['lit_int']' ';'              
-                        {
+                        {	
 				tables[0] = installTable($3->key, $1, atoi($5->tableEntry->key), $3->l, NULL, tables[0]);
 				if(tables[0] == NULL)
 				{
@@ -175,6 +180,15 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 				//printf("GLOBAL %s %i %i LITINT %s\n", $3->key, $1, $3->l, $5->tableEntry->key);
 				//show_dict(tables[0]);
                         }
+			|type ':' TK_IDENTIFICADOR'['lit_int']' '['lit_int']' ';' 
+			{
+				tables[0] = installTable($3->key, $1, (atoi($5->tableEntry->key) * atoi($8->tableEntry->key)), $3->l, NULL, tables[0]);
+				if(tables[0] == NULL)
+				{
+					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n",$3->key, $3->l);
+					exit(IKS_ERROR_DECLARED);
+				}
+			}
                         ;
 
 declaration:             type ':' TK_IDENTIFICADOR                        
@@ -238,8 +252,22 @@ cmd_block:		 '{' cmd_list '}'
 				$$ = insereNodo($2, $$);
 			}
 			;
- 
+cmd_block_f:		 '{' cmd_list_f '}'					
+			{ 
+				$$ = criaNodo(IKS_AST_BLOCO, 0, 0);
+				$$ = insereNodo($2, $$);
+			}
+			;
 cmd_list:		 cmd cmd_list						
+			{ 
+				$$ = insereNodo($2, $1);
+			}
+ 			| 							
+			{ 
+				$$ = NULL;
+			}
+ 			;
+cmd_list_f:		 cmd_flow cmd_list_f					
 			{ 
 				$$ = insereNodo($2, $1);
 			}
@@ -251,13 +279,36 @@ cmd_list:		 cmd cmd_list
  /*
   * Types of commands
   */
-cmd:			 attrib					
+cmd_flow:		 attrib					
 			{ 
 				$$ = $1;
 			}
 			|attrib ';'						
 			{ 
 				$$ = $1;
+			}
+			|flow 					
+			{ 
+				$$ = $1;
+			}
+			|cmd_block_f						
+			{ 
+				$$ = $1;
+			}
+			|cmd_block_f ';'						
+			{ 
+				$$ = $1;
+			}
+			;
+cmd:			 attrib					
+			{ 
+				$$ = $1;
+				insertNode($$->regs.code);
+			}
+			|attrib ';'						
+			{ 
+				$$ = $1;
+				insertNode($$->regs.code);
 			}
  			|flow 					
 			{ 
@@ -344,8 +395,12 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_SOMA, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("add", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
+
+				//insertNode($$->regs.code);
 			}
 			|arit_expr '-' arit_expr				
 			{
@@ -366,8 +421,12 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_SUBTRACAO, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("sub", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
+
+				//insertNode($$->regs.code);
 			}
 			|arit_expr '*' arit_expr				
 			{
@@ -388,8 +447,12 @@ arit_expr:		 term
 				}		
 
 				$$ = criaNodo(IKS_AST_ARIM_MULTIPLICACAO, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("mult", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
+
+				//insertNode($$->regs.code);
 			}
 			|arit_expr '/' arit_expr				
 			{
@@ -410,8 +473,12 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_DIVISAO, 0, typeDefiner($1->definedType, $3->definedType));
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("div", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
+
+				//insertNode($$->regs.code);
 			}
 			|'-' arit_expr
 			{
@@ -427,6 +494,7 @@ arit_expr:		 term
 				}
 
 				$$ = criaNodo(IKS_AST_ARIM_INVERSAO, 0, $2->definedType);
+				$$->regs.local = regChar(newReg());
 				$$ = insereNodo($2, $$);
 			}
 			;
@@ -442,54 +510,86 @@ log_expr:		 '('log_expr')'
 			|term TK_OC_AND term					
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_E, 0, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
+				$$->regs.t = lblChar(newLbl());
+				$$->regs.f = lblChar(newLbl());
+				$1->regs.t = $$->regs.t;
+				$1->regs.f = lblChar(newLbl());
+				$3->regs.t = $$->regs.t;
+				$3->regs.f = $$->regs.f;
+				$$->regs.code = genAritLog("and", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_OR term					
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_OU, 0, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
+				$$->regs.t = lblChar(newLbl());
+				$$->regs.f = lblChar(newLbl());
+				$1->regs.t = lblChar(newLbl());
+				$1->regs.f = $$->regs.f;
+				$3->regs.t = $$->regs.t;
+				$3->regs.f = $$->regs.f;
+				$$->regs.code = genAritLog("or", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_LE arit_expr				
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_COMP_LE, 0, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("cmp_LE", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_GE arit_expr				
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_COMP_GE, 0, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("cmp_GE", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_EQ arit_expr				
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_COMP_IGUAL, 0, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("cmp_EQ", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term TK_OC_NE arit_expr				
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_COMP_DIF, 0, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("cmp_NE", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term '<' term						
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_COMP_L, 0, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("cmp_LT", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			|term '>' term						
 			{ 
 				$$ = criaNodo(IKS_AST_LOGICO_COMP_G, 0, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genAritLog("cmp_GT", $1->regs.local, $3->regs.local, $$->regs.local);
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
 			| '!' term
 			{
 				$$ = criaNodo(IKS_AST_LOGICO_COMP_NEGACAO, 0, IKS_BOOL);
+				$$->regs.t = lblChar(newLbl());
+				$$->regs.f = lblChar(newLbl());
+				$2->regs.t = $$->regs.t;
+				$2->regs.f = $$->regs.f;
 				$$ = insereNodo($2, $$);
 			}
 			;
@@ -501,28 +601,48 @@ log_expr:		 '('log_expr')'
 term: 			 TK_LIT_INT						
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_INT);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genConst($1->key, $$->regs.local);
+				insertNode($$->regs.code);
 			}
 			|TK_LIT_STRING
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_STRING);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genConst($1->key, $$->regs.local);
+				insertNode($$->regs.code);
 			}
 			|TK_LIT_FLOAT						
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_FLOAT);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genConst($1->key, $$->regs.local);
+				insertNode($$->regs.code);
 			}
 			|TK_LIT_CHAR						
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_CHAR);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genConst($1->key, $$->regs.local);
+				insertNode($$->regs.code);
 			}
 			|TK_IDENTIFICADOR					
 			{ 
 				if(lookup($1->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[1])), lookup($1->key, tables[1])->val);
+					$$->regs.local = regChar(newReg());
+					$$->regs.value = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local, $$->regs.value);
+					insertNode($$->regs.code);
 				}
 				else if(lookup($1->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[0])), lookup($1->key, tables[0])->val);
+					$$->regs.local = regChar(newReg());
+					$$->regs.value = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local, $$->regs.value);
+					insertNode($$->regs.code);
 				}
 				else {
 					printf("Variavel %s não foi declarada anteriormente (linha: %d)\n", $1->key, $1->l);
@@ -530,6 +650,9 @@ term: 			 TK_LIT_INT
 				}
 			}
  			|v_ident				
+			{ 
+				$$ = $1;
+			}|m_ident				
 			{ 
 				$$ = $1;
 			}
@@ -566,8 +689,15 @@ attrib:	 		 identificador '=' expr
 				}
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s", $3->regs.code, genAttrib($1->regs.value, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
+
+				//insertNode($3->regs.code);
+				//insertNode($$->regs.code);
+				
 			}
 			|identificador '=' bool		
 			{
@@ -593,8 +723,14 @@ attrib:	 		 identificador '=' expr
 				}
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s", $3->regs.code, genAttrib($1->regs.value, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
+
+				//insertNode($3->regs.code);
+				//insertNode($$->regs.code);
 			}
 			/*|identificador '=' lit_string			
 			{ 
@@ -633,6 +769,42 @@ attrib:	 		 identificador '=' expr
 				}
 				
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s", $3->regs.code, v_genAttrib($1->regs.value, $3->regs.local, $$->regs.local,$1->tableEntry->array));
+				$$ = insereNodo($1, $$);
+				$$ = insereNodo($3, $$);
+				
+
+
+			}
+			|m_ident '=' expr
+			{
+				if($3->definedType == IKS_STRING)
+				{
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($3->definedType == IKS_CHAR)
+				{
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if($1->tableEntry->array == 0)
+				{
+					printf("Deve ser variavel");
+					exit(IKS_ERROR_VARIABLE);
+				}
+				else if(!(typeDefiner($1->definedType, $3->definedType)))
+				{
+					printf("Tipos incompativeis\n");
+					exit(IKS_ERROR_WRONG_TYPE);
+				}
+				
+				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s", $3->regs.code, v_genAttrib($1->regs.value, $3->regs.local, $$->regs.local,$1->tableEntry->array));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -641,28 +813,60 @@ attrib:	 		 identificador '=' expr
  /*
   * Control flow description
   */
-flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd			
-			{ 
+flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd_flow
+			{
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0, 0);
+				$$->regs.next = lblChar(newLbl());
+				$3->regs.t = lblChar(newLbl());
+				$3->regs.f = $$->regs.next;
+				$6->regs.next = $$->regs.next;
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\ncbr %s => %s, %s\n%s:\n%s\n%s: \n", $3->regs.code, $3->regs.local, $3->regs.t, $$->regs.next, $3->regs.t, $6->regs.code, $$->regs.next);
+				insertNode($$->regs.code);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
-			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd	
+			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd_flow TK_PR_ELSE cmd_flow	
 			{ 
 				$$ = criaNodo(IKS_AST_IF_ELSE, 0, 0);
+				$$->regs.next = lblChar(newLbl());
+				$3->regs.t = lblChar(newLbl());
+				$3->regs.f = lblChar(newLbl());
+				$6->regs.next = $$->regs.next;
+				$8->regs.next = $$->regs.next;
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\ncbr %s => %s, %s\n%s:\n%s\njumpI => %s\n%s:\n%s\n%s:\n", $3->regs.code, $3->regs.local, $3->regs.t, $3->regs.f, $3->regs.t, $6->regs.code, $$->regs.next, $3->regs.f, $8->regs.code, $$->regs.next);
+				insertNode($$->regs.code);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 				$$ = insereNodo($8, $$);
 			}
- 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd			
+ 			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd_flow			
 			{ 
 				$$ = criaNodo(IKS_AST_WHILE_DO, 0, 0);
+				$$->regs.next = lblChar(newLbl());
+				$$->regs.begin = lblChar(newLbl());
+				$3->regs.t = lblChar(newLbl());
+				$3->regs.f = $$->regs.next;
+				$6->regs.next = $$->regs.begin;
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s:\n%s\ncbr %s => %s, %s\n%s:\n%s\njumpI => %s\n%s:\n", $$->regs.begin, $3->regs.code, $3->regs.local, $3->regs.t, $$->regs.next, $3->regs.t, $6->regs.code, $$->regs.begin, $$->regs.next);
+				insertNode($$->regs.code);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
 			}
- 			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'	';'
+ 			|TK_PR_DO cmd_flow TK_PR_WHILE '(' expr ')'	';'
 			{ 
 				$$ = criaNodo(IKS_AST_DO_WHILE, 0, 0);
+				$$->regs.next = lblChar(newLbl());
+				$$->regs.begin = lblChar(newLbl());
+				$2->regs.next = $$->regs.begin;
+				$5->regs.f = $$->regs.next;
+				$5->regs.t = $$->regs.begin;
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s:\n%s\n%s\ncbr %s => %s, %s\n%s:\n", $$->regs.begin, $2->regs.code, $5->regs.code, $5->regs.local, $5->regs.t, $5->regs.f, $$->regs.next);
+				insertNode($$->regs.code);
+
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($5, $$);
 			}
@@ -680,6 +884,12 @@ input: 			 TK_PR_INPUT identificador
 				$$ = criaNodo(IKS_AST_INPUT, 0, 0);
 				$$ = insereNodo($2, $$);
 			}
+			|TK_PR_INPUT m_ident
+			{
+				$$ = criaNodo(IKS_AST_INPUT, 0, 0);
+				$$ = insereNodo($2, $$);
+			}
+			
 			;
 output: 		 TK_PR_OUTPUT output_list				
 			{ 
@@ -772,20 +982,32 @@ lit_int: 		 TK_LIT_INT
 bool:	 		 TK_LIT_TRUE
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genBool(1, $$->regs.local);
 			}
 			|TK_LIT_FALSE
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_BOOL);
+				$$->regs.local = regChar(newReg());
+				$$->regs.code = genBool(0, $$->regs.local);
 			};			
 identificador: 		 TK_IDENTIFICADOR
 			{
 				if(lookup($1->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->key, tables[1])->val); 
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[1])), lookup($1->key, tables[1])->val);
+					$$->regs.local = regChar(newReg());
+					$$->regs.value = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local, $$->regs.value);
+					insertNode($$->regs.code);
 				}
 				else if(lookup($1->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_IDENTIFICADOR, (lookup($1->key, tables[0])), lookup($1->key, tables[0])->val);
+					$$->regs.local = regChar(newReg());
+					$$->regs.value = regChar(newReg());
+					$$->regs.code = genVariable($$, $$->regs.local, $$->regs.value);
+					insertNode($$->regs.code);
 				}
 				else {
 					printf("Variavel %s não foi declarada anteriormente (linha: %d)\n", $1->key, $1->l);
@@ -805,12 +1027,30 @@ v_ident:		 identificador '[' expr ']'
 				else if(lookup($1->tableEntry->key, tables[1])) { 
 					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->tableEntry->key, tables[1])->val); 
 					$$ = criaNodo(IKS_AST_VETOR_INDEXADO, (lookup($1->tableEntry->key, tables[1])), (lookup($1->tableEntry->key, tables[1]))->val);
+					switch($1->tableEntry->val)
+					{
+					case IKS_INT: 	$$->tableEntry->array = 4*atoi($3->tableEntry->key);break;	     
+					case IKS_FLOAT: $$->tableEntry->array = 8*atoi($3->tableEntry->key);break;		     
+					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key);break;    
+					case IKS_STRING: $$->tableEntry->array = strlen($1->tableEntry->key)*atoi($3->tableEntry->key);break;		     
+					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key);break;
+					}
 					$$ = insereNodo($1, $$);
 					$$ = insereNodo($3, $$);
 				}
 				else if(lookup($1->tableEntry->key, tables[0])) {
 					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->tableEntry->key, tables[0])->val);
 					$$ = criaNodo(IKS_AST_VETOR_INDEXADO, (lookup($1->tableEntry->key, tables[0])), (lookup($1->tableEntry->key, tables[0]))->val);
+					switch($1->tableEntry->val)
+					{
+					case IKS_INT: 	$$->tableEntry->array = 4*atoi($3->tableEntry->key);break;	     
+					case IKS_FLOAT: $$->tableEntry->array = 8*atoi($3->tableEntry->key);break;		     
+					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key);break;    
+					case IKS_STRING: $$->tableEntry->array = strlen($1->tableEntry->key)*atoi($3->tableEntry->key);break;		     
+					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key);break;
+					}
+
+					
 					$$ = insereNodo($1, $$);
 					$$ = insereNodo($3, $$);
 				}
@@ -819,6 +1059,53 @@ v_ident:		 identificador '[' expr ']'
 					exit(IKS_ERROR_UNDECLARED);
 				}			
 			};
+
+m_ident:		identificador '[' expr ']' '[' expr ']'
+			{
+				if($3->definedType == IKS_STRING) { 
+					printf("Coercao de string impossivel\n");
+					exit(IKS_ERROR_STRING_TO_X);
+				}
+				else if($3->definedType == IKS_CHAR) { 
+					printf("Coercao de char impossivel\n");
+					exit(IKS_ERROR_CHAR_TO_X);
+				}
+				else if(lookup($1->tableEntry->key, tables[1])) { 
+					//printf("ACHOU LOCAL do tipo %d \n", lookup($1->tableEntry->key, tables[1])->val); 
+					$$ = criaNodo(IKS_AST_MATRIZ_INDEXADO, (lookup($1->tableEntry->key, tables[1])), (lookup($1->tableEntry->key, tables[1]))->val);
+					switch($1->tableEntry->val)
+					{
+					case IKS_INT: 	$$->tableEntry->array = (atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key)))*4;break; 	     
+					case IKS_FLOAT: $$->tableEntry->array = (atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key))) * 8;break; 		     
+					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key));break;  
+					case IKS_STRING: $$->tableEntry->array = (atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key))) * strlen($1->tableEntry->key);break;		     
+					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key)* (2+ atoi($6->tableEntry->key));break; 
+					}
+					$$ = insereNodo($1, $$);
+					$$ = insereNodo($3, $$);
+					$$ = insereNodo($6, $$);
+				}
+				else if(lookup($1->tableEntry->key, tables[0])) {
+					//printf("ACHOU GLOBAL do tipo %d \n", lookup($1->tableEntry->key, tables[0])->val);
+					$$ = criaNodo(IKS_AST_MATRIZ_INDEXADO, (lookup($1->tableEntry->key, tables[0])), (lookup($1->tableEntry->key, tables[0]))->val);
+					switch($1->tableEntry->val)
+					{
+					case IKS_INT: 	$$->tableEntry->array = 4*(atoi($3->tableEntry->key) * atoi($6->tableEntry->key));break;	     
+					case IKS_FLOAT: $$->tableEntry->array = 8*(atoi($3->tableEntry->key) * atoi($6->tableEntry->key));break;		     
+					case IKS_CHAR: 	$$->tableEntry->array = atoi($3->tableEntry->key) * atoi($6->tableEntry->key);break;   
+					case IKS_STRING: $$->tableEntry->array = strlen($1->tableEntry->key)*(atoi($3->tableEntry->key) * atoi($6->tableEntry->key));break;		     
+					case IKS_BOOL: $$->tableEntry->array = atoi($3->tableEntry->key) * atoi($6->tableEntry->key);break;
+					}
+					$$ = insereNodo($1, $$);
+					$$ = insereNodo($3, $$);
+					$$ = insereNodo($6, $$);
+				}
+				else {
+					printf("Variavel %s não foi declarada anteriormente (linha: %d)\n", $1->tableEntry->key, $1->tableEntry->l);
+					exit(IKS_ERROR_UNDECLARED);
+				}	
+			};
+			
 %%
 
 #define _GNU_SOURCE
@@ -835,4 +1122,3 @@ int yyerror(char *s)
 	printf("\n%*s\n%*s\n", column, "^", column, str);
 	free(str);
 }
-

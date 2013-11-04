@@ -1,0 +1,5 @@
+int:matriz[8][24];
+int:main()
+{
+	matriz[3][20] = 7;
+}
