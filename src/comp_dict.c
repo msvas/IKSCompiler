@@ -35,7 +35,7 @@ comp_dict_item_t *lookup(const char *k, comp_dict_t *dicttab)
 	return NULL; /* not found */
 }
 
-comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_list_node *parameters, comp_dict_t *dicttab)
+comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_list_node *parameters, comp_dict_t *dicttab, char *reg)
 {
 	comp_dict_item_t *dip;
 	int size = 0;
@@ -79,6 +79,7 @@ comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32
 	dip->parameters = parameters;
 	dip->content = malloc(size);
 	dip->array = arrayString;
+	dip->reg = reg;
 
 	//printf("\n%s %p\n", key, dip->content);
 	

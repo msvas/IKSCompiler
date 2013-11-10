@@ -117,7 +117,7 @@ void printList()
 	aux = outputIloc;
 
 	while(aux != NULL) {
-		 if(aux->instruction!=NULL) printf("\n%s", aux->instruction);
+		 if(aux->instruction!=NULL) printf("%s", aux->instruction);
 		aux = aux->next;
 	}
 }

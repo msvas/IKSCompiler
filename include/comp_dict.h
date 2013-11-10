@@ -18,6 +18,7 @@ typedef struct dict_item {
 	uint32_t l;		//!< line number the entry was found
 	int array;
 	char *content;
+	char *reg;
 	struct comp_list_t *parameters;
 } comp_dict_item_t;
 
@@ -28,7 +29,7 @@ typedef struct dict {
 	uint32_t cnt;		//!< number of entries
 } comp_dict_t;
 
-comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_list_node *parameters, comp_dict_t *dicttab);
+comp_dict_t *installTable(const char *key, uint32_t val, int arrayString, uint32_t line, comp_list_node *parameters, comp_dict_t *dicttab, char *reg);
 
 /**
  * Look for s in dicttab

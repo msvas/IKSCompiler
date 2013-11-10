@@ -17,6 +17,10 @@ char* genBool(int value, char* reg);
 
 char* genAttrib(char *arg1, char *arg2, char *reg);
 
+char* genGlobalVar(int size, char* reg);
+
+char* genLocalVar(int size, char* reg);
+
 int newReg();
 
 int newLbl();

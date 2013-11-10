@@ -109,13 +109,28 @@ char* genConst(char* value, char* reg)
 	return newInstr;
 }
 
-char* genVariable(AST_TREE *varNode, char* reg, char* auxReg)
+char* genGlobalVar(int size, char* reg)
 {
 	char* newInstr;
 
 	newInstr = malloc(50*sizeof(char*));
 	
-	sprintf(newInstr, "loadI %p => %s\nload %s => %s", varNode->tableEntry->content, auxReg, auxReg, reg);
+	sprintf(newInstr, "loadAI table, %i => %s", size, reg);
+	
+	//printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
+	
+	//printf("store rX => rY(%p)", varNode->tableEntry->content);
+
+	return newInstr;
+}
+
+char* genLocalVar(int size, char* reg)
+{
+	char* newInstr;
+
+	newInstr = malloc(50*sizeof(char*));
+	
+	sprintf(newInstr, "loadAI fp, %i => %s", size, reg);
 	
 	//printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
 	
