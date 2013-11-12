@@ -115,7 +115,7 @@ char* genGlobalVar(int size, char* reg)
 
 	newInstr = malloc(50*sizeof(char*));
 	
-	sprintf(newInstr, "loadAI table, %i => %s", size, reg);
+	sprintf(newInstr, "loadAI table, %i => %s\n", size, reg);
 	
 	//printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
 	
@@ -130,7 +130,7 @@ char* genLocalVar(int size, char* reg)
 
 	newInstr = malloc(50*sizeof(char*));
 	
-	sprintf(newInstr, "loadAI fp, %i => %s", size, reg);
+	sprintf(newInstr, "loadAI fp, %i => %s\n", size, reg);
 	
 	//printf("\n%s loadI %p => %s\n",varNode->tableEntry->key, varNode->tableEntry->content, reg);
 	

@@ -413,7 +413,7 @@ arit_expr:		 term
 				$$->value = $1->value + $3->value;
 				$$->regs.code = malloc(sizeof($1->regs.code)+sizeof($3->regs.code)+50*sizeof(char*));
 				$$->regs.local = regChar(newReg());
-				sprintf($$->regs.code, "%s\n%s\n%s\n", $1->regs.code, $3->regs.code, genAritLog("add", $1->regs.local, $3->regs.local, $$->regs.local));
+				sprintf($$->regs.code, "%s\n%s\n%s", $1->regs.code, $3->regs.code, genAritLog("add", $1->regs.local, $3->regs.local, $$->regs.local));
 
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
@@ -442,7 +442,7 @@ arit_expr:		 term
 				$$->value = $1->value - $3->value;
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = malloc(sizeof($1->regs.code)+sizeof($3->regs.code)+50*sizeof(char*));
-				sprintf($$->regs.code, "%s\n%s\n%s\n", $1->regs.code, $3->regs.code, genAritLog("sub", $1->regs.local, $3->regs.local, $$->regs.local));
+				sprintf($$->regs.code, "%s\n%s\n%s", $1->regs.code, $3->regs.code, genAritLog("sub", $1->regs.local, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
@@ -470,7 +470,7 @@ arit_expr:		 term
 				$$->value = $1->value * $3->value;
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = malloc(sizeof($1->regs.code)+sizeof($3->regs.code)+50*sizeof(char*));
-				sprintf($$->regs.code, "%s\n%s\n%s\n", $1->regs.code, $3->regs.code, genAritLog("mult", $1->regs.local, $3->regs.local, $$->regs.local));
+				sprintf($$->regs.code, "%s\n%s\n%s", $1->regs.code, $3->regs.code, genAritLog("mult", $1->regs.local, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
@@ -498,7 +498,7 @@ arit_expr:		 term
 				$$->value = $1->value / $3->value;
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = malloc(sizeof($1->regs.code)+sizeof($3->regs.code)+50*sizeof(char*));
-				sprintf($$->regs.code, "%s\n%s\n%s\n", $1->regs.code, $3->regs.code, genAritLog("div", $1->regs.local, $3->regs.local, $$->regs.local));
+				sprintf($$->regs.code, "%s\n%s\n%s", $1->regs.code, $3->regs.code, genAritLog("div", $1->regs.local, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
