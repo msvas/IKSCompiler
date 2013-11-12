@@ -23,7 +23,7 @@ struct comp_tree *root;
 struct dict *tables[3] = {NULL, NULL, NULL};
 int sizeDeclare = 0;
 int fp = 0;
-char instr[50];
+char *instr;
 
 %}
 
@@ -283,6 +283,7 @@ function_variables:      declaration ';' function_variables
 func_body:               '{' cmd_list '}'
                         { 
                                 $$ = $2;
+				insertNode($$->regs.code);
                         }
                         ;
  /* l
@@ -297,6 +298,8 @@ cmd_block:		 '{' cmd_list '}'
 cmd_list:		 cmd cmd_list						
 			{ 
 				$$ = insereNodo($2, $1);
+				if($2!=NULL)
+					sprintf($$->regs.code, "%s\n%s", $1->regs.code, $2->regs.code);
 			}
  			| 							
 			{ 
@@ -309,12 +312,14 @@ cmd_list:		 cmd cmd_list
 cmd:			 attrib					
 			{ 
 				$$ = $1;
-				strcpy(instr, $$->regs.code);
+				instr = $$->regs.code;
+				//strcpy(instr, $$->regs.code);
 			}
 			|attrib ';'						
 			{ 
 				$$ = $1;
-				strcpy(instr, $$->regs.code);
+				instr = $$->regs.code;
+				//strcpy(instr, $1->regs.code);
 				//insertNode($$->regs.code);
 			}
  			|flow 					
@@ -406,9 +411,9 @@ arit_expr:		 term
 
 				$$ = criaNodo(IKS_AST_ARIM_SOMA, 0, typeDefiner($1->definedType, $3->definedType));
 				$$->value = $1->value + $3->value;
-
+				$$->regs.code = malloc(sizeof($1->regs.code)+sizeof($3->regs.code)+50*sizeof(char*));
 				$$->regs.local = regChar(newReg());
-				sprintf($$->regs.code, "%s\n%s%s\n", $1->regs.code, $3->regs.code, genAritLog("add", $1->regs.local, $3->regs.local, $$->regs.local));
+				sprintf($$->regs.code, "%s\n%s\n%s\n", $1->regs.code, $3->regs.code, genAritLog("add", $1->regs.local, $3->regs.local, $$->regs.local));
 
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
@@ -436,7 +441,8 @@ arit_expr:		 term
 				$$ = criaNodo(IKS_AST_ARIM_SUBTRACAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$->value = $1->value - $3->value;
 				$$->regs.local = regChar(newReg());
-				sprintf($$->regs.code, "%s\n%s%s\n", $1->regs.code, $3->regs.code, genAritLog("sub", $1->regs.local, $3->regs.local, $$->regs.local));
+				$$->regs.code = malloc(sizeof($1->regs.code)+sizeof($3->regs.code)+50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s\n%s\n", $1->regs.code, $3->regs.code, genAritLog("sub", $1->regs.local, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
@@ -463,7 +469,8 @@ arit_expr:		 term
 				$$ = criaNodo(IKS_AST_ARIM_MULTIPLICACAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$->value = $1->value * $3->value;
 				$$->regs.local = regChar(newReg());
-				sprintf($$->regs.code, "%s\n%s%s\n", $1->regs.code, $3->regs.code, genAritLog("mult", $1->regs.local, $3->regs.local, $$->regs.local));
+				$$->regs.code = malloc(sizeof($1->regs.code)+sizeof($3->regs.code)+50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s\n%s\n", $1->regs.code, $3->regs.code, genAritLog("mult", $1->regs.local, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
@@ -490,7 +497,8 @@ arit_expr:		 term
 				$$ = criaNodo(IKS_AST_ARIM_DIVISAO, 0, typeDefiner($1->definedType, $3->definedType));
 				$$->value = $1->value / $3->value;
 				$$->regs.local = regChar(newReg());
-				sprintf($$->regs.code, "%s\n%s%s\n", $1->regs.code, $3->regs.code, genAritLog("div", $1->regs.local, $3->regs.local, $$->regs.local));
+				$$->regs.code = malloc(sizeof($1->regs.code)+sizeof($3->regs.code)+50*sizeof(char*));
+				sprintf($$->regs.code, "%s\n%s\n%s\n", $1->regs.code, $3->regs.code, genAritLog("div", $1->regs.local, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
@@ -718,7 +726,7 @@ attrib:	 		 identificador '=' expr
 
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "%s\n%s", $3->regs.code, genAttrib($1->regs.value, $3->regs.local, $$->regs.local));
+				sprintf($$->regs.code, "%s\n%s\n", $3->regs.code, genAttrib($1->regs.value, $3->regs.local, $$->regs.local));
 				
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
@@ -753,7 +761,7 @@ attrib:	 		 identificador '=' expr
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "%s\n%s", $3->regs.code, genAttrib($1->regs.value, $3->regs.local, $$->regs.local));
+				sprintf($$->regs.code, "%s\n%s\n", $3->regs.code, genAttrib($1->regs.value, $3->regs.local, $$->regs.local));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
@@ -799,7 +807,7 @@ attrib:	 		 identificador '=' expr
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "%s\n%s", $3->regs.code, v_genAttrib($1->regs.value, $3->regs.local, $$->regs.local, $1->tableEntry->array));
+				sprintf($$->regs.code, "%s\n%s\n", $3->regs.code, v_genAttrib($1->regs.value, $3->regs.local, $$->regs.local, $1->tableEntry->array));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 				
@@ -832,7 +840,7 @@ attrib:	 		 identificador '=' expr
 				$$ = criaNodo(IKS_AST_ATRIBUICAO, 0, 0);
 				$$->regs.local = regChar(newReg());
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "%s\n%s", $3->regs.code, v_genAttrib($1->regs.value, $3->regs.local, $$->regs.local, $1->tableEntry->array));
+				sprintf($$->regs.code, "%s\n%s\n", $3->regs.code, v_genAttrib($1->regs.value, $3->regs.local, $$->regs.local, $1->tableEntry->array));
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 			}
@@ -852,35 +860,41 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 				$6->regs.next = $$->regs.next;
 				$$->regs.code = malloc(50*sizeof(char*));
 				sprintf($$->regs.code, "\n%s\ncbr %s => %s, %s\n%s:\n%s\n%s: \n", $3->regs.code, $3->regs.local, $3->regs.t, $$->regs.next, $3->regs.t, instr, $$->regs.next);
-				insertNode($$->regs.code);
-				$$ = insereNodo($3, $$);
-				$$ = insereNodo($6, $$);
-			}
-			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE cmd
-			{ 
-				$$ = criaNodo(IKS_AST_IF_ELSE, 0, 0);
-				$$->regs.next = lblChar(newLbl());
-				$3->regs.t = lblChar(newLbl());
-				$3->regs.f = lblChar(newLbl());
-				$6->regs.next = $$->regs.next;
-				$8->regs.next = $$->regs.next;
-				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "%s\ncbr %s => %s, %s\n%s:\n%s\njumpI => %s\n%s:\n%s\n%s:\n", $3->regs.code, $3->regs.local, $3->regs.t, $3->regs.f, $3->regs.t, $6->regs.code, $$->regs.next, $3->regs.f, $8->regs.code, $$->regs.next);
 				//insertNode($$->regs.code);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
-				$$ = insereNodo($8, $$);
+			}
+			|TK_PR_IF '(' expr ')' TK_PR_THEN cmd TK_PR_ELSE
+			{
+				$6->regs.code = instr;
+			}
+			 cmd
+			{ 
+				$$ = criaNodo(IKS_AST_IF_ELSE, 0, 0);
+				$$->regs.next = lblChar(newLbl());
+				$9->regs.code = instr;
+				$3->regs.t = lblChar(newLbl());
+				$3->regs.f = lblChar(newLbl());
+				$6->regs.next = $$->regs.next;
+				$9->regs.next = $$->regs.next;
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "%s\ncbr %s => %s, %s\n%s:\n%s\njumpI => %s\n%s:\n%s\n%s:\n", $3->regs.code, $3->regs.local, $3->regs.t, $3->regs.f, $3->regs.t, $6->regs.code, $$->regs.next, $3->regs.f, $9->regs.code, $$->regs.next);
+				//insertNode($$->regs.code);
+				$$ = insereNodo($3, $$);
+				$$ = insereNodo($6, $$);
+				$$ = insereNodo($9, $$);
 			}
  			|TK_PR_WHILE '(' expr ')' TK_PR_DO cmd			
 			{ 
 				$$ = criaNodo(IKS_AST_WHILE_DO, 0, 0);
+				$6->regs.code = instr;
 				$$->regs.next = lblChar(newLbl());
 				$$->regs.begin = lblChar(newLbl());
 				$3->regs.t = lblChar(newLbl());
 				$3->regs.f = $$->regs.next;
 				$6->regs.next = $$->regs.begin;
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "%s:\n%s\ncbr %s => %s, %s\n%s:\n%s\njumpI => %s\n%s:\n", $$->regs.begin, $3->regs.code, $3->regs.local, $3->regs.t, $$->regs.next, $3->regs.t, $6->regs.code, $$->regs.begin, $$->regs.next);
+				sprintf($$->regs.code, "\n%s:\n%s\ncbr %s => %s, %s\n%s:\n%s\njumpI => %s\n%s:\n", $$->regs.begin, $3->regs.code, $3->regs.local, $3->regs.t, $$->regs.next, $3->regs.t, $6->regs.code, $$->regs.begin, $$->regs.next);
 				//insertNode($$->regs.code);
 				$$ = insereNodo($3, $$);
 				$$ = insereNodo($6, $$);
@@ -888,13 +902,14 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
  			|TK_PR_DO cmd TK_PR_WHILE '(' expr ')'	';'
 			{ 
 				$$ = criaNodo(IKS_AST_DO_WHILE, 0, 0);
+				$2->regs.code = instr;
 				$$->regs.next = lblChar(newLbl());
 				$$->regs.begin = lblChar(newLbl());
 				$2->regs.next = $$->regs.begin;
 				$5->regs.f = $$->regs.next;
 				$5->regs.t = $$->regs.begin;
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "%s:\n%s\n%s\ncbr %s => %s, %s\n%s:\n", $$->regs.begin, $2->regs.code, $5->regs.code, $5->regs.local, $5->regs.t, $5->regs.f, $$->regs.next);
+				sprintf($$->regs.code, "\n%s:\n%s\n%s\ncbr %s => %s, %s\n%s:\n", $$->regs.begin, $2->regs.code, $5->regs.code, $5->regs.local, $5->regs.t, $5->regs.f, $$->regs.next);
 				//insertNode($$->regs.code);
 
 				$$ = insereNodo($2, $$);
