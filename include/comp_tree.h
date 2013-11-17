@@ -5,6 +5,7 @@
  */
 
 //! Maximum value for number of sons in each node
+#include <ucontext.h>
 #include "comp_dict.h"
 #include "iks_ast.h"
 #include "comp_simplelist.h"
@@ -39,6 +40,17 @@ typedef struct link_args {
 	char* arg2;
 	char* arg3;
 } ARGS;
+
+typedef struct activationReg {
+	char* temp;
+	char* local;
+	ucontext_t *context;
+	char* statCon;
+	char* dinCon;
+	char* returned;
+	char* params;
+	char* address;
+} ACTREG;
 
 /**
  * Creates a tree.
