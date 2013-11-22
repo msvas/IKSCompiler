@@ -1,7 +1,7 @@
 #!/bin/bash
 
-INPUTS_PATH="test/input"
-BIN_PATH="build"
+INPUTS_PATH="./"
+BIN_PATH="../../build"
 BIN=$BIN_PATH/main
 REPORT=report
 declare -i nota
@@ -11,7 +11,7 @@ declare -i quality
 
 rm -f $REPORT
 
-#test existance
+# test program existence
 if [ ! -x $BIN ]
 then
 	echo -e >&2 "\033[41mExecutable $BIN not found. Aborting.\033[40m"

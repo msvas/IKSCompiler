@@ -26,19 +26,19 @@ ADD_EXECUTABLE(main
 #set(build_tests yes)
 if(build_tests)
 ADD_EXECUTABLE(graph_test
-  test/comp_graph_tst.c
+  test/step0/comp_graph_tst.c
   src/comp_graph.c
 )
 ADD_EXECUTABLE(list_test
-  test/comp_list_tst.c
+  test/step0/comp_list_tst.c
   src/comp_list.c
 )
 ADD_EXECUTABLE(dict_test
-  test/comp_dict_tst.c
+  test/step0/comp_dict_tst.c
   src/comp_dict.c
 )
 ADD_EXECUTABLE(tree_test
-  test/comp_tree_tst.c
+  test/step0/comp_tree_tst.c
   src/comp_tree.c
 )
 endif(build_tests)
