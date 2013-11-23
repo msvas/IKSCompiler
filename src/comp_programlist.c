@@ -21,7 +21,7 @@ comp_program* createNode(char *instruction)
 {
 	comp_program *newInstr;
 
-	newInstr = malloc(sizeof(comp_program*));
+	newInstr = malloc(sizeof(comp_program));
 	newInstr->instruction = instruction;
 	newInstr->next = NULL;
 	newInstr->previous = NULL;
