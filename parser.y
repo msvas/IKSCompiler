@@ -143,12 +143,15 @@ declarations:            global_decl declarations
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n", $3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
-				printf("%s:\n", lookup($3->key, tables[0])->reg);
+				insertNode(lookup($3->key, tables[0])->reg);
+				insertNode(":\n");
 			} 
 			 function_variables func_body
 			{
-				printf("jumpI fp\n");
-				tables[1] = NULL;
+				if(strcmp($3->key, "main")) {
+					printf("\naddI fp, %i => fp\n", sizeof(ACTREG));
+					tables[1] = NULL;
+				}
 			}
 			 declarations
 			{
@@ -967,7 +970,7 @@ return:			 TK_PR_RETURN expr
 				$$ = insereNodo($2, $$);
 
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "\nstoreAI %s => fp, %i\n", $2->regs.local, sizeof(char));
+				sprintf($$->regs.code, "\nstoreAI %s => fp, %i\njump fp\n", $2->regs.local, sizeof(char));
 			}
 			;
 
