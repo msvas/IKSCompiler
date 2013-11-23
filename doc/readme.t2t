@@ -126,5 +126,7 @@ vim temp
 ./main < ../test/input/certa02.txt
 dot -Tpng visual_tree.dot -o visual_tree.png
 eog visual_tree.png
-
+valgrind --leak-check=yes --track-origins=yes ./main < ../test/step5/e00.iks 2> summary-$(date +"%Y%m%d-%H%M%S")
+cmake --clean-first ..
+gdb -tui
 
