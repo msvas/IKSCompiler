@@ -10,8 +10,9 @@
 #include <string.h>
 #include <errno.h>
 #include <math.h>
+#include "comp_stack.h"
 #include "comp_dict.h"
-#include "comp_tree.h"
+//#include "comp_tree.h"
 #include "comp_list.h"
 #include "util.h"
 #include "parser.h"
@@ -24,6 +25,8 @@ struct dict *tables[3] = {NULL, NULL, NULL};
 int sizeDeclare = 0;
 int fp = 0;
 char *instr;
+comp_stack_node* frame = NULL;
+comp_stack_node* stack = NULL;
 
 %}
 
@@ -134,15 +137,17 @@ declarations:            global_decl declarations
 			}
 			 '('parameter_list')'
 			{
-				tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], NULL);
+				tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], lblChar(newLbl()));
 				if(tables[0] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n", $3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
+				printf("%s:\n", lookup($3->key, tables[0])->reg);
 			} 
 			 function_variables func_body
 			{
+				printf("jumpI fp\n");
 				tables[1] = NULL;
 			}
 			 declarations
@@ -960,6 +965,9 @@ return:			 TK_PR_RETURN expr
 			{ 
 				$$ = criaNodo(IKS_AST_RETURN, 0, 0);
 				$$ = insereNodo($2, $$);
+
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "\nstoreAI %s => fp, %i\n", $2->regs.local, sizeof(char));
 			}
 			;
 
@@ -970,7 +978,14 @@ call_function:		 identificador '('argument_list')'
 			{
 				$$ = criaNodo(IKS_AST_CHAMADA_DE_FUNCAO, 0, lookup($1->tableEntry->key, tables[0])->val);
 				$$ = insereNodo($1, $$);
-				$$ = insereNodo($3, $$);				
+				$$ = insereNodo($3, $$);
+
+				$$->actReg.params = $3;
+				$$->actReg.address = lookup($1->tableEntry->key, tables[0])->reg;
+
+				pushStackNode(stack, frame, $$->actReg);
+				$$->regs.code = malloc(50*sizeof(char*));
+				sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore XX, fp\njumpI %s", sizeof(ACTREG), lookup($1->tableEntry->key, tables[0])->reg);
 			}
 			;
 

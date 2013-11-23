@@ -13,6 +13,16 @@
 #include "gv.h"
 #include "comp_list.h"
 
+typedef struct activationReg {
+	char* temp;
+	char* local;
+	char* statCon;
+	char* dinCon;
+	struct comp_tree* params;
+	char* returned;
+	char* address;
+} ACTREG;
+
 typedef struct nodeRegs {
 	char* t;
 	char* f;
@@ -31,6 +41,7 @@ typedef struct comp_tree {
 	int definedType;
 	char coercion;
 	ILOC regs;
+	ACTREG actReg;
 	int value;
 	struct comp_list_t *parametersList;
 } AST_TREE;
@@ -40,17 +51,6 @@ typedef struct link_args {
 	char* arg2;
 	char* arg3;
 } ARGS;
-
-typedef struct activationReg {
-	char* temp;
-	char* local;
-	ucontext_t *context;
-	char* statCon;
-	char* dinCon;
-	char* returned;
-	char* params;
-	char* address;
-} ACTREG;
 
 /**
  * Creates a tree.

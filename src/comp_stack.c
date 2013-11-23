@@ -14,7 +14,7 @@ comp_stack_node* createStack()
 	return NULL;
 }
 
-comp_stack_node* newStackNode(ACTREG* functReg)
+comp_stack_node* newStackNode(ACTREG functReg)
 {
 	comp_stack_node *newNode;
 
@@ -26,7 +26,7 @@ comp_stack_node* newStackNode(ACTREG* functReg)
 	return newNode;
 }
 
-comp_stack_node* pushStackNode(comp_stack_node* framePointer, comp_stack_node* stackPointer, ACTREG* functReg)
+comp_stack_node* pushStackNode(comp_stack_node* framePointer, comp_stack_node* stackPointer, ACTREG functReg)
 {
 	comp_stack_node* auxFP;
 	comp_stack_node* auxSP;
