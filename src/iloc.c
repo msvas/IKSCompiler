@@ -13,7 +13,7 @@
 #include "comp_programlist.h"
 
 int lastReg = 0;
-int lastLbl = 0;
+int lastLbl = 1;
 
 char* codeGen(AST_TREE* astNode, char *arg1, char *arg2, char *arg3)
 {
@@ -181,7 +181,7 @@ char* genBool(int value, char* reg)
 {
 	char *instr;
 	
-	instr = malloc(sizeof(char*));
+	instr = malloc(sizeof(char*)); //printf("OOOOOOOOOOOO %s\n", reg);
 	sprintf(instr, "loadI %i => %s", value, reg);
 
 	return instr;
@@ -244,6 +244,17 @@ char* lblChar(int lbl)
 	sprintf(newName, "L%i", lbl);
 
 	return newName;
+}
+
+char* itoStr(int i)
+{
+	char* str;
+
+	str = malloc(50);
+
+	sprintf(str, "%i", i);
+	
+	return str;
 }
 
 /*AST_TREE* checkTree(AST_TREE* root)

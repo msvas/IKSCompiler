@@ -137,7 +137,11 @@ declarations:            global_decl declarations
 			}
 			 '('parameter_list')'
 			{
-				tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], lblChar(newLbl()));
+				insertNode("jumpI L1\n");
+				if(strcmp($3->key, "main"))
+					tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], lblChar(newLbl()));
+				else
+					tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], "L1");
 				if(tables[0] == NULL)
 				{
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n", $3->key, $3->l);
@@ -148,10 +152,7 @@ declarations:            global_decl declarations
 			} 
 			 function_variables func_body
 			{
-				if(strcmp($3->key, "main")) {
-					printf("\naddI fp, %i => fp\n", sizeof(ACTREG));
-					tables[1] = NULL;
-				}
+				tables[1] = NULL;
 			}
 			 declarations
 			{
@@ -919,6 +920,7 @@ flow:			 TK_PR_IF '(' expr ')' TK_PR_THEN cmd
 				$$->regs.code = malloc(50*sizeof(char*));
 				sprintf($$->regs.code, "\n%s:\n%s\n%s\ncbr %s => %s, %s\n%s:\n", $$->regs.begin, $2->regs.code, $5->regs.code, $5->regs.local, $5->regs.t, $5->regs.f, $$->regs.next);
 				//insertNode($$->regs.code);
+				//printf("OOOOOOOOOOOO %s\n", $2->regs.code);
 
 				$$ = insereNodo($2, $$);
 				$$ = insereNodo($5, $$);
@@ -970,7 +972,7 @@ return:			 TK_PR_RETURN expr
 				$$ = insereNodo($2, $$);
 
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "\nstoreAI %s => fp, %i\njump fp\n", $2->regs.local, sizeof(char));
+				sprintf($$->regs.code, "storeAI %s => fp, %i\njump fp\n", $2->regs.local, sizeof(char));
 			}
 			;
 
@@ -983,12 +985,14 @@ call_function:		 identificador '('argument_list')'
 				$$ = insereNodo($1, $$);
 				$$ = insereNodo($3, $$);
 
+				$$->regs.local = regChar(newReg());
+
 				$$->actReg.params = $3;
-				$$->actReg.address = lookup($1->tableEntry->key, tables[0])->reg;
+				$$->actReg.address = lblChar(newLbl());
 
 				pushStackNode(stack, frame, $$->actReg);
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore XX, fp\njumpI %s", sizeof(ACTREG), lookup($1->tableEntry->key, tables[0])->reg);
+				sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore %s, fp\njumpI %s\n%s:\nstoreAI %s => fp, 1\naddI fp, %i => fp\n", sizeof(ACTREG), $$->actReg.address, lookup($1->tableEntry->key, tables[0])->reg, $$->actReg.address, $$->regs.local, sizeof(ACTREG));
 			}
 			;
 
@@ -1046,7 +1050,7 @@ lit_int: 		 TK_LIT_INT
 bool:	 		 TK_LIT_TRUE
 			{ 
 				$$ = criaNodo(IKS_AST_LITERAL, $1, IKS_BOOL);
-				$$->regs.local = regChar(newReg());
+				$$->regs.local = regChar(newReg()); //printf("OOOOOOOOOOOO %s\n", $$->regs.local);
 				$$->regs.code = genBool(1, $$->regs.local);
 			}
 			|TK_LIT_FALSE

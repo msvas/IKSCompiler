@@ -2,13 +2,14 @@ bool:num1;
 bool:num2;
 bool:resultado;
 
-int: main()
-{
-	do resultado = true; while(num1>num2);	
-}
-
 int: dois()
 {
 	resultado = num1 + num2;
 	return resultado;
+}
+
+int: main()
+{
+	do resultado = true; while(num1>num2);
+	num1 = dois();
 }
