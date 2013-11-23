@@ -23,7 +23,7 @@
 struct comp_tree *root;
 struct dict *tables[3] = {NULL, NULL, NULL};
 int sizeDeclare = 0;
-int fp = 0;
+int fp = 2;
 char *instr;
 comp_stack_node* frame = NULL;
 comp_stack_node* stack = NULL;
@@ -153,6 +153,7 @@ declarations:            global_decl declarations
 			 function_variables func_body
 			{
 				tables[1] = NULL;
+				fp = 2;
 			}
 			 declarations
 			{

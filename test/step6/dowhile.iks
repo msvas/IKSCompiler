@@ -9,6 +9,7 @@ int: dois()
 }
 
 int: main()
+int: teste;
 {
 	do resultado = true; while(num1>num2);
 	num1 = dois();
