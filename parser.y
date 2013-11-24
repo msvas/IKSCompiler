@@ -24,6 +24,7 @@ struct comp_tree *root;
 struct dict *tables[3] = {NULL, NULL, NULL};
 int sizeDeclare = 0;
 int fp = 2;
+int fpSto = 2;
 char *instr;
 comp_stack_node* frame = NULL;
 comp_stack_node* stack = NULL;
@@ -992,18 +993,56 @@ call_function:		 identificador '('argument_list')'
 				$$->actReg.address = lblChar(newLbl());
 
 				pushStackNode(stack, frame, $$->actReg);
-				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore %s, fp\njumpI %s\n%s:\nstoreAI %s => fp, 1\naddI fp, %i => fp\n", sizeof(ACTREG), $$->actReg.address, lookup($1->tableEntry->key, tables[0])->reg, $$->actReg.address, $$->regs.local, sizeof(ACTREG));
+				$$->regs.code = malloc(100*sizeof(char*));
+				sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore %s, fp\n%s\njumpI %s\n%s:\nstoreAI %s => fp, 1\naddI fp, %i => fp\n", sizeof(ACTREG), $$->actReg.address, $3->regs.code, lookup($1->tableEntry->key, tables[0])->reg, $$->actReg.address, $$->regs.local, sizeof(ACTREG));
 			}
 			;
 
-argument_list:		 expr							
+argument_list:		 expr
 			{ 
 				$$ = $1;
+				instr = malloc(50*sizeof(char));
+				strcpy(instr, $1->regs.code);
+				$$->regs.code = malloc(100*sizeof(char));
+				sprintf($$->regs.code, "\n%s\nstoreAI %s => fp, %i\n", instr, $1->regs.local, fpSto);
+				//insertNode($$->regs.code);
+				switch($1->definedType) {
+					case IKS_INT:
+						fpSto += 4;
+						break;
+					case IKS_FLOAT:
+						fpSto += 8;
+						break;
+					case IKS_CHAR:
+						fpSto += 1;
+						break;
+					case IKS_BOOL:
+						fpSto += 1;
+						break;
+				}
 			}
 			|expr ',' argument_list					
 			{ 
 				$$ = insereNodo($3, $1);
+				//printf("OOOOO %s\n", $1->regs.code);
+				strcpy(instr, $1->regs.code);
+				$$->regs.code = malloc(100*sizeof(char));
+				sprintf($$->regs.code, "\n%s\nstoreAI %s => fp, %i\n%s\n", instr, $1->regs.local, fpSto, $3->regs.code);
+				//insertNode($$->regs.code);
+				switch($1->definedType) {
+					case IKS_INT:
+						fpSto += 4;
+						break;
+					case IKS_FLOAT:
+						fpSto += 8;
+						break;
+					case IKS_CHAR:
+						fpSto += 1;
+						break;
+					case IKS_BOOL:
+						fpSto += 1;
+						break;
+				}
 			}
 			| 							
 			{ 
