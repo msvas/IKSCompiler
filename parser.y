@@ -259,10 +259,29 @@ declaration:             type ':' TK_IDENTIFICADOR
 
 par_declaration:         type ':' TK_IDENTIFICADOR               
                         {
-				tables[1] = installTable($3->key, $1, 0, $3->l, NULL, tables[1], NULL);
+				$$ = malloc(sizeof(AST_TREE));
+				$$->regs.local = regChar(newReg());
+				tables[1] = installTable($3->key, $1, 0, $3->l, NULL, tables[1], $$->regs.local);
 				$$ = criaNodoLista($3->key, $1);
-				//show_dict(tables[2]);
-				//printf("FUNC %s %i %i\n", $3->key, $1, $3->l);
+				$$->regs.code = genLocalVar(fp, $$->regs.local);
+				insertNode($$->regs.code);
+				switch($1) {
+					case IKS_INT:
+						fp += 4;
+						break;
+					case IKS_FLOAT:
+						fp += 8;
+						break;
+					case IKS_CHAR:
+						fp += 1;
+						break;
+					case IKS_STRING:
+						fp += strlen($3->key);
+						break;
+					case IKS_BOOL:
+						fp += 1;
+						break;
+				}
 			}
                         ;
 

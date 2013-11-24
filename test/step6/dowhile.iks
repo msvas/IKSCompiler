@@ -4,7 +4,7 @@ bool:resultado;
 
 int: dois(int: oi, float: ola)
 {
-	resultado = num1 + num2;
+	resultado = oi + num2;
 	return resultado;
 }
 
@@ -12,5 +12,5 @@ int: main()
 int: teste;
 {
 	do resultado = true; while(num1>num2);
-	num1 = dois();
+	num1 = dois(1, num1);
 }
