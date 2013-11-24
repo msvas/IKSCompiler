@@ -2,7 +2,7 @@ bool:num1;
 bool:num2;
 bool:resultado;
 
-int: dois()
+int: dois(int: oi, float: ola)
 {
 	resultado = num1 + num2;
 	return resultado;

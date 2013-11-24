@@ -994,7 +994,12 @@ call_function:		 identificador '('argument_list')'
 
 				pushStackNode(stack, frame, $$->actReg);
 				$$->regs.code = malloc(100*sizeof(char*));
-				sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore %s, fp\n%s\njumpI %s\n%s:\nstoreAI %s => fp, 1\naddI fp, %i => fp\n", sizeof(ACTREG), $$->actReg.address, $3->regs.code, lookup($1->tableEntry->key, tables[0])->reg, $$->actReg.address, $$->regs.local, sizeof(ACTREG));
+				if($3!=NULL) {
+					sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore %s, fp\n%s\njumpI %s\n%s:\nstoreAI %s => fp, 1\naddI fp, %i => fp\n", sizeof(ACTREG), $$->actReg.address, $3->regs.code, lookup($1->tableEntry->key, tables[0])->reg, $$->actReg.address, $$->regs.local, sizeof(ACTREG));
+				}
+				else {
+					sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore %s, fp\njumpI %s\n%s:\nstoreAI %s => fp, 1\naddI fp, %i => fp\n", sizeof(ACTREG), $$->actReg.address, lookup($1->tableEntry->key, tables[0])->reg, $$->actReg.address, $$->regs.local, sizeof(ACTREG));
+				}
 			}
 			;
 
