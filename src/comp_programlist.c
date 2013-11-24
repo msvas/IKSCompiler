@@ -113,6 +113,8 @@ comp_program* joinLists(comp_program* primeiraLista, comp_program* segundaLista)
 void printList()
 {
 	comp_program* aux;
+	char *auxChar;
+	char *auxPrv;
 
 	aux = outputIloc;
 
@@ -120,7 +122,32 @@ void printList()
 		if(aux->instruction!=NULL) 
 			printf("%s", aux->instruction);
 		aux = aux->next;
-	}
+	}/*
+	if(aux->instruction!=NULL) {
+			auxChar = aux->instruction;
+			while(*auxChar != '\0') {
+				auxPrv = auxChar;
+				auxChar += 1;
+			}
+			if(*auxPrv == '\n') {
+				printf("%s", aux->instruction);
+				aux = aux->next;
+				while(aux!=NULL && *(aux->instruction) == '\n') {
+					auxChar = aux->instruction;
+					while(*auxChar < 32 || *auxChar > 122) {
+						auxChar += 1;
+					}
+					if(*auxChar!='\0')
+						printf("%s", aux->instruction);
+					aux = aux->next;
+				}
+			}
+			else {
+				printf("%s", aux->instruction);
+				aux = aux->next;
+			}
+		}
+	}*/
 }
 
 

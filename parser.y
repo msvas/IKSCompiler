@@ -25,6 +25,7 @@ struct dict *tables[3] = {NULL, NULL, NULL};
 int sizeDeclare = 0;
 int fp = 2;
 int fpSto = 2;
+char *auxLbl;
 char *instr;
 comp_stack_node* frame = NULL;
 comp_stack_node* stack = NULL;
@@ -134,13 +135,15 @@ declarations:            global_decl declarations
                         }
                         |type ':' TK_IDENTIFICADOR
 			{			
-
+				insertNode("jumpI L1\n");
+				auxLbl = lblChar(newLbl());
+				insertNode(auxLbl);
+				insertNode(":\n");
 			}
 			 '('parameter_list')'
 			{
-				insertNode("jumpI L1\n");
 				if(strcmp($3->key, "main"))
-					tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], lblChar(newLbl()));
+					tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], auxLbl);
 				else
 					tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], "L1");
 				if(tables[0] == NULL)
@@ -148,8 +151,6 @@ declarations:            global_decl declarations
 					printf("A variavel %s ja foi declarada anteriormente (linha: %d)\n", $3->key, $3->l);
 					exit(IKS_ERROR_DECLARED);
 				}
-				insertNode(lookup($3->key, tables[0])->reg);
-				insertNode(":\n");
 			} 
 			 function_variables func_body
 			{
@@ -259,12 +260,9 @@ declaration:             type ':' TK_IDENTIFICADOR
 
 par_declaration:         type ':' TK_IDENTIFICADOR               
                         {
-				$$ = malloc(sizeof(AST_TREE));
-				$$->regs.local = regChar(newReg());
-				tables[1] = installTable($3->key, $1, 0, $3->l, NULL, tables[1], $$->regs.local);
+				tables[1] = installTable($3->key, $1, 0, $3->l, NULL, tables[1], regChar(newReg()));
 				$$ = criaNodoLista($3->key, $1);
-				$$->regs.code = genLocalVar(fp, $$->regs.local);
-				insertNode($$->regs.code);
+				insertNode(genLocalVar(fp, lookup($3->key, tables[1])->reg));
 				switch($1) {
 					case IKS_INT:
 						fp += 4;

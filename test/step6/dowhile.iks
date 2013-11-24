@@ -3,6 +3,7 @@ bool:num2;
 bool:resultado;
 
 int: dois(int: oi, float: ola)
+int: tchau;
 {
 	resultado = oi + num2;
 	return resultado;
