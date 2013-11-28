@@ -136,14 +136,18 @@ declarations:            global_decl declarations
                         |type ':' TK_IDENTIFICADOR
 			{			
 				insertNode("jumpI L1\n");
-				auxLbl = lblChar(newLbl());
-				insertNode(auxLbl);
+				if(strcmp($3->key, "main")) {
+					auxLbl = lblChar(newLbl());
+					insertNode(auxLbl);
+				}
+				else
+					insertNode("L1");
 				insertNode(":\n");
 			}
 			 '('parameter_list')'
 			{
-				if(strcmp($3->key, "main"))
-					tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], auxLbl);
+				if(strcmp($3->key, "main")) 
+					tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], auxLbl); 
 				else
 					tables[0] = installTable($3->key, $1, 0, $3->l, $6, tables[0], "L1");
 				if(tables[0] == NULL)
@@ -182,7 +186,7 @@ global_decl:             type ':' TK_IDENTIFICADOR ';'
 					exit(IKS_ERROR_DECLARED);
 				}
 				//printf("GLOBAL %s %i %i\n", $3->key, $1, $3->l);
-				$$->regs.code = genGlobalVar(sizeDeclare, $$->regs.local);
+				$$->regs.code = genGlobalVar(sizeDeclare, $$->regs.local);			
 				insertNode($$->regs.code);
 				switch($1) {
 					case IKS_INT:
@@ -311,7 +315,8 @@ function_variables:      declaration ';' function_variables
 func_body:               '{' cmd_list '}'
                         { 
                                 $$ = $2;
-				insertNode($$->regs.code);
+				if($$)				
+					insertNode($$->regs.code);
                         }
                         ;
  /* l
@@ -991,7 +996,7 @@ return:			 TK_PR_RETURN expr
 				$$ = insereNodo($2, $$);
 
 				$$->regs.code = malloc(50*sizeof(char*));
-				sprintf($$->regs.code, "storeAI %s => fp, %i\njump fp\n", $2->regs.local, sizeof(char));
+				sprintf($$->regs.code, "%s\nstoreAI %s => fp, %i\njump fp\n", $2->regs.code, $2->regs.local, sizeof(char));
 			}
 			;
 
@@ -1012,10 +1017,10 @@ call_function:		 identificador '('argument_list')'
 				pushStackNode(stack, frame, $$->actReg);
 				$$->regs.code = malloc(100*sizeof(char*));
 				if($3!=NULL) {
-					sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore %s, fp\n%s\njumpI %s\n%s:\nstoreAI %s => fp, 1\naddI fp, %i => fp\n", sizeof(ACTREG), $$->actReg.address, $3->regs.code, lookup($1->tableEntry->key, tables[0])->reg, $$->actReg.address, $$->regs.local, sizeof(ACTREG));
+					sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore %s, fp\n%s\njumpI %s\n%s:\nloadAI fp, 1 => %s\naddI fp, %i => fp\n", sizeof(ACTREG), $$->actReg.address, $3->regs.code, lookup($1->tableEntry->key, tables[0])->reg, $$->actReg.address, $$->regs.local, sizeof(ACTREG));
 				}
 				else {
-					sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore %s, fp\njumpI %s\n%s:\nstoreAI %s => fp, 1\naddI fp, %i => fp\n", sizeof(ACTREG), $$->actReg.address, lookup($1->tableEntry->key, tables[0])->reg, $$->actReg.address, $$->regs.local, sizeof(ACTREG));
+					sprintf($$->regs.code, "\nsubI fp, %i => fp\nstore %s, fp\njumpI %s\n%s:\nloadAI fp, 1 => %s\naddI fp, %i => fp\n", sizeof(ACTREG), $$->actReg.address, lookup($1->tableEntry->key, tables[0])->reg, $$->actReg.address, $$->regs.local, sizeof(ACTREG));
 				}
 			}
 			;
