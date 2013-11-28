@@ -22,6 +22,7 @@ ADD_EXECUTABLE(main
   src/iloc.c
   src/comp_programlist.c
   src/comp_stack.c
+  src/opt.c
 )
 
 #set(build_tests yes)

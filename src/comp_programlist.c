@@ -20,9 +20,14 @@ comp_program* createList()
 comp_program* createNode(char *instruction)
 {
 	comp_program *newInstr;
+	char *aux;
+	
+	aux = malloc(sizeof(instruction));
+
+	strcpy(aux,instruction);
 
 	newInstr = malloc(sizeof(comp_program));
-	newInstr->instruction = instruction;
+	newInstr->instruction = aux;
 	newInstr->next = NULL;
 	newInstr->previous = NULL;
 
