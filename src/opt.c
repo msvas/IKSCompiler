@@ -21,3 +21,20 @@ int loadFile (char* fileName)
 	fclose(file);
 	printList();
 }
+
+int optimize (int phSize) 
+{
+	comp_program* aux;
+	char* peepHole[phSize];
+	int i;
+
+	for(i=0; i<phSize; i++) {
+		aux = getNode();
+
+		if(aux!=NULL)
+			peepHole[i] = aux->instruction;
+	}
+
+	if(strstr(peepHole[0], "jump")!=NULL)
+		strchr(peepHole[0], ';');
+}

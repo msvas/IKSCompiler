@@ -95,6 +95,20 @@ comp_program* deleteNode(comp_program* nodoExcluido)
 	return outputIloc;
 }
 
+comp_program* getNode()
+{
+	comp_program* aux;
+
+	aux = outputIloc;
+
+	if(outputIloc!=NULL) {
+		outputIloc = outputIloc->next;
+		outputIloc->previous = NULL;
+	}
+
+	return aux;
+}
+
 comp_program* joinLists(comp_program* primeiraLista, comp_program* segundaLista)
 {
 	comp_program* aux;

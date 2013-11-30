@@ -36,6 +36,8 @@ comp_program* insertNode(char *instruction);
  */
 comp_program* deleteNode(comp_program* nodoExcluido);
 
+comp_program* getNode();
+
 /**
  * Concatenates two lists.
  * @param primeiraLista: pointer to the list that goes first in the new structure.
