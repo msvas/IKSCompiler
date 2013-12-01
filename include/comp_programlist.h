@@ -20,6 +20,8 @@ comp_program* createList(void);
  */
 comp_program* createNode(char *instruction);
 
+comp_program* insertNodeExternal(char *instruction, comp_program* list);
+
 /**
  * Insert the node into the list.
  * @param novoNodo: pointer to the inserted node.
@@ -45,6 +47,8 @@ comp_program* getNode();
  * @return pointer to the new list beginning.
  */
 comp_program* joinLists(comp_program* primeiraLista, comp_program* segundaLista);
+
+void printListExternal(comp_program* list);
 
 /**
  * Prints all the keys in the list.

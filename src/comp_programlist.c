@@ -36,6 +36,33 @@ comp_program* createNode(char *instruction)
 	return newInstr;
 }
 
+comp_program* insertNodeExternal(char *instruction, comp_program* list)
+{
+	comp_program* aux;
+	comp_program *newInstr;
+
+	newInstr = createNode(instruction);
+	
+	aux = list;
+
+	if(aux == NULL) {
+		//aux = newInstr;
+		list = newInstr;
+		//printf("\nInicio %s\n", newInstr->instruction);
+	}
+	else {
+		while(aux->next != NULL && aux!=NULL) {
+			//printf("\nLista %s\n", aux->instruction);
+			aux = aux->next;
+		}
+		newInstr->previous = aux;
+		aux->next = newInstr;
+		newInstr->next = NULL;
+		//printf("\nMeio %s\n", newInstr->instruction);
+	}
+	return list;
+}
+
 comp_program* insertNode(char *instruction)
 {
 	comp_program* aux;
@@ -127,6 +154,21 @@ comp_program* joinLists(comp_program* primeiraLista, comp_program* segundaLista)
 	}
 
 	return primeiraLista;
+}
+
+void printListExternal(comp_program* list)
+{
+	comp_program* aux;
+	char *auxChar;
+	char *auxPrv;
+
+	aux = list;
+
+	while(aux != NULL) {
+		if(aux->instruction!=NULL) 
+			printf("%s", aux->instruction);
+		aux = aux->next;
+	}
 }
 
 void printList()
