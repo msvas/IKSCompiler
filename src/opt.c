@@ -146,12 +146,11 @@ int optimize (int phSize)
 								reg2[2] = '\0';
 							reg2[3] = '\0';
 
-							printf("%s\n", reg1);
-							printf("%s", reg2);
+							//printf("%s\n", reg1);
+							//printf("%s", reg2);
 
 							if(!strcmp(reg1, reg2)) {
-								printf("oi");
-								optList = insertNodeExternal(peepHole[j], optList);
+								optList = insertNodeExternal(peepHole[i], optList);
 							}
 							else
 								break;

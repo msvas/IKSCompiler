@@ -22,7 +22,7 @@ comp_program* createNode(char *instruction)
 	comp_program *newInstr;
 	char *aux;
 	
-	aux = malloc(sizeof(instruction));
+	aux = malloc(100);
 
 	strcpy(aux,instruction);
 
