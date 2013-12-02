@@ -70,28 +70,32 @@ void Checkleaders()
 comp_graph_node *BuildBasicBlockGraph()
 {
 	comp_graph_node *graph;
+	comp_graph_node *NewNode;
+
 	comp_program *aux;
 	comp_program *aux2;
-	
+		
 	aux = getLista();
 	aux2 = aux;
 	Checkleaders();
-
+	NewNode =  criaGrafo();	
+	
 	while(aux->next != NULL)
 	{
 		do
 		{	
 		aux2 = aux2->next;
 		}while(aux2->lider == 0 && aux2->next != NULL);
-		aux = aux2;		
+			
 		
-		aux2->next == NULL;
+		aux2->previous->next = NULL;
+		aux2->previous = NULL;
 		
-		criaNodoGrafo(aux);
+		NewNode = criaNodoGrafo(aux);
+		graph = InsereNodo(graph, NewNode);
 		aux = aux2;
 	}
 }
-
 int optimize (int phSize) 
 {
 	comp_program* aux;

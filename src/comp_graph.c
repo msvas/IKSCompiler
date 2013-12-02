@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "comp_graph.h"
-
+comp_graph_node * BasicBLocks = NULL;
 comp_graph_node* criaGrafo()
 {
 	return NULL;
@@ -99,4 +99,24 @@ void imprimeArestas(comp_graph_node* nodo)
 			printf("There is a connection\n");
 		}
 	}
+}
+
+comp_graph_node *InsereNodo(comp_graph_node *begin, comp_graph_node *newNode)
+{
+	comp_graph_node *aux;	
+	
+	if(begin == NULL)
+		return newNode;
+	
+	else
+	{
+		aux = begin;
+		while(aux->nodos[0] != NULL)
+			aux = aux->nodos[0];
+
+		aux->nodos[0]= newNode;
+		return begin;
+	}
+
+
 }
