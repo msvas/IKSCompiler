@@ -224,6 +224,86 @@ int optimize (int phSize)
 						j++;
 					}
 				}
+				else if(strstr(peepHole[i], "addI")) {
+					auxChar = strstr(peepHole[i], "addI") + 4;
+					while(*auxChar!='r') {
+						auxChar += 1;
+					}
+					reg1[0] = *auxChar;
+					reg1[1] = *(auxChar+1);
+					if(*(auxChar+2)>='0' && *(auxChar+2)<='9')
+						reg1[2] = *(auxChar+2);
+					else
+						reg1[2] = '\0';
+					reg1[3] = '\0';
+
+					auxChar = strstr(peepHole[i], "=>");
+					while(*auxChar!='r') {
+						auxChar += 1;
+					}
+					reg2[0] = *auxChar;
+					reg2[1] = *(auxChar+1);
+					if(*(auxChar+2)>='0' && *(auxChar+2)<='9')
+						reg2[2] = *(auxChar+2);
+					else
+						reg2[2] = '\0';
+					reg2[3] = '\0';
+
+					//printf("AAAA %s e %s AAA", reg1, reg2);
+					
+					auxChar = strstr(peepHole[i], ",") + 1;
+					while(*auxChar!=' ') {
+						auxChar += 1;
+					}
+					if(*(auxChar+1) == '1' && (*(auxChar+2)==' ' || *(auxChar+2)=='=')) {
+						if(!strcmp(reg1, reg2)) {
+							peepHole[i] = malloc(100);
+							sprintf(peepHole[i], "inc %s\n", reg1);
+							optList = insertNodeExternal(peepHole[i], optList);
+							peepHole[i] = NULL;
+						}
+					}
+				}
+				else if(strstr(peepHole[i], "subI")) {
+					auxChar = strstr(peepHole[i], "subI") + 4;
+					while(*auxChar!='r') {
+						auxChar += 1;
+					}
+					reg1[0] = *auxChar;
+					reg1[1] = *(auxChar+1);
+					if(*(auxChar+2)>='0' && *(auxChar+2)<='9')
+						reg1[2] = *(auxChar+2);
+					else
+						reg1[2] = '\0';
+					reg1[3] = '\0';
+
+					auxChar = strstr(peepHole[i], "=>");
+					while(*auxChar!='r') {
+						auxChar += 1;
+					}
+					reg2[0] = *auxChar;
+					reg2[1] = *(auxChar+1);
+					if(*(auxChar+2)>='0' && *(auxChar+2)<='9')
+						reg2[2] = *(auxChar+2);
+					else
+						reg2[2] = '\0';
+					reg2[3] = '\0';
+
+					//printf("AAAA %s e %s AAA", reg1, reg2);
+					
+					auxChar = strstr(peepHole[i], ",") + 1;
+					while(*auxChar!=' ') {
+						auxChar += 1;
+					}
+					if(*(auxChar+1) == '1' && (*(auxChar+2)==' ' || *(auxChar+2)=='=')) {
+						if(!strcmp(reg1, reg2)) {
+							peepHole[i] = malloc(100);
+							sprintf(peepHole[i], "dec %s\n", reg1);
+							optList = insertNodeExternal(peepHole[i], optList);
+							peepHole[i] = NULL;
+						}
+					}
+				}
 				else
 					optList = insertNodeExternal(peepHole[i], optList);
 			}
