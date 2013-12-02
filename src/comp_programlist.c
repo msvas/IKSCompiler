@@ -123,17 +123,17 @@ comp_program* deleteNode(comp_program* nodoExcluido)
 	return outputIloc;
 }
 
-comp_program* getNode()
+char* getNodeInstruction()
 {
-	comp_program* aux;
+	char* aux;
 
-	aux = outputIloc;
+	aux = outputIloc->instruction;
 
 	if(outputIloc!=NULL) {
 		outputIloc = outputIloc->next;
 		outputIloc->previous = NULL;
 	}
-
+	printf("%s\n", aux);
 	return aux;
 }
 

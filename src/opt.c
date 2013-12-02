@@ -31,15 +31,15 @@ void Checkleaders()
 	aux->lider = 1;
 	while(aux->next != NULL)
 	{
-		printf("%s \n", strtok(aux->instruction, " "));
-		if(strcmp(strtok(aux->instruction, " "),"jumpI") == 0
-		||strcmp(strtok(aux->instruction, " "),"jump") == 0
-		||strcmp(strtok(aux->instruction, " "),"cmp_LT") == 0
-		||strcmp(strtok(aux->instruction, " "),"cmp_LE") == 0
-		||strcmp(strtok(aux->instruction, " "),"cmp_EQ") == 0
-		||strcmp(strtok(aux->instruction, " "),"cmp_GE") == 0
-		||strcmp(strtok(aux->instruction, " "),"cmp_GT") == 0
-		||strcmp(strtok(aux->instruction, " "),"cmp_NE") == 0)
+		//printf("%s \n", strtok(aux->instruction, " "));
+		if(strstr(aux->instruction, "jumpI")
+		||strstr(aux->instruction, "jump") 
+		||strstr(aux->instruction, "cmp_LT") 
+		||strstr(aux->instruction, "cmp_LE") 
+		||strstr(aux->instruction, "cmp_EQ") 
+		||strstr(aux->instruction, "cmp_GE") 
+		||strstr(aux->instruction, "cmp_GT") 
+		||strstr(aux->instruction, "cmp_NE"))
 		{
 			//printf("achou desvio %s\n", strtok(aux->instruction, " "));
 			if(aux->next!= NULL)
@@ -75,11 +75,6 @@ comp_graph_node *BuildBasicBlockGraph()
 	aux = getLista();
 	
 	Checkleaders();
-	
-	
-	
-	
-
 }
 
 int optimize (int phSize) 
@@ -87,23 +82,90 @@ int optimize (int phSize)
 	comp_program* aux;
 	comp_program* optList = NULL;
 	char* peepHole[phSize];
+	char* auxChar;
+	char reg1[4], reg2[4];
 	int i, j;
 	comp_graph_node* BasicBlock;
 
-
+	//printList(getLista());
 	
-	BasicBlock = BuildBasicBlockGraph();
-/*		
-	for(i=0; i<phSize; i++) {
-			aux = getNode();
+	//BasicBlock = BuildBasicBlockGraph();
 
-			if(aux!=NULL)
-				peepHole[i] = aux->instruction;
+	aux = getLista();
+	for(i=0; i<phSize; i++) {
+			if(aux!=NULL) {
+				if(aux->instruction!=NULL) {
+					peepHole[i] = aux->instruction;
+				}
+				aux = aux->next;
+			}
+			else
+				peepHole[i] = NULL;				
+	}
+	for(i=0; i<phSize; i++) {
+		if(peepHole[i]!=NULL) {
+			if(strstr(peepHole[i], "jumpI") || strstr(peepHole[i], "jump")) {
+				optList = insertNodeExternal(peepHole[i], optList);
+				j = i+1;
+				while(j<phSize) {					
+					if(peepHole[j]!=NULL) {
+						if(strstr(peepHole[j], ":")) {
+							optList = insertNodeExternal(peepHole[j], optList);
+							break;
+						}
+					}
+					j++;
+				}
+			}
+			if(strstr(peepHole[i], "store")) {
+				auxChar = strstr(peepHole[i], "store") + 5;
+				while(*auxChar!='r') {
+					auxChar += 1;
+				}
+				reg1[0] = *auxChar;
+				reg1[1] = *(auxChar+1);
+				if(*(auxChar+2)>='0' && *(auxChar+2)<='9')
+					reg1[2] = *(auxChar+2);
+				else
+					reg1[2] = '\0';
+				reg1[3] = '\0';
+				//printf("%s", reg);
+				j = i-1;
+				while(j>=0) {					
+					if(peepHole[j]!=NULL) {
+						if(strstr(peepHole[j], "=>")) {
+							auxChar = strstr(peepHole[j], "=>");
+							while(*auxChar!='r') {
+								auxChar += 1;
+							}
+							reg2[0] = *auxChar;
+							reg2[1] = *(auxChar+1);
+							if(*(auxChar+2)>='0' && *(auxChar+2)<='9')
+								reg2[2] = *(auxChar+2);
+							else
+								reg2[2] = '\0';
+							reg2[3] = '\0';
+
+							printf("%s\n", reg1);
+							printf("%s", reg2);
+
+							if(!strcmp(reg1, reg2)) {
+								printf("oi");
+								optList = insertNodeExternal(peepHole[j], optList);
+							}
+							else
+								break;
+						}
+					}
+					j--;
+				}
+			}
+		}
 	}
 
-	while(aux!=NULL) {
+	/*while(aux!=NULL) {
 		for(i=0; i<phSize; i++) {
-			if(strstr(peepHole[i], "jump")!=NULL) {
+			if(strcmp(strtok(aux->instruction, " "),"jumpI") == 0 || strcmp(strtok(aux->instruction, " "),"jump") == 0) {
 				for(j = i+1; j<phSize; j++) {
 					if(strchr(peepHole[1], ':'))
 						break;
@@ -125,6 +187,6 @@ int optimize (int phSize)
 				peepHole[i] = aux->instruction;
 			}
 		}
-	}
-	printListExternal(optList);*/
+	}*/
+	printListExternal(optList);
 }
