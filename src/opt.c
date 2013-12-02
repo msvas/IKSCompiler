@@ -216,7 +216,8 @@ int optimize (int phSize)
 								*(auxChar+2) = reg2[2];
 								if(reg2[2]!='\0')
 									*(auxChar+3) = reg2[3];
-								//optList = insertNodeExternal(peepHole[j], optList);
+								optList = insertNodeExternal(peepHole[j], optList);
+								peepHole[j] = NULL;
 								break;
 							}
 						}
