@@ -99,64 +99,83 @@ int optimize (int phSize)
 				}
 				aux = aux->next;
 			}
-			else
-				peepHole[i] = NULL;				
+			/*else {
+				peepHole[i] = NULL;
+			}*/	
 	}
-	for(i=0; i<phSize; i++) {
-		if(peepHole[i]!=NULL) {
-			if(strstr(peepHole[i], "jumpI") || strstr(peepHole[i], "jump")) {
-				optList = insertNodeExternal(peepHole[i], optList);
-				j = i+1;
-				while(j<phSize) {					
-					if(peepHole[j]!=NULL) {
-						if(strstr(peepHole[j], ":")) {
-							optList = insertNodeExternal(peepHole[j], optList);
-							break;
-						}
-					}
-					j++;
-				}
-			}
-			if(strstr(peepHole[i], "store")) {
-				auxChar = strstr(peepHole[i], "store") + 5;
-				while(*auxChar!='r') {
-					auxChar += 1;
-				}
-				reg1[0] = *auxChar;
-				reg1[1] = *(auxChar+1);
-				if(*(auxChar+2)>='0' && *(auxChar+2)<='9')
-					reg1[2] = *(auxChar+2);
-				else
-					reg1[2] = '\0';
-				reg1[3] = '\0';
-				//printf("%s", reg);
-				j = i-1;
-				while(j>=0) {					
-					if(peepHole[j]!=NULL) {
-						if(strstr(peepHole[j], "=>")) {
-							auxChar = strstr(peepHole[j], "=>");
-							while(*auxChar!='r') {
-								auxChar += 1;
-							}
-							reg2[0] = *auxChar;
-							reg2[1] = *(auxChar+1);
-							if(*(auxChar+2)>='0' && *(auxChar+2)<='9')
-								reg2[2] = *(auxChar+2);
-							else
-								reg2[2] = '\0';
-							reg2[3] = '\0';
-
-							//printf("%s\n", reg1);
-							//printf("%s", reg2);
-
-							if(!strcmp(reg1, reg2)) {
-								optList = insertNodeExternal(peepHole[i], optList);
-							}
-							else
+	while(aux!=NULL) {
+		for(i=0; i<phSize; i++) {
+			//printf("OOO %s %i\n", peepHole[i], i);
+			if(peepHole[i]!=NULL) {
+				if(strstr(peepHole[i], "jumpI") || strstr(peepHole[i], "jump")) {
+					optList = insertNodeExternal(peepHole[i], optList);
+					j = i+1;
+					while(j<phSize) {					
+						if(peepHole[j]!=NULL) {
+							if(strstr(peepHole[j], ":")) {
+								optList = insertNodeExternal(peepHole[j], optList);
 								break;
+							}
+							else
+								peepHole[j] = NULL;
 						}
+						j++;
 					}
-					j--;
+				}
+				else if(strstr(peepHole[i], "store")) {
+					auxChar = strstr(peepHole[i], "store") + 5;
+					while(*auxChar!='r') {
+						auxChar += 1;
+					}
+					reg1[0] = *auxChar;
+					reg1[1] = *(auxChar+1);
+					if(*(auxChar+2)>='0' && *(auxChar+2)<='9')
+						reg1[2] = *(auxChar+2);
+					else
+						reg1[2] = '\0';
+					reg1[3] = '\0';
+					//printf("%s", reg);
+					j = i-1;
+					while(j>=0) {					
+						if(peepHole[j]!=NULL) {
+							if(strstr(peepHole[j], "=>")) {
+								auxChar = strstr(peepHole[j], "=>");
+								while(*auxChar!='r') {
+									auxChar += 1;
+								}
+								reg2[0] = *auxChar;
+								reg2[1] = *(auxChar+1);
+								if(*(auxChar+2)>='0' && *(auxChar+2)<='9')
+									reg2[2] = *(auxChar+2);
+								else
+									reg2[2] = '\0';
+								reg2[3] = '\0';
+
+								//printf("%s\n", reg1);
+								//printf("%s", reg2);
+
+								if(!strcmp(reg1, reg2)) {
+									optList = insertNodeExternal(peepHole[j], optList);
+									optList = insertNodeExternal(peepHole[i], optList);
+								}
+								else
+									break;
+							}
+						}
+						j--;
+					}
+				}
+				else 
+					optList = insertNodeExternal(peepHole[i], optList);
+			}
+		}
+		for(i=0; i<phSize; i++) {
+			if(i<(phSize-1))
+				peepHole[i] = peepHole[i+1];
+			else {
+				if(aux!=NULL) {
+					peepHole[i] = aux->instruction;
+					aux = aux->next;
 				}
 			}
 		}
