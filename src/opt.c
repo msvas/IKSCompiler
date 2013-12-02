@@ -71,10 +71,25 @@ comp_graph_node *BuildBasicBlockGraph()
 {
 	comp_graph_node *graph;
 	comp_program *aux;
+	comp_program *aux2;
 	
 	aux = getLista();
-	
+	aux2 = aux;
 	Checkleaders();
+
+	while(aux->next != NULL)
+	{
+		do
+		{	
+		aux2 = aux2->next;
+		}while(aux2->lider == 0 && aux2->next != NULL);
+		aux = aux2;		
+		
+		aux2->next == NULL;
+		
+		criaNodoGrafo(aux);
+		aux = aux2;
+	}
 }
 
 int optimize (int phSize) 

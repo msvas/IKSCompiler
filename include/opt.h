@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "comp_programlist.h"
 #include "comp_graph.h"
 
 #define OPT_RED		0

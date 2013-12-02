@@ -13,7 +13,7 @@ comp_graph_node* criaGrafo()
 	return NULL;
 }
 
-comp_graph_node* criaNodoGrafo(char* instr_block)
+comp_graph_node* criaNodoGrafo(comp_program* instr_block)
 {
 	comp_graph_node *novoNodo;
 	int i;

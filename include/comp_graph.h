@@ -10,10 +10,12 @@
 //! Maximum value for connections in each node
 #define ARESTAS 5
 
+#include "comp_programlist.h"
+
 //! Definition of a graph node structure
 typedef struct comp_graph_t {
 	struct comp_graph_t* nodos[ARESTAS];
-	char* instr_block;
+	comp_program* instr_block;
 	
 } comp_graph_node;
 
@@ -28,7 +30,7 @@ comp_graph_node* criaGrafo(void);
  * @param chave: node key.
  * @return pointer to the node created.
  */
-comp_graph_node* criaNodoGrafo(char *instr_block);
+comp_graph_node* criaNodoGrafo(comp_program *instr_block);
 
 /**
  * Creates a single way connection between two nodes.
