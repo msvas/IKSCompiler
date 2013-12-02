@@ -28,6 +28,7 @@ comp_program* createNode(char *instruction)
 
 	newInstr = malloc(sizeof(comp_program));
 	newInstr->instruction = aux;
+	newInstr->lider=0;
 	newInstr->next = NULL;
 	newInstr->previous = NULL;
 
@@ -136,6 +137,12 @@ comp_program* getNode()
 	return aux;
 }
 
+comp_program *getLista()
+{
+	return outputIloc;
+}
+
+
 comp_program* joinLists(comp_program* primeiraLista, comp_program* segundaLista)
 {
 	comp_program* aux;
@@ -178,7 +185,6 @@ void printList()
 	char *auxPrv;
 
 	aux = outputIloc;
-
 	while(aux != NULL) {
 		if(aux->instruction!=NULL) 
 			printf("%s", aux->instruction);

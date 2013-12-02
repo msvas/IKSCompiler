@@ -13,14 +13,15 @@ comp_graph_node* criaGrafo()
 	return NULL;
 }
 
-comp_graph_node* criaNodoGrafo(int chave)
+comp_graph_node* criaNodoGrafo(char* instr_block)
 {
 	comp_graph_node *novoNodo;
 	int i;
 
 	novoNodo = malloc(sizeof(comp_graph_node));
 
-	novoNodo->chave = chave;
+	novoNodo->instr_block = instr_block;
+	
 
 	for(i = 0; i < ARESTAS; i++) {
 		novoNodo->nodos[i] = NULL;
@@ -28,6 +29,8 @@ comp_graph_node* criaNodoGrafo(int chave)
 
 	return novoNodo;
 }
+
+
 
 int criaAresta(comp_graph_node* nodoOrigem, comp_graph_node* nodoDestino)
 {

@@ -4,6 +4,7 @@
 typedef struct comp_program_t {
 	struct comp_program_t *next; //!< next entry
 	char *instruction;
+	int lider;
 	struct comp_program_t *previous; //!< previous entry
 } comp_program;
 
@@ -58,4 +59,5 @@ void printList();
 
 void createOutputFile();
 
+comp_program *getLista();
 
