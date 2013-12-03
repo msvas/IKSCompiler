@@ -9,10 +9,12 @@
 int main(int argc, char *argv[])
 {
 	int r;
+	
+	
 
 	if(argc==2) {
 		loadFile(argv[1]);
-		optimize(2);
+		opt_scan(VARREDURAS);
 		
 	}
 	else {

@@ -142,6 +142,11 @@ comp_program *getLista()
 	return outputIloc;
 }
 
+void *saveList(comp_program *list)
+{
+	outputIloc = list;	
+}
+
 
 comp_program* joinLists(comp_program* primeiraLista, comp_program* segundaLista)
 {

@@ -97,7 +97,22 @@ comp_graph_node *BuildBasicBlockGraph()
 	}
 	return graph;
 }
-int optimize (int phSize) 
+
+int opt_scan(int times)
+{
+	int i;
+	comp_program *optList[times];
+	
+	for(i = 0; i < times; i++)
+		{
+		optList[i] = optimize(2);
+		saveList(optList[i]);
+		}
+
+	printListExternal(optList[times-1]);
+}
+
+comp_program *optimize(int phSize) 
 {
 	comp_program* aux;
 	comp_program* optList = NULL;
@@ -109,7 +124,7 @@ int optimize (int phSize)
 
 	//printList(getLista());
 	
-	BasicBlock = BuildBasicBlockGraph();
+	//BasicBlock = BuildBasicBlockGraph();
 
 	aux = getLista();
 	for(i=0; i<phSize; i++) {
@@ -350,5 +365,6 @@ int optimize (int phSize)
 			}
 		}
 	}*/
-	printListExternal(optList);
+	//printListExternal(optList);
+	return optList;
 }

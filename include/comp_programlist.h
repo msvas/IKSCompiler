@@ -61,3 +61,5 @@ void createOutputFile();
 
 comp_program *getLista();
 
+void *saveList(comp_program *list);
+

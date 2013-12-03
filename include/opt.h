@@ -7,8 +7,11 @@
 #define OPT_JUMP	3
 #define OPT_CONST	4
 #define OPT_COPY	5
+#define VARREDURAS 1
 
 int loadFile (char* fileName);
 
-int optimize (int phSize);
+comp_program* optimize (int phSize);
 void Checkleaders();
+
+int opt_scan(int times);

@@ -23,6 +23,7 @@
 #define IKS_SYNTAX_SUCESSO 0
 #define IKS_SYNTAX_ERRO    1
 
+
 /*
   Constantes a serem utilizadas para diferenciar os lexemas que estão
   registrados na tabela de símbolos.
