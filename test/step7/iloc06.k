@@ -1,2 +1,2 @@
-addI r1, 1 => r1
+subI r1, 1 => r1
 

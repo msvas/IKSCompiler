@@ -1,2 +1,2 @@
-add r3, r4 => r1
-store r1 => r2
+add r3, r4 => r2
+load r1 => r2
