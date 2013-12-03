@@ -4,8 +4,7 @@
    Arquivo principal do analisador sintático.
 */
 #include "main.h"
-#include "util.h"
-#include "opt.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +13,7 @@ int main(int argc, char *argv[])
 	if(argc==2) {
 		loadFile(argv[1]);
 		optimize(2);
+		
 	}
 	else {
 		gv_init("visual_tree.dot");

@@ -95,6 +95,7 @@ comp_graph_node *BuildBasicBlockGraph()
 		graph = InsereNodo(graph, NewNode);
 		aux = aux2;
 	}
+	return graph;
 }
 int optimize (int phSize) 
 {
@@ -108,7 +109,7 @@ int optimize (int phSize)
 
 	//printList(getLista());
 	
-	//BasicBlock = BuildBasicBlockGraph();
+	BasicBlock = BuildBasicBlockGraph();
 
 	aux = getLista();
 	for(i=0; i<phSize; i++) {

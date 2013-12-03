@@ -6,6 +6,8 @@
 #ifndef __MAIN_H
 #define __MAIN_H
 #include <stdio.h>
+#include "util.h"
+#include "opt.h"
 #include "comp_dict.h"
 #include "comp_list.h"
 #include "comp_tree.h"
